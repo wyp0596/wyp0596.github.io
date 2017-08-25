@@ -9,7 +9,7 @@
   <id>https://blog.ajavac.com/</id>
   
   <author>
-    <name>John Doe</name>
+    <name>wyp0596</name>
     
   </author>
   
@@ -747,9 +747,9 @@
       <category term="Linux" scheme="https://blog.ajavac.com/categories/Linux/"/>
     
     
-      <category term="Linux" scheme="https://blog.ajavac.com/tags/Linux/"/>
-    
       <category term="Config" scheme="https://blog.ajavac.com/tags/Config/"/>
+    
+      <category term="Linux" scheme="https://blog.ajavac.com/tags/Linux/"/>
     
   </entry>
   
@@ -829,9 +829,9 @@
       <category term="Linux" scheme="https://blog.ajavac.com/categories/Linux/"/>
     
     
-      <category term="Terminal" scheme="https://blog.ajavac.com/tags/Terminal/"/>
-    
       <category term="Linux" scheme="https://blog.ajavac.com/tags/Linux/"/>
+    
+      <category term="Terminal" scheme="https://blog.ajavac.com/tags/Terminal/"/>
     
   </entry>
   
