@@ -1,0 +1,761 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/08/24/Common/mac_pinyin_input_method/</loc>
+    <lastmod>2017-08-24T06:21:09.000Z</lastmod>
+    <data>
+        <display>
+        <title>MacOS系统自带简体拼音输入法Tips</title>
+        <pubTime>2017-08-24T06:20:31.000Z</pubTime>
+        
+        <tag>Mac</tag>
+         
+         
+           
+             
+              <breadCrumb title="Mac" url="https://blog.ajavac.com/categories/Mac/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/08/15/Java/java7/</loc>
+    <lastmod>2017-08-15T08:09:22.000Z</lastmod>
+    <data>
+        <display>
+        <title>Java 7 新特性</title>
+        <pubTime>2017-08-15T07:39:45.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Basic</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="https://blog.ajavac.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/08/07/Docker/docker_registry/</loc>
+    <lastmod>2017-08-09T02:09:20.000Z</lastmod>
+    <data>
+        <display>
+        <title>Docker Registry （Docker仓库）</title>
+        <pubTime>2017-08-07T07:00:06.000Z</pubTime>
+        
+        <tag>Docker</tag>
+         
+         
+           
+             
+              <breadCrumb title="Docker" url="https://blog.ajavac.com/categories/Docker/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/04/10/Linux/linux_basic/</loc>
+    <lastmod>2017-08-03T01:18:35.000Z</lastmod>
+    <data>
+        <display>
+        <title>Linux 基础</title>
+        <pubTime>2017-04-10T01:19:17.000Z</pubTime>
+        
+        <tag>Basic</tag>
+         
+        <tag>Linux</tag>
+         
+         
+           
+             
+              <breadCrumb title="Linux" url="https://blog.ajavac.com/categories/Linux/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/05/31/Docker/docker_dev/</loc>
+    <lastmod>2017-07-27T02:42:25.000Z</lastmod>
+    <data>
+        <display>
+        <title>利用Docker搭建开发环境</title>
+        <pubTime>2017-05-31T08:40:53.000Z</pubTime>
+        
+        <tag>Docker</tag>
+         
+         
+           
+             
+              <breadCrumb title="Docker" url="https://blog.ajavac.com/categories/Docker/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/06/28/Java/java_collection/</loc>
+    <lastmod>2017-07-23T12:59:49.000Z</lastmod>
+    <data>
+        <display>
+        <title>Java 集合框架</title>
+        <pubTime>2017-06-28T09:50:51.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Collection</tag>
+         
+        <tag>Basic</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="https://blog.ajavac.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/07/17/Nginx/nginx_cors/</loc>
+    <lastmod>2017-07-17T06:13:52.000Z</lastmod>
+    <data>
+        <display>
+        <title>Nginx跨域</title>
+        <pubTime>2017-07-17T03:31:22.000Z</pubTime>
+        
+        <tag>Common</tag>
+         
+        <tag>Nginx</tag>
+         
+         
+           
+             
+              <breadCrumb title="Nginx" url="https://blog.ajavac.com/categories/Nginx/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/06/25/Linux/linux_network/</loc>
+    <lastmod>2017-06-25T13:18:11.000Z</lastmod>
+    <data>
+        <display>
+        <title>Linux 网卡配置</title>
+        <pubTime>2017-06-25T13:15:02.000Z</pubTime>
+        
+        <tag>Linux</tag>
+         
+        <tag>Config</tag>
+         
+         
+           
+             
+              <breadCrumb title="Linux" url="https://blog.ajavac.com/categories/Linux/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/06/25/Linux/linux_command/</loc>
+    <lastmod>2017-06-25T13:14:02.000Z</lastmod>
+    <data>
+        <display>
+        <title>Linux常用命令</title>
+        <pubTime>2017-06-25T13:11:20.000Z</pubTime>
+        
+        <tag>Terminal</tag>
+         
+        <tag>Linux</tag>
+         
+         
+           
+             
+              <breadCrumb title="Linux" url="https://blog.ajavac.com/categories/Linux/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/04/08/Common/mac/</loc>
+    <lastmod>2017-06-25T13:13:07.000Z</lastmod>
+    <data>
+        <display>
+        <title>Mac OS 日常记录</title>
+        <pubTime>2017-04-08T10:34:45.000Z</pubTime>
+        
+        <tag>Mac</tag>
+         
+         
+           
+             
+              <breadCrumb title="Mac" url="https://blog.ajavac.com/categories/Mac/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/06/20/Java/java_io/</loc>
+    <lastmod>2017-06-25T13:02:35.000Z</lastmod>
+    <data>
+        <display>
+        <title>Java IO</title>
+        <pubTime>2017-06-20T01:15:39.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Basic</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="https://blog.ajavac.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/06/14/Java/jvm/</loc>
+    <lastmod>2017-06-18T15:51:42.000Z</lastmod>
+    <data>
+        <display>
+        <title>JVM</title>
+        <pubTime>2017-06-14T09:41:03.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Basic</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="https://blog.ajavac.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/03/25/Java/java_basic/</loc>
+    <lastmod>2017-06-07T08:14:08.000Z</lastmod>
+    <data>
+        <display>
+        <title>Java基础</title>
+        <pubTime>2017-03-25T13:55:25.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Basic</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="https://blog.ajavac.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/05/31/Docker/docker_info/</loc>
+    <lastmod>2017-05-31T08:57:18.000Z</lastmod>
+    <data>
+        <display>
+        <title>初识Docker</title>
+        <pubTime>2017-05-31T08:27:53.000Z</pubTime>
+        
+        <tag>Docker</tag>
+         
+         
+           
+             
+              <breadCrumb title="Docker" url="https://blog.ajavac.com/categories/Docker/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/05/31/Docker/docker_cleanup/</loc>
+    <lastmod>2017-05-31T08:53:41.000Z</lastmod>
+    <data>
+        <display>
+        <title>Docker之清理</title>
+        <pubTime>2017-05-31T08:45:53.000Z</pubTime>
+        
+        <tag>Docker</tag>
+         
+         
+           
+             
+              <breadCrumb title="Docker" url="https://blog.ajavac.com/categories/Docker/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/05/31/Docker/docker_container/</loc>
+    <lastmod>2017-05-31T08:53:28.000Z</lastmod>
+    <data>
+        <display>
+        <title>Docker之容器</title>
+        <pubTime>2017-05-31T08:35:53.000Z</pubTime>
+        
+        <tag>Docker</tag>
+         
+         
+           
+             
+              <breadCrumb title="Docker" url="https://blog.ajavac.com/categories/Docker/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/05/31/Docker/docker_image/</loc>
+    <lastmod>2017-05-31T08:53:22.000Z</lastmod>
+    <data>
+        <display>
+        <title>Docker之镜像</title>
+        <pubTime>2017-05-31T08:30:53.000Z</pubTime>
+        
+        <tag>Docker</tag>
+         
+         
+           
+             
+              <breadCrumb title="Docker" url="https://blog.ajavac.com/categories/Docker/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/03/26/Java/jdk_string/</loc>
+    <lastmod>2017-05-15T06:07:49.000Z</lastmod>
+    <data>
+        <display>
+        <title>JDK之String</title>
+        <pubTime>2017-03-26T10:35:55.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Basic</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="https://blog.ajavac.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/01/13/Common/character/</loc>
+    <lastmod>2017-05-15T01:43:50.000Z</lastmod>
+    <data>
+        <display>
+        <title>字符编码</title>
+        <pubTime>2017-01-13T08:27:31.000Z</pubTime>
+        
+        <tag>Common</tag>
+         
+        <tag>Charset</tag>
+         
+         
+           
+             
+              <breadCrumb title="Charset" url="https://blog.ajavac.com/categories/Charset/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/03/27/EffectiveJava/chapter3/</loc>
+    <lastmod>2017-04-09T08:24:27.000Z</lastmod>
+    <data>
+        <display>
+        <title>《Effective Java》读书笔记——第3章</title>
+        <pubTime>2017-03-27T15:13:02.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Effective_Java</tag>
+         
+        <tag>book</tag>
+         
+         
+           
+             
+              <breadCrumb title="book" url="https://blog.ajavac.com/categories/book/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/03/26/Java/java8/</loc>
+    <lastmod>2017-03-27T08:25:44.000Z</lastmod>
+    <data>
+        <display>
+        <title>Java 8 新特性</title>
+        <pubTime>2017-03-26T10:35:55.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Basic</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="https://blog.ajavac.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2016/07/14/MySQL/mysql_install/</loc>
+    <lastmod>2017-03-26T08:04:59.000Z</lastmod>
+    <data>
+        <display>
+        <title>MySQL安装和配置</title>
+        <pubTime>2016-07-14T03:12:22.000Z</pubTime>
+        
+        <tag>Common</tag>
+         
+        <tag>MySQL</tag>
+         
+         
+           
+             
+              <breadCrumb title="MySQL" url="https://blog.ajavac.com/categories/MySQL/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/01/06/MySQL/mysql_data_type/</loc>
+    <lastmod>2017-03-26T08:03:37.000Z</lastmod>
+    <data>
+        <display>
+        <title>MySQL数据类型</title>
+        <pubTime>2017-01-06T05:53:52.000Z</pubTime>
+        
+        <tag>Common</tag>
+         
+        <tag>MySQL</tag>
+         
+         
+           
+             
+              <breadCrumb title="MySQL" url="https://blog.ajavac.com/categories/MySQL/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/03/22/EffectiveJava/chapter2/</loc>
+    <lastmod>2017-03-24T08:11:52.000Z</lastmod>
+    <data>
+        <display>
+        <title>《Effective Java》读书笔记——第2章</title>
+        <pubTime>2017-03-22T11:03:24.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Effective_Java</tag>
+         
+        <tag>book</tag>
+         
+         
+           
+             
+              <breadCrumb title="book" url="https://blog.ajavac.com/categories/book/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/03/23/Common/web_seckill/</loc>
+    <lastmod>2017-03-23T09:20:37.000Z</lastmod>
+    <data>
+        <display>
+        <title>Web大规模并发的解决思路</title>
+        <pubTime>2017-03-23T09:20:35.000Z</pubTime>
+        
+        <tag>Common</tag>
+         
+        <tag>Web</tag>
+         
+        <tag>Seckill</tag>
+         
+         
+           
+             
+              <breadCrumb title="Web" url="https://blog.ajavac.com/categories/Web/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/03/23/Java/hash_map/</loc>
+    <lastmod>2017-03-23T07:50:30.000Z</lastmod>
+    <data>
+        <display>
+        <title>HashMap的实现原理</title>
+        <pubTime>2017-03-23T06:48:33.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Collection</tag>
+         
+        <tag>HashMap</tag>
+         
+        <tag>Map</tag>
+         
+        <tag>Hash</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="https://blog.ajavac.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/03/14/EffectiveJava/chapter1/</loc>
+    <lastmod>2017-03-22T11:03:09.000Z</lastmod>
+    <data>
+        <display>
+        <title>《Effective Java》读书笔记——第1章</title>
+        <pubTime>2017-03-14T08:20:00.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Effective_Java</tag>
+         
+        <tag>book</tag>
+         
+         
+           
+             
+              <breadCrumb title="book" url="https://blog.ajavac.com/categories/book/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/03/22/MySQL/mysql_innod_mvcc/</loc>
+    <lastmod>2017-03-22T10:36:24.000Z</lastmod>
+    <data>
+        <display>
+        <title>关于MySQL中InnoDB的MVCC</title>
+        <pubTime>2017-03-22T10:35:40.000Z</pubTime>
+        
+        <tag>MySQL</tag>
+         
+        <tag>DataBase</tag>
+         
+        <tag>Transaction</tag>
+         
+         
+           
+             
+              <breadCrumb title="MySQL" url="https://blog.ajavac.com/categories/MySQL/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2017/03/22/MySQL/transaction/</loc>
+    <lastmod>2017-03-22T10:35:44.000Z</lastmod>
+    <data>
+        <display>
+        <title>spring 事务传播特性和隔离级别</title>
+        <pubTime>2017-03-22T10:35:00.000Z</pubTime>
+        
+        <tag>MySQL</tag>
+         
+        <tag>DataBase</tag>
+         
+        <tag>Transaction</tag>
+         
+         
+           
+             
+              <breadCrumb title="MySQL" url="https://blog.ajavac.com/categories/MySQL/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2016/07/14/MySQL/mysql_basic/</loc>
+    <lastmod>2017-01-06T03:28:50.000Z</lastmod>
+    <data>
+        <display>
+        <title>MySQL基本操作</title>
+        <pubTime>2016-07-14T07:48:22.000Z</pubTime>
+        
+        <tag>Common</tag>
+         
+        <tag>MySQL</tag>
+         
+         
+           
+             
+              <breadCrumb title="MySQL" url="https://blog.ajavac.com/categories/MySQL/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2016/11/24/Common/certificate/</loc>
+    <lastmod>2016-12-28T15:15:50.000Z</lastmod>
+    <data>
+        <display>
+        <title>证书相关知识</title>
+        <pubTime>2016-11-24T07:32:53.000Z</pubTime>
+        
+        <tag>HTTPS</tag>
+         
+        <tag>Common</tag>
+         
+         
+           
+             
+              <breadCrumb title="HTTPS" url="https://blog.ajavac.com/categories/HTTPS/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2016/07/22/Common/git_primer/</loc>
+    <lastmod>2016-12-28T15:10:37.000Z</lastmod>
+    <data>
+        <display>
+        <title>Git基础</title>
+        <pubTime>2016-07-22T01:48:22.000Z</pubTime>
+        
+        <tag>Common</tag>
+         
+        <tag>Git</tag>
+         
+         
+           
+             
+              <breadCrumb title="Git" url="https://blog.ajavac.com/categories/Git/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2016/12/01/Java/java_web_config/</loc>
+    <lastmod>2016-12-01T07:05:15.000Z</lastmod>
+    <data>
+        <display>
+        <title>Java Web 项目配置文件提取方案</title>
+        <pubTime>2016-12-01T07:02:57.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Tomcat</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="https://blog.ajavac.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.ajavac.com/2016/11/24/Nginx/nginx_guide/</loc>
+    <lastmod>2016-11-24T07:35:13.000Z</lastmod>
+    <data>
+        <display>
+        <title>Nginx入门</title>
+        <pubTime>2016-11-24T07:34:53.000Z</pubTime>
+        
+        <tag>Common</tag>
+         
+        <tag>Nginx</tag>
+         
+         
+           
+             
+              <breadCrumb title="Nginx" url="https://blog.ajavac.com/categories/Nginx/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+    
+    
+</urlset>
