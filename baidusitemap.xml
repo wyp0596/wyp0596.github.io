@@ -4,6 +4,28 @@
 
     
   <url>
+    <loc>https://blog.ajavac.com/2017/09/03/Common/tcp_handshake/</loc>
+    <lastmod>2017-09-03T07:09:16.000Z</lastmod>
+    <data>
+        <display>
+        <title>TCP三次握手和四次分手</title>
+        <pubTime>2017-09-03T06:56:36.000Z</pubTime>
+        
+        <tag>Common</tag>
+         
+        <tag>Network</tag>
+         
+         
+           
+             
+              <breadCrumb title="Network" url="https://blog.ajavac.com/categories/Network/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://blog.ajavac.com/2017/08/24/Common/mac_pinyin_input_method/</loc>
     <lastmod>2017-08-24T06:21:09.000Z</lastmod>
     <data>
@@ -161,9 +183,9 @@
         <title>Linux 网卡配置</title>
         <pubTime>2017-06-25T13:15:02.000Z</pubTime>
         
-        <tag>Config</tag>
-         
         <tag>Linux</tag>
+         
+        <tag>Config</tag>
          
          
            
@@ -183,9 +205,9 @@
         <title>Linux常用命令</title>
         <pubTime>2017-06-25T13:11:20.000Z</pubTime>
         
-        <tag>Linux</tag>
-         
         <tag>Terminal</tag>
+         
+        <tag>Linux</tag>
          
          
            
@@ -394,9 +416,9 @@
         <title>字符编码</title>
         <pubTime>2017-01-13T08:27:31.000Z</pubTime>
         
-        <tag>Common</tag>
-         
         <tag>Charset</tag>
+         
+        <tag>Common</tag>
          
          
            
@@ -676,9 +698,9 @@
         <title>证书相关知识</title>
         <pubTime>2016-11-24T07:32:53.000Z</pubTime>
         
-        <tag>HTTPS</tag>
-         
         <tag>Common</tag>
+         
+        <tag>HTTPS</tag>
          
          
            

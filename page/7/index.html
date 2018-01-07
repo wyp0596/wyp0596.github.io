@@ -60,10 +60,6 @@
 			
 				<li><a href="/">主页</a></li>
 	        
-				<li><a href="https://blog.ajavac.com/">主站</a></li>
-	        
-				<li><a href="https://blog2.ajavac.com/">镜像</a></li>
-	        
 			</ul>
 		</nav>
 		<nav class="header-smart-menu">
@@ -116,10 +112,6 @@
 			
 				
 			
-				
-			
-				
-			
 			
 			
 			<nav class="header-nav">
@@ -133,14 +125,10 @@
 			</nav>
 
 			<nav class="header-menu js-header-menu">
-				<ul style="width: 70%">
+				<ul style="width: 50%">
 				
 				
-					<li style="width: 33.333333333333336%"><a href="/">主页</a></li>
-		        
-					<li style="width: 33.333333333333336%"><a href="https://blog.ajavac.com/">主站</a></li>
-		        
-					<li style="width: 33.333333333333336%"><a href="https://blog2.ajavac.com/">镜像</a></li>
+					<li style="width: 100%"><a href="/">主页</a></li>
 		        
 				</ul>
 			</nav>
@@ -235,6 +223,224 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/03/26/Java/jdk_string/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Java/java8" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/26/Java/java8/">Java 8 新特性</a>
+    </h1>
+  
+
+        
+        <a href="/2017/03/26/Java/java8/" class="archive-article-date">
+  	<time datetime="2017-03-26T10:35:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>Oracle 公司于 2014 年 3 月 18 日发布 Java 8 ，添加了许多新特性</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>特性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Lambda表达式</td>
+<td>允许函数作为参数传递给方法</td>
+</tr>
+<tr>
+<td>2</td>
+<td>默认方法</td>
+<td>在接口里面实现方法</td>
+</tr>
+<tr>
+<td>3</td>
+<td>方法引用</td>
+<td>简化代码</td>
+</tr>
+<tr>
+<td>4</td>
+<td>函数式接口</td>
+<td>使Java支持真正的函数式编程</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Stream</td>
+<td>使Java支持真正的函数式编程</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Base64</td>
+<td>提供Base64编码、解码方法</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Optional类</td>
+<td>用来解决NullPointException</td>
+</tr>
+<tr>
+<td>8</td>
+<td>新日期时间API</td>
+<td>使用方便程度不如<code>joda-time</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td>Nashorn JavaScript 引擎</td>
+<td>新JS引擎，一般情况下用不上</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Lambda表达式"><a href="#Lambda表达式" class="headerlink" title="Lambda表达式"></a>Lambda表达式</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 类型声明</span></div><div class="line">(<span class="keyword">int</span> a, <span class="keyword">int</span> b) -&gt; a + b;</div><div class="line"><span class="comment">// 类型不声明</span></div><div class="line">(a, b) -&gt; a + b;</div><div class="line"><span class="comment">// 大括号,超过一行表达式的情况下必须要大括号</span></div><div class="line">(a, b) -&gt; &#123; <span class="keyword">return</span> a + b;&#125;;</div><div class="line"><span class="comment">// 最简情况下不需要括号</span></div><div class="line">a -&gt; <span class="number">3</span>*a;</div></pre></td></tr></table></figure>
+<h2 id="默认方法"><a href="#默认方法" class="headerlink" title="默认方法"></a>默认方法</h2><blockquote>
+<p>默认方法就是借口可以实现方法，其实现类可以不实现该方法。目的是为了解决接口的修改与现有的实现不兼容的问题。</p>
+</blockquote>
+<ol>
+<li>默认接口方法：使用<code>default</code>关键字标识</li>
+<li>默认静态方法：使用<code>static</code>关键字标识</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 用例</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Test</span> </span>&#123;</div><div class="line">  </div><div class="line">  <span class="comment">// 默认接口方法</span></div><div class="line">  <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">defaultMethod</span><span class="params">()</span></span>&#123;</div><div class="line">    System.out.println(<span class="string">"Test default"</span>);</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="comment">// 默认静态方法</span></div><div class="line">  <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">staticMethod</span><span class="params">()</span></span>&#123;</div><div class="line">    System.out.println(<span class="string">"Test static"</span>);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="方法引用"><a href="#方法引用" class="headerlink" title="方法引用"></a>方法引用</h2><ol>
+<li>构造器引用：<code>Test::new</code></li>
+<li>方法引用：<code>Test::test</code></li>
+</ol>
+<h2 id="函数式接口"><a href="#函数式接口" class="headerlink" title="函数式接口"></a>函数式接口</h2><blockquote>
+<p>函数式接口就是一个具有一个方法的普通接口，可以被隐式转换为lambda表达式</p>
+</blockquote>
+<p>JDK 8 新增了许多函数式接口在<code>java.util.function</code>中</p>
+<h2 id="Stream"><a href="#Stream" class="headerlink" title="Stream"></a>Stream</h2><blockquote>
+<p>Java 8 新增了一个概念称为流Stream，可以以一种声明的方式处理数据</p>
+</blockquote>
+<p>生成流的方法：</p>
+<ol>
+<li>串行流：stream()</li>
+<li>并行流：parallelStream()</li>
+</ol>
+<p>流的方法：</p>
+<ol>
+<li>遍历：forEach()</li>
+<li>映射每个元素对应的结果：map()</li>
+<li>过滤出元素：filter()</li>
+<li>指定获取数量：limit()</li>
+<li>排序：sorted()</li>
+<li>将流转换为集合：collect()</li>
+<li>统计：summaryStatistics()</li>
+<li>计算个数：count()</li>
+</ol>
+<h2 id="Base64"><a href="#Base64" class="headerlink" title="Base64"></a>Base64</h2><blockquote>
+<p>Java 8 内置了三种Base64编解码器</p>
+</blockquote>
+<h3 id="基本"><a href="#基本" class="headerlink" title="基本"></a>基本</h3><blockquote>
+<p>输出被映射到一组字符A-Za-z0-9+/，编码不添加任何行标，输出的解码仅支持A-Za-z0-9+/</p>
+</blockquote>
+<p>编码器：<code>Base64.getEncoder()</code></p>
+<p>解码器：<code>Base64.getDecoder()</code></p>
+<h3 id="URL"><a href="#URL" class="headerlink" title="URL"></a>URL</h3><blockquote>
+<p>输出映射到一组字符A-Za-z0-9+_，输出是URL和文件</p>
+</blockquote>
+<p>编码器：<code>Base64.getUrlEncoder()</code></p>
+<p>解码器：<code>Base64.getUrlDecoder()</code></p>
+<h3 id="MIME"><a href="#MIME" class="headerlink" title="MIME"></a>MIME</h3><blockquote>
+<p>输出映射到MIME友好格式。输出每行不超过76字符，并且使用’\r’并跟随’\n’作为分割。编码输出最后没有行分割</p>
+</blockquote>
+<p>编码器：<code>Base64.getMimeEncoder()</code></p>
+<p>解码器：<code>Base64.getMimeDecoder()</code></p>
+<h2 id="Optional类"><a href="#Optional类" class="headerlink" title="Optional类"></a>Optional类</h2><blockquote>
+<p>Optional类的引入很好的解决空指针异常</p>
+</blockquote>
+<h2 id="新日期时间API"><a href="#新日期时间API" class="headerlink" title="新日期时间API"></a>新日期时间API</h2><blockquote>
+<p>旧的Java中日期时间API设计比较差（非线程安全、设计差、时区处理麻烦），所以提出了新的日期时间API</p>
+</blockquote>
+<p>Java 8 在<code>java.time</code>包下提供了许多新的日期时间API，主要有</p>
+<ol>
+<li><code>java.time.LocalDate</code></li>
+<li><code>java.time.LocalTime</code></li>
+<li><code>java.time.LocalDateTime</code></li>
+<li><code>java.time.ZonedDateTime</code></li>
+</ol>
+<p>PS：个人觉得还是<code>joda-time</code>使用方便</p>
+<h2 id="Nashorn-JavaScript-引擎"><a href="#Nashorn-JavaScript-引擎" class="headerlink" title="Nashorn JavaScript 引擎"></a>Nashorn JavaScript 引擎</h2><blockquote>
+<p>一个JavaScript引擎，用来在Java中调用JavaScript或者在JavaScript中调用Java。与之前的Rhino实现相比，带来2到10倍的性能提升。一般开发不怎么用到。</p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Basic</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java/" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/03/26/Java/java8/">展开全文 >></a>
         </p>
       
 
@@ -754,118 +960,6 @@
 
 
   
-    <article id="post-Common/web_seckill" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/23/Common/web_seckill/">Web大规模并发的解决思路</a>
-    </h1>
-  
-
-        
-        <a href="/2017/03/23/Common/web_seckill/" class="archive-article-date">
-  	<time datetime="2017-03-23T09:20:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>特点：短时间内海量的请求，比如1秒5w请求（5wQPS）</p>
-</blockquote>
-<h2 id="大规模并发带来的挑战"><a href="#大规模并发带来的挑战" class="headerlink" title="大规模并发带来的挑战"></a>大规模并发带来的挑战</h2><ol>
-<li>请求接口的合理设计，动静态资源分离（CDN），负载均衡，分布式，使用内存数据库</li>
-<li>快速反馈，合理设计，防止雪崩</li>
-<li>重启和过载保护，拒绝超载的请求</li>
-</ol>
-<h2 id="防止作弊手段"><a href="#防止作弊手段" class="headerlink" title="防止作弊手段"></a>防止作弊手段</h2><ol>
-<li>一个账号多个请求，参与记录判断（只接受一个请求），使用Redis的watch乐观锁，或者使用队列实现</li>
-<li>多个账号同个IP多个请求，使用验证码，禁止IP（容易误伤）</li>
-<li>多个账号不同IP多个请求，数据挖掘清理僵尸号（有一些特点），提高活动门槛</li>
-<li>火车票抢购，没有很好的解决方案，数据挖掘清理僵尸号</li>
-</ol>
-<h2 id="高并发下的数据安全——超发"><a href="#高并发下的数据安全——超发" class="headerlink" title="高并发下的数据安全——超发"></a>高并发下的数据安全——超发</h2><ol>
-<li>使用悲观锁，但是性能低下</li>
-<li>使用队列，容易爆队列</li>
-<li>使用乐观锁，会增大CPU计算开销，但是是比较好的解决方案</li>
-</ol>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.csdn.net/article/2014-11-28/2822858" target="_blank" rel="external">【问底】徐汉彬：Web系统大规模并发——电商秒杀与抢购</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Common</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Web</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Seckill</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Web/" class="article-tag-list-link color4">Web</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/03/23/Common/web_seckill/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
@@ -880,7 +974,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2017 wyp0596
+    		&copy; 2018 wyp0596
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -963,7 +1057,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">HTTPS</a>
+                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -971,7 +1065,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
+                <a href="javascript:void(0)" class="js-tag color1">HTTPS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -983,7 +1077,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -992,6 +1086,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Seckill</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1031,7 +1129,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Config</a>
+                <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1039,7 +1137,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
+                <a href="javascript:void(0)" class="js-tag color2">Config</a>
               </li>
              
               <li class="article-tag-list-item">

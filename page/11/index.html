@@ -60,10 +60,6 @@
 			
 				<li><a href="/">主页</a></li>
 	        
-				<li><a href="https://blog.ajavac.com/">主站</a></li>
-	        
-				<li><a href="https://blog2.ajavac.com/">镜像</a></li>
-	        
 			</ul>
 		</nav>
 		<nav class="header-smart-menu">
@@ -116,10 +112,6 @@
 			
 				
 			
-				
-			
-				
-			
 			
 			
 			<nav class="header-nav">
@@ -133,14 +125,10 @@
 			</nav>
 
 			<nav class="header-menu js-header-menu">
-				<ul style="width: 70%">
+				<ul style="width: 50%">
 				
 				
-					<li style="width: 33.333333333333336%"><a href="/">主页</a></li>
-		        
-					<li style="width: 33.333333333333336%"><a href="https://blog.ajavac.com/">主站</a></li>
-		        
-					<li style="width: 33.333333333333336%"><a href="https://blog2.ajavac.com/">镜像</a></li>
+					<li style="width: 100%"><a href="/">主页</a></li>
 		        
 				</ul>
 			</nav>
@@ -156,6 +144,135 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-Nginx/nginx_guide" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/24/Nginx/nginx_guide/">Nginx入门</a>
+    </h1>
+  
+
+        
+        <a href="/2016/11/24/Nginx/nginx_guide/" class="archive-article-date">
+  	<time datetime="2016-11-24T07:34:53.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Nginx入门"><a href="#Nginx入门" class="headerlink" title="Nginx入门"></a>Nginx入门</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Nginx是一个WebServer,它能够反向代理HTTP,HTTPS,SMTP,POP3,IMAP等的协议链接,可以实现负载均衡和HTTP缓存,功能十分强大.Nginx采用异步非阻塞的设计,性能强大,支持高并发,而且占用资源极低.</p>
+<h2 id="安装与使用"><a href="#安装与使用" class="headerlink" title="安装与使用"></a>安装与使用</h2><h3 id="windows"><a href="#windows" class="headerlink" title="windows"></a>windows</h3><p>cmd切换到nginx目录下</p>
+<p>启动:<code>start ngix</code></p>
+<p>停止:<code>nginx -s stop</code></p>
+<p>重新加载:<code>nginx -s  reload</code></p>
+<h3 id="linux"><a href="#linux" class="headerlink" title="linux"></a>linux</h3><p><code>service nginx (start|stop|restart)</code></p>
+<h2 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h2><p>反向代理（Reverse Proxy）方式是指以代理服务器来接受internet上的连接请求，然后将请求转发给内部网络上的服务器，并将从服务器上得到的结果返回给internet上请求连接的客户端，此时代理服务器对外就表现为一个服务器。</p>
+<p>作用:</p>
+<ol>
+<li>保护网站安全:所有连接都经过该服务器</li>
+<li>通过配置缓存功能加速Web请求</li>
+<li>实现负载均衡</li>
+<li>高可用/热更新/防盗链等等</li>
+</ol>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>修改conf/nginx.conf</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">worker_processes  2;#worker进程数,一般配置为cpu核数</div><div class="line"></div><div class="line">events &#123;</div><div class="line">    worker_connections  1024;#每个worker处理的连接数</div><div class="line">&#125;</div><div class="line"></div><div class="line">http &#123;</div><div class="line"></div><div class="line"><span class="meta">	#</span>服务器集群,命名为tomcats</div><div class="line">	upstream tomcats &#123;</div><div class="line">        server 192.168.68.121:8080;#服务器1,此处可用域名,不带端口则默认80端口</div><div class="line">        server 192.168.68.121:8081;#服务器2</div><div class="line">        server 192.168.12.121:8081;#服务器3</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    server &#123;</div><div class="line">        listen       80;#nginx监听的端口号</div><div class="line">        server_name  localhost;#服务器域名</div><div class="line"></div><div class="line"><span class="meta">		#</span>所有的请求转向自定义的tomcats负载均衡服务器列表</div><div class="line">        location / &#123;</div><div class="line">			proxy_pass http://tomcats;#代理的服务器集群</div><div class="line"><span class="meta">			#</span>proxy_redirect  off;</div><div class="line"><span class="meta">			#</span>设置请求头</div><div class="line">			proxy_set_header Host $host:$server_port;</div><div class="line">			proxy_set_header X-Real-IP $remote_addr;</div><div class="line">			proxy_set_header REMOTE-HOST $remote_addr;</div><div class="line">			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>负载均衡规则有:</p>
+<ol>
+<li>round-robin:循环,默认规则,请求会循环指向服务列表的各个服务器</li>
+<li>least-connected :最少连接,请求会指向当前连接数最少的服务器</li>
+<li>ip-hash:哈希,会根据请求的客户端ip的哈希值指向服务器列表中的某一个服务器,这样采用session的服务器才能更好地发挥作用,但是并不是很好的实现负载均衡功能</li>
+<li>weight:按照权重来指向各个服务器</li>
+</ol>
+<p>配置:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> least-connected配置方法</div><div class="line">upstream myapp1 &#123;</div><div class="line">        least_conn;</div><div class="line">        server srv1.example.com;</div><div class="line">        server srv2.example.com;</div><div class="line">        server srv3.example.com;</div><div class="line">&#125;</div><div class="line"><span class="meta">#</span> ip-hash配置方法</div><div class="line">upstream myapp1 &#123;</div><div class="line">    ip_hash;</div><div class="line">    server srv1.example.com;</div><div class="line">    server srv2.example.com;</div><div class="line">    server srv3.example.com;</div><div class="line">&#125;</div><div class="line"><span class="meta">#</span> 权重配置</div><div class="line">upstream myapp1 &#123;</div><div class="line"><span class="meta">		#</span> 每5个连接会有3个到srv1,1个到srv2,1个到srv3</div><div class="line">        server srv1.example.com weight=3;</div><div class="line">        server srv2.example.com;</div><div class="line">        server srv3.example.com;</div><div class="line">&#125;</div><div class="line"><span class="meta">#</span> 健康检查</div><div class="line">upstream myapp1 &#123;</div><div class="line">    server srv1.example.com;#默认情况下max_fails=1 服务器一次访问失败就会被标记为宕机,不可用,默认10秒访问超时</div><div class="line">    server srv2.example.com max_fails=3 fail_timeout=20;#3次失败,20秒访问超时</div><div class="line">    server srv3.example.com max_fails=0;#不论几次失败都可用</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="location规则"><a href="#location规则" class="headerlink" title="location规则"></a>location规则</h3><p>语法规则： <code>location [=|~|~*|^~] /uri/ { … }</code></p>
+<ol>
+<li><p><code>=</code> 开头 表示精确匹配</p>
+</li>
+<li><p><code>^~</code> 开头 表示uri以某个常规字符串开头(支持正则)。nginx不对url做编码</p>
+</li>
+<li><p><code>~</code> 开头 表示<strong>区分</strong>大小写的正则匹配</p>
+</li>
+<li><p><code>~*</code> 开头 表示<strong>不区分</strong>大小写的正则匹配</p>
+</li>
+<li><p><code>!~</code>和<code>!~*</code>分别为区分大小写不匹配及不区分大小写<strong>不匹配</strong> 的正则</p>
+</li>
+<li><p><code>/</code> 通用匹配，任何请求都会匹配到</p>
+</li>
+</ol>
+<p>匹配顺序:首先匹配 =，其次匹配^~, 其次是按文件中顺序的正则匹配，最后是交给 / 通用匹配。当有匹配成功时候，停止匹配，按当前匹配规则处理请求。同等级匹配多个则选择较长的匹配</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Common</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Nginx</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Nginx/" class="article-tag-list-link color1">Nginx</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/11/24/Nginx/nginx_guide/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-Common/certificate" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -299,11 +416,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">HTTPS</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Common</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Common</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">HTTPS</a>
         		</li>
       		
 		</ul>
@@ -523,161 +640,6 @@
 
 
   
-    <article id="post-MySQL/mysql_basic" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/14/MySQL/mysql_basic/">MySQL基本操作</a>
-    </h1>
-  
-
-        
-        <a href="/2016/07/14/MySQL/mysql_basic/" class="archive-article-date">
-  	<time datetime="2016-07-14T07:48:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-07-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>参考自:<a href="http://wiki.jikexueyuan.com/project/mysql-21-minutes/" target="_blank" rel="external">http://wiki.jikexueyuan.com/project/mysql-21-minutes/</a></p>
-</blockquote>
-<h1 id="导入数据库"><a href="#导入数据库" class="headerlink" title="导入数据库"></a>导入数据库</h1><h2 id="从sql脚本导入"><a href="#从sql脚本导入" class="headerlink" title="从sql脚本导入"></a>从sql脚本导入</h2><ol>
-<li>首先建空数据库<br>mysql&gt;create database abc;</li>
-<li>导入数据库<br>方法一：<br>（1）选择数据库<br><code>mysql&gt;use abc;</code><br>（2）设置数据库编码<br><code>mysql&gt;set names utf8;</code><br>（3）导入数据（注意sql文件的路径）<br><code>mysql&gt;source /home/abc/abc.sql;</code><br>方法二：<br><code>mysql -u用户名 -p 数据库名 &lt; 数据库名.sql</code><br><code>mysql -uabc_f -p abc &lt; abc.sql</code></li>
-</ol>
-<h2 id="从excel等导入"><a href="#从excel等导入" class="headerlink" title="从excel等导入"></a>从excel等导入</h2><ol>
-<li>另存为csv用<code>，</code>分割</li>
-<li><code>load data local infile &#39;C:\\abc.txt&#39; into table t fields terminated by &#39;,&#39;;</code></li>
-</ol>
-<h1 id="导出数据库"><a href="#导出数据库" class="headerlink" title="导出数据库"></a>导出数据库</h1><p>用mysqldump命令（注意MySQL的安装路径，即此命令的路径）：<br>1、导出数据和表结构：<br>mysqldump -u用户名 -p 数据库名 &gt; 数据库名.sql<br><code>/usr/local/mysql/bin/mysqldump -uroot -p abc &gt; abc.sql</code><br>敲回车后会提示输入密码</p>
-<p>2、只导出表结构<br>mysqldump -u用户名 -p -d 数据库名 &gt; 数据库名.sql<br><code>/usr/local/mysql/bin/mysqldump -uroot -p -d abc &gt; abc.sql</code></p>
-<h1 id="创建数据库"><a href="#创建数据库" class="headerlink" title="创建数据库"></a>创建数据库</h1><p>使用 <code>create database</code> 语句可完成对数据库的创建, 创建命令的格式如下:</p>
-<p><code>create database 数据库名 [其他选项];</code><br>例如我们需要创建一个名为 samp 的数据库, 在命令行下执行以下命令:</p>
-<p><code>create database samp;</code><br>提示: 可以使用 <code>show databases;</code> 命令查看已经创建了哪些数据库。</p>
-<p>use 语句可以不加分号, 执行 <code>use samp</code> 来选择刚刚创建的数据库, 选择成功后会提示: Database changed</p>
-<h1 id="创建数据库表"><a href="#创建数据库表" class="headerlink" title="创建数据库表"></a>创建数据库表</h1><p>使用 create table 语句可完成对表的创建, create table 的常见形式:</p>
-<p><code>create table 表名称(列声明);</code></p>
-<p>以创建 students 表为例, 表中将存放 学号(id)、姓名(name)、性别(sex)、年龄(age)、联系电话(tel) 这些内容:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">create table students</div><div class="line">（</div><div class="line">    id int unsigned not null auto_increment primary key,</div><div class="line">    name char(8) not null,</div><div class="line">    sex char(4) not null,</div><div class="line">    age tinyint unsigned not null,</div><div class="line">    tel char(13) null default &quot;-&quot;</div><div class="line">);</div></pre></td></tr></table></figure></p>
-<h1 id="操作-MySQL-数据库"><a href="#操作-MySQL-数据库" class="headerlink" title="操作 MySQL 数据库"></a>操作 MySQL 数据库</h1><h2 id="向表中插入数据"><a href="#向表中插入数据" class="headerlink" title="向表中插入数据"></a>向表中插入数据</h2><p>insert 语句可以用来将一行或多行数据插到数据库表中, 使用的一般形式如下:</p>
-<p><code>insert [into] 表名 [(列名1, 列名2, 列名3, ...)] values (值1, 值2, 值3, ...);</code><br>其中 [] 内的内容是可选的, 例如, 要给 samp_db 数据库中的 students 表插入一条记录, 执行语句:</p>
-<p><code>insert into students values(NULL, &quot;王刚&quot;, &quot;男&quot;, 20, &quot;13811371377&quot;);</code></p>
-<p>有时我们只需要插入部分数据, 或者不按照列的顺序进行插入, 可以使用这样的形式进行插入:</p>
-<p><code>insert into students (name, sex, age) values(&quot;孙丽华&quot;, &quot;女&quot;, 21);</code></p>
-<h2 id="查询表中的数据"><a href="#查询表中的数据" class="headerlink" title="查询表中的数据"></a>查询表中的数据</h2><p>select 语句常用来根据一定的查询规则到数据库中获取数据, 其基本的用法为:</p>
-<p><code>select 列名称 from 表名称 [查询条件];</code><br>例如要查询 students 表中所有学生的名字和年龄, 输入语句 </p>
-<p><code>select name, age from students;</code></p>
-<p>也可以使用通配符 查询表中所有的内容, 语句: <code>select * from students;</code></p>
-<p>按特定条件查询<br>where 关键词用于指定查询条件, 用法形式为: <code>select 列名称 from 表名称 where 条件;</code></p>
-<p>以查询所有性别为女的信息为例, 输入查询语句: <code>select * from students where sex=&quot;女&quot;;</code></p>
-<p>where 子句不仅仅支持 “where 列名 = 值” 这种名等于值的查询形式, 对一般的比较运算的运算符都是支持的, 例如 =、&gt;、&lt;、&gt;=、&lt;、!= 以及一些扩展运算符 is [not] null、in、like 等等。 还可以对查询条件使用 or 和 and 进行组合查询, 以后还会学到更加高级的条件查询方式, 这里不再多做介绍。</p>
-<p>示例:</p>
-<p>查询年龄在 21 岁以上的所有人信息: <code>select * from students where age &gt; 21;</code></p>
-<p>查询名字中带有 “王” 字的所有人信息: <code>select * from students where name like &quot;%王%&quot;;</code></p>
-<p>查询 id 小于 5 且年龄大于 20 的所有人信息: <code>select * from students where id&lt;5 and age&gt;20;</code></p>
-<h2 id="更新表中的数据"><a href="#更新表中的数据" class="headerlink" title="更新表中的数据"></a>更新表中的数据</h2><p>update 语句可用来修改表中的数据, 基本的使用形式为:</p>
-<p><code>update 表名称 set 列名称=新值 where 更新条件;</code></p>
-<p>使用示例:</p>
-<p>将 id 为 5 的手机号改为默认的”-“:<code>update students set tel=default where id=5;</code></p>
-<p>将所有人的年龄增加 1: <code>update students set age=age+1;</code></p>
-<p>将手机号为 13288097888 的姓名改为 “张伟鹏”, 年龄改为 19:<br><code>update students set name=&quot;张伟鹏&quot;, age=19 where tel=&quot;13288097888&quot;;</code></p>
-<h2 id="删除表中的数据"><a href="#删除表中的数据" class="headerlink" title="删除表中的数据"></a>删除表中的数据</h2><p>delete 语句用于删除表中的数据, 基本用法为:</p>
-<p><code>delete from 表名称 where 删除条件;</code></p>
-<p>使用示例:</p>
-<p>删除 id 为 2 的行: <code>delete from students where id=2;</code></p>
-<p>删除所有年龄小于 21 岁的数据: <code>delete from students where age&lt;20;</code></p>
-<p>删除表中的所有数据: <code>delete from students;</code></p>
-<h1 id="创建后表的修改"><a href="#创建后表的修改" class="headerlink" title="创建后表的修改"></a>创建后表的修改</h1><p>alter table 语句用于创建后对表的修改, 基础用法如下:</p>
-<h2 id="添加列"><a href="#添加列" class="headerlink" title="添加列"></a>添加列</h2><p>基本形式: <code>alter table 表名 add 列名 列数据类型 [after 插入位置];</code></p>
-<p>示例:</p>
-<p>在表的最后追加列 address: <code>alter table students add address char(60);</code></p>
-<p>在名为 age 的列后插入列 birthday: <code>alter table students add birthday date after age;</code></p>
-<h2 id="修改列"><a href="#修改列" class="headerlink" title="修改列"></a>修改列</h2><p>基本形式: <code>alter table 表名 change 列名称 列新名称 新数据类型;</code></p>
-<p>示例:</p>
-<p>将表 tel 列改名为 telphone: <code>alter table students change tel telphone char(13) default &quot;-&quot;;</code></p>
-<p>将 name 列的数据类型改为 char(16): <code>alter table students change name name char(16) not null;</code></p>
-<h2 id="删除列"><a href="#删除列" class="headerlink" title="删除列"></a>删除列</h2><p>基本形式: <code>alter table 表名 drop 列名称;</code></p>
-<p>示例:</p>
-<p>删除 birthday 列: <code>alter table students drop birthday;</code></p>
-<h2 id="重命名表"><a href="#重命名表" class="headerlink" title="重命名表"></a>重命名表</h2><p>基本形式: <code>alter table 表名 rename 新表名;</code></p>
-<p>示例:</p>
-<p>重命名 students 表为 workmates: <code>alter table students rename workmates;</code></p>
-<h2 id="删除整张表"><a href="#删除整张表" class="headerlink" title="删除整张表"></a>删除整张表</h2><p>基本形式: <code>drop table 表名;</code></p>
-<p>示例: 删除 workmates 表: <code>drop table workmates;</code></p>
-<h2 id="删除整个数据库"><a href="#删除整个数据库" class="headerlink" title="删除整个数据库"></a>删除整个数据库</h2><p>基本形式: <code>drop database 数据库名;</code></p>
-<p>示例: 删除 samp_db 数据库: <code>drop database samp_db;</code></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Common</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/MySQL/" class="article-tag-list-link color1">MySQL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/07/14/MySQL/mysql_basic/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/10/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/12/">Next &raquo;</a>
@@ -692,7 +654,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2017 wyp0596
+    		&copy; 2018 wyp0596
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -775,7 +737,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">HTTPS</a>
+                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -783,7 +745,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
+                <a href="javascript:void(0)" class="js-tag color1">HTTPS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -795,7 +757,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -804,6 +766,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Seckill</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -843,7 +809,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Config</a>
+                <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -851,7 +817,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
+                <a href="javascript:void(0)" class="js-tag color2">Config</a>
               </li>
              
               <li class="article-tag-list-item">

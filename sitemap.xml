@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://blog.ajavac.com/2017/09/03/Common/tcp_handshake/</loc>
+    
+    <lastmod>2017-09-03T07:09:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://blog.ajavac.com/2017/08/24/Common/mac_pinyin_input_method/</loc>
     
     <lastmod>2017-08-24T06:21:09.000Z</lastmod>

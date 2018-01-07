@@ -60,10 +60,6 @@
 			
 				<li><a href="/">主页</a></li>
 	        
-				<li><a href="https://blog.ajavac.com/">主站</a></li>
-	        
-				<li><a href="https://blog2.ajavac.com/">镜像</a></li>
-	        
 			</ul>
 		</nav>
 		<nav class="header-smart-menu">
@@ -116,10 +112,6 @@
 			
 				
 			
-				
-			
-				
-			
 			
 			
 			<nav class="header-nav">
@@ -133,14 +125,10 @@
 			</nav>
 
 			<nav class="header-menu js-header-menu">
-				<ul style="width: 70%">
+				<ul style="width: 50%">
 				
 				
-					<li style="width: 33.333333333333336%"><a href="/">主页</a></li>
-		        
-					<li style="width: 33.333333333333336%"><a href="https://blog.ajavac.com/">主站</a></li>
-		        
-					<li style="width: 33.333333333333336%"><a href="https://blog2.ajavac.com/">镜像</a></li>
+					<li style="width: 100%"><a href="/">主页</a></li>
 		        
 				</ul>
 			</nav>
@@ -156,6 +144,161 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-MySQL/mysql_basic" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/14/MySQL/mysql_basic/">MySQL基本操作</a>
+    </h1>
+  
+
+        
+        <a href="/2016/07/14/MySQL/mysql_basic/" class="archive-article-date">
+  	<time datetime="2016-07-14T07:48:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-07-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>参考自:<a href="http://wiki.jikexueyuan.com/project/mysql-21-minutes/" target="_blank" rel="external">http://wiki.jikexueyuan.com/project/mysql-21-minutes/</a></p>
+</blockquote>
+<h1 id="导入数据库"><a href="#导入数据库" class="headerlink" title="导入数据库"></a>导入数据库</h1><h2 id="从sql脚本导入"><a href="#从sql脚本导入" class="headerlink" title="从sql脚本导入"></a>从sql脚本导入</h2><ol>
+<li>首先建空数据库<br>mysql&gt;create database abc;</li>
+<li>导入数据库<br>方法一：<br>（1）选择数据库<br><code>mysql&gt;use abc;</code><br>（2）设置数据库编码<br><code>mysql&gt;set names utf8;</code><br>（3）导入数据（注意sql文件的路径）<br><code>mysql&gt;source /home/abc/abc.sql;</code><br>方法二：<br><code>mysql -u用户名 -p 数据库名 &lt; 数据库名.sql</code><br><code>mysql -uabc_f -p abc &lt; abc.sql</code></li>
+</ol>
+<h2 id="从excel等导入"><a href="#从excel等导入" class="headerlink" title="从excel等导入"></a>从excel等导入</h2><ol>
+<li>另存为csv用<code>，</code>分割</li>
+<li><code>load data local infile &#39;C:\\abc.txt&#39; into table t fields terminated by &#39;,&#39;;</code></li>
+</ol>
+<h1 id="导出数据库"><a href="#导出数据库" class="headerlink" title="导出数据库"></a>导出数据库</h1><p>用mysqldump命令（注意MySQL的安装路径，即此命令的路径）：<br>1、导出数据和表结构：<br>mysqldump -u用户名 -p 数据库名 &gt; 数据库名.sql<br><code>/usr/local/mysql/bin/mysqldump -uroot -p abc &gt; abc.sql</code><br>敲回车后会提示输入密码</p>
+<p>2、只导出表结构<br>mysqldump -u用户名 -p -d 数据库名 &gt; 数据库名.sql<br><code>/usr/local/mysql/bin/mysqldump -uroot -p -d abc &gt; abc.sql</code></p>
+<h1 id="创建数据库"><a href="#创建数据库" class="headerlink" title="创建数据库"></a>创建数据库</h1><p>使用 <code>create database</code> 语句可完成对数据库的创建, 创建命令的格式如下:</p>
+<p><code>create database 数据库名 [其他选项];</code><br>例如我们需要创建一个名为 samp 的数据库, 在命令行下执行以下命令:</p>
+<p><code>create database samp;</code><br>提示: 可以使用 <code>show databases;</code> 命令查看已经创建了哪些数据库。</p>
+<p>use 语句可以不加分号, 执行 <code>use samp</code> 来选择刚刚创建的数据库, 选择成功后会提示: Database changed</p>
+<h1 id="创建数据库表"><a href="#创建数据库表" class="headerlink" title="创建数据库表"></a>创建数据库表</h1><p>使用 create table 语句可完成对表的创建, create table 的常见形式:</p>
+<p><code>create table 表名称(列声明);</code></p>
+<p>以创建 students 表为例, 表中将存放 学号(id)、姓名(name)、性别(sex)、年龄(age)、联系电话(tel) 这些内容:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">create table students</div><div class="line">（</div><div class="line">    id int unsigned not null auto_increment primary key,</div><div class="line">    name char(8) not null,</div><div class="line">    sex char(4) not null,</div><div class="line">    age tinyint unsigned not null,</div><div class="line">    tel char(13) null default &quot;-&quot;</div><div class="line">);</div></pre></td></tr></table></figure></p>
+<h1 id="操作-MySQL-数据库"><a href="#操作-MySQL-数据库" class="headerlink" title="操作 MySQL 数据库"></a>操作 MySQL 数据库</h1><h2 id="向表中插入数据"><a href="#向表中插入数据" class="headerlink" title="向表中插入数据"></a>向表中插入数据</h2><p>insert 语句可以用来将一行或多行数据插到数据库表中, 使用的一般形式如下:</p>
+<p><code>insert [into] 表名 [(列名1, 列名2, 列名3, ...)] values (值1, 值2, 值3, ...);</code><br>其中 [] 内的内容是可选的, 例如, 要给 samp_db 数据库中的 students 表插入一条记录, 执行语句:</p>
+<p><code>insert into students values(NULL, &quot;王刚&quot;, &quot;男&quot;, 20, &quot;13811371377&quot;);</code></p>
+<p>有时我们只需要插入部分数据, 或者不按照列的顺序进行插入, 可以使用这样的形式进行插入:</p>
+<p><code>insert into students (name, sex, age) values(&quot;孙丽华&quot;, &quot;女&quot;, 21);</code></p>
+<h2 id="查询表中的数据"><a href="#查询表中的数据" class="headerlink" title="查询表中的数据"></a>查询表中的数据</h2><p>select 语句常用来根据一定的查询规则到数据库中获取数据, 其基本的用法为:</p>
+<p><code>select 列名称 from 表名称 [查询条件];</code><br>例如要查询 students 表中所有学生的名字和年龄, 输入语句 </p>
+<p><code>select name, age from students;</code></p>
+<p>也可以使用通配符 查询表中所有的内容, 语句: <code>select * from students;</code></p>
+<p>按特定条件查询<br>where 关键词用于指定查询条件, 用法形式为: <code>select 列名称 from 表名称 where 条件;</code></p>
+<p>以查询所有性别为女的信息为例, 输入查询语句: <code>select * from students where sex=&quot;女&quot;;</code></p>
+<p>where 子句不仅仅支持 “where 列名 = 值” 这种名等于值的查询形式, 对一般的比较运算的运算符都是支持的, 例如 =、&gt;、&lt;、&gt;=、&lt;、!= 以及一些扩展运算符 is [not] null、in、like 等等。 还可以对查询条件使用 or 和 and 进行组合查询, 以后还会学到更加高级的条件查询方式, 这里不再多做介绍。</p>
+<p>示例:</p>
+<p>查询年龄在 21 岁以上的所有人信息: <code>select * from students where age &gt; 21;</code></p>
+<p>查询名字中带有 “王” 字的所有人信息: <code>select * from students where name like &quot;%王%&quot;;</code></p>
+<p>查询 id 小于 5 且年龄大于 20 的所有人信息: <code>select * from students where id&lt;5 and age&gt;20;</code></p>
+<h2 id="更新表中的数据"><a href="#更新表中的数据" class="headerlink" title="更新表中的数据"></a>更新表中的数据</h2><p>update 语句可用来修改表中的数据, 基本的使用形式为:</p>
+<p><code>update 表名称 set 列名称=新值 where 更新条件;</code></p>
+<p>使用示例:</p>
+<p>将 id 为 5 的手机号改为默认的”-“:<code>update students set tel=default where id=5;</code></p>
+<p>将所有人的年龄增加 1: <code>update students set age=age+1;</code></p>
+<p>将手机号为 13288097888 的姓名改为 “张伟鹏”, 年龄改为 19:<br><code>update students set name=&quot;张伟鹏&quot;, age=19 where tel=&quot;13288097888&quot;;</code></p>
+<h2 id="删除表中的数据"><a href="#删除表中的数据" class="headerlink" title="删除表中的数据"></a>删除表中的数据</h2><p>delete 语句用于删除表中的数据, 基本用法为:</p>
+<p><code>delete from 表名称 where 删除条件;</code></p>
+<p>使用示例:</p>
+<p>删除 id 为 2 的行: <code>delete from students where id=2;</code></p>
+<p>删除所有年龄小于 21 岁的数据: <code>delete from students where age&lt;20;</code></p>
+<p>删除表中的所有数据: <code>delete from students;</code></p>
+<h1 id="创建后表的修改"><a href="#创建后表的修改" class="headerlink" title="创建后表的修改"></a>创建后表的修改</h1><p>alter table 语句用于创建后对表的修改, 基础用法如下:</p>
+<h2 id="添加列"><a href="#添加列" class="headerlink" title="添加列"></a>添加列</h2><p>基本形式: <code>alter table 表名 add 列名 列数据类型 [after 插入位置];</code></p>
+<p>示例:</p>
+<p>在表的最后追加列 address: <code>alter table students add address char(60);</code></p>
+<p>在名为 age 的列后插入列 birthday: <code>alter table students add birthday date after age;</code></p>
+<h2 id="修改列"><a href="#修改列" class="headerlink" title="修改列"></a>修改列</h2><p>基本形式: <code>alter table 表名 change 列名称 列新名称 新数据类型;</code></p>
+<p>示例:</p>
+<p>将表 tel 列改名为 telphone: <code>alter table students change tel telphone char(13) default &quot;-&quot;;</code></p>
+<p>将 name 列的数据类型改为 char(16): <code>alter table students change name name char(16) not null;</code></p>
+<h2 id="删除列"><a href="#删除列" class="headerlink" title="删除列"></a>删除列</h2><p>基本形式: <code>alter table 表名 drop 列名称;</code></p>
+<p>示例:</p>
+<p>删除 birthday 列: <code>alter table students drop birthday;</code></p>
+<h2 id="重命名表"><a href="#重命名表" class="headerlink" title="重命名表"></a>重命名表</h2><p>基本形式: <code>alter table 表名 rename 新表名;</code></p>
+<p>示例:</p>
+<p>重命名 students 表为 workmates: <code>alter table students rename workmates;</code></p>
+<h2 id="删除整张表"><a href="#删除整张表" class="headerlink" title="删除整张表"></a>删除整张表</h2><p>基本形式: <code>drop table 表名;</code></p>
+<p>示例: 删除 workmates 表: <code>drop table workmates;</code></p>
+<h2 id="删除整个数据库"><a href="#删除整个数据库" class="headerlink" title="删除整个数据库"></a>删除整个数据库</h2><p>基本形式: <code>drop database 数据库名;</code></p>
+<p>示例: 删除 samp_db 数据库: <code>drop database samp_db;</code></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Common</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/MySQL/" class="article-tag-list-link color1">MySQL</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/07/14/MySQL/mysql_basic/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-MySQL/mysql_install" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -310,7 +453,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2017 wyp0596
+    		&copy; 2018 wyp0596
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -393,7 +536,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">HTTPS</a>
+                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -401,7 +544,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
+                <a href="javascript:void(0)" class="js-tag color1">HTTPS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -413,7 +556,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -422,6 +565,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Seckill</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -461,7 +608,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Config</a>
+                <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -469,7 +616,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
+                <a href="javascript:void(0)" class="js-tag color2">Config</a>
               </li>
              
               <li class="article-tag-list-item">

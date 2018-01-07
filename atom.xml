@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://blog.ajavac.com/"/>
-  <updated>2017-08-24T06:21:09.000Z</updated>
+  <updated>2017-09-03T07:09:16.000Z</updated>
   <id>https://blog.ajavac.com/</id>
   
   <author>
@@ -14,6 +14,82 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>TCP三次握手和四次分手</title>
+    <link href="https://blog.ajavac.com/2017/09/03/Common/tcp_handshake/"/>
+    <id>https://blog.ajavac.com/2017/09/03/Common/tcp_handshake/</id>
+    <published>2017-09-03T06:56:36.000Z</published>
+    <updated>2017-09-03T07:09:16.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h2><ol>
+<li>第一次／第二次握手：为了保证服务端能收到客户的端的信息并能做出正确的应答</li>
+<li>第二次／第三次握手：为了保证客户端能受到服务端的信息并能做出正确的应答</li>
+<li>第三次握手：因为信道不可靠，三次通信是理论上的最小值，为了满足在不可靠信道上进行可靠的数据传输这个需求，解决“网络中存在延迟的重复分组”问题，避免资源浪费</li>
+</ol>
+<h2 id="四次分手"><a href="#四次分手" class="headerlink" title="四次分手"></a>四次分手</h2><ol>
+<li>TCP是全双工模式，所以客户端和服务端都得通知对方自己的所有信息已经发送完毕之后才关闭连接，四次分手就可以通知两端关闭连接</li>
+</ol>
+<h2 id="OSI七层模型"><a href="#OSI七层模型" class="headerlink" title="OSI七层模型"></a>OSI七层模型</h2><p><img src="/img/network/osi.jpeg" alt="OSI七层模型"></p>
+<p><img src="/img/network/osi_protocal.jpg" alt="OSI各层协议"></p>
+<h2 id="TCP协议头部"><a href="#TCP协议头部" class="headerlink" title="TCP协议头部"></a>TCP协议头部</h2><p><img src="/img/network/tcp_head.jpeg" alt="TCP头部"></p>
+<ol>
+<li>源端口（Source Port）和目的端口（Destination Port）：分别占用16位，表示源端口号和目的端口号，用于区别主机中的不同进程。而IP地址是用来区分不同的主机的，源端口号和目的端口号配合上IP首部中的源IP地址和目的IP地址就能唯一的确定一个TCP连接</li>
+<li>序号（Sequence Number）：占用32位，用来标识从TCP发端向TCP收端发送的数据字节流，它表示在这个报文段中的的第一个数据字节在数据流中的序号；主要用来解决网络报乱序的问题</li>
+<li>确认号（Acknowledgment Number）：占用32位，包含发送确认的一端所期望收到的下一个序号，因此，确认序号应当是上次已成功收到数据字节序号加1。不过，只有当标志位中的ACK标志为1时该确认序列号的字段才有效。主要用来解决不丢包的问题</li>
+<li>数据偏移（Offset）：占用4位，给出首部中32 bit字的数目，需要这个值是因为任选字段的长度是可变的。这个字段占4bit（最多能表示15个32bit的的字，即4*15=60个字节的首部长度），因此TCP最多有60字节的首部。然而，没有任选字段，正常的长度是20字节</li>
+<li>TCP标志位（TCP Flags）：占用6位，TCP首部中有6个标志比特，它们中的多个可同时被设置为1，主要是用于操控TCP的状态机的，依次为URG，ACK，PSH，RST，SYN，FIN</li>
+<li>窗口（Window）：占用16位，窗口大小，也就是有名的滑动窗口，用来进行流量控制</li>
+</ol>
+<p>标志位说明</p>
+<ul>
+<li>URG：表示TCP包的紧急指针域有效，用来保证TCP连接不被中断，并且督促中间层设备要尽快处理这些数据</li>
+<li><strong>ACK</strong>：此标志表示应答域有效，就是说前面所说的TCP应答号将会包含在TCP数据包中；有两个取值：0和1，为1的时候表示应答域有效，反之为0。 <strong>TCP协议规定，只有ACK=1时有效，也规定连接建立后所有发送的报文的ACK必须为1</strong></li>
+<li>PSH：这个标志位表示Push操作。所谓Push操作就是指在数据包到达接收端以后，立即传送给应用程序，而不是在缓冲区中排队</li>
+<li>RST：这个标志表示连接复位请求。用来复位那些产生错误的连接，也被用来拒绝错误和非法的数据包</li>
+<li><strong>SYN</strong>：表示同步序号，用来<strong>建立连接</strong>。SYN标志位和ACK标志位搭配使用，当连接请求的时候，SYN=1，ACK=0；连接被响应的时候，SYN=1，ACK=1；这个标志的数据包经常被用来进行端口扫描。扫描者发送一个只有SYN的数据包，如果对方主机响应了一个数据包回来 ，就表明这台主机存在这个端口；但是由于这种扫描方式只是进行TCP三次握手的第一次握手，因此这种扫描的成功表示被扫描的机器不很安全，一台安全的主机将会强制要求一个连接严格的进行TCP的三次握手。<strong>当SYN=1而ACK=0时，表明这是一个连接请求报文。对方若同意建立连接，则应在响应报文中使SYN=1和ACK=1. 因此, SYN置1就表示这是一个连接请求或连接接受报文</strong></li>
+<li><strong>FIN</strong>： 表示发送端已经达到数据末尾，也就是说双方的数据传送完成，没有数据可以传送了，发送FIN标志位的TCP数据包后，连接将被断开。这个标志的数据包也经常被用于进行端口扫描。<strong>当 FIN = 1 时，表明此报文段的发送方的数据已经发送完毕，并要求释放连接</strong></li>
+</ul>
+<h2 id="TCP连接"><a href="#TCP连接" class="headerlink" title="TCP连接"></a>TCP连接</h2><p><img src="/img/network/tcp_connection.jpeg" alt="TCP连接"></p>
+<h3 id="建立连接——三次握手"><a href="#建立连接——三次握手" class="headerlink" title="建立连接——三次握手"></a>建立连接——三次握手</h3><ol>
+<li>第一次握手：向服务端发送建立连接请求。客户端发送连接请求报文段，将SYN位置为1，Sequence Number为x；然后，客户端进入SYN_SEND状态，等待服务器的确认</li>
+<li>第二次握手：响应客户端建立连接请求。服务器收到客户端的SYN报文段，需要对这个SYN报文段进行确认，设置Acknowledgment Number为x+1(Sequence Number+1)；同时，自己自己还要发送SYN请求信息，将SYN位置为1，Sequence Number为y；服务器端将上述所有信息放到一个报文段（即SYN+ACK报文段）中，一并发送给客户端，此时服务器进入SYN_RECV状态</li>
+<li>第三次握手：响应服务端请求。客户端收到服务器的SYN+ACK报文段，然后将Acknowledgment Number设置为y+1，向服务器发送ACK报文段，这个报文段发送完毕以后，客户端和服务器端都进入ESTABLISHED状态，完成TCP三次握手。<br>完成了三次握手，客户端和服务器端就可以开始传送数据</li>
+</ol>
+<h3 id="断开连接——四次分手"><a href="#断开连接——四次分手" class="headerlink" title="断开连接——四次分手"></a>断开连接——四次分手</h3><ol>
+<li>第一次分手：主机1（可以使客户端，也可以是服务器端），设置Sequence Number和Acknowledgment Number，向主机2发送一个FIN报文段；此时，主机1进入FIN_WAIT_1状态；这表示主机1没有数据要发送给主机2了</li>
+<li>第二次分手：主机2收到了主机1发送的FIN报文段，向主机1回一个ACK报文段，Acknowledgment Number为Sequence Number加1；主机1进入FIN_WAIT_2状态；主机2告诉主机1，我“同意”你的关闭请求</li>
+<li>第三次分手：主机2向主机1发送FIN报文段，请求关闭连接，同时主机2进入LAST_ACK状态</li>
+<li>第四次分手：主机1收到主机2发送的FIN报文段，向主机2发送ACK报文段，然后主机1进入TIME_WAIT状态；主机2收到主机1的ACK报文段以后，就关闭连接；此时，主机1等待2MSL后依然没有收到回复，则证明Server端已正常关闭，那好，主机1也可以关闭连接了</li>
+</ol>
+<p>四次分手过程中的状态变化</p>
+<ul>
+<li>FIN_WAIT1: 这个状态要好好解释一下，其实FIN_WAIT1和FIN_WAIT2状态的真正含义都是表示等待对方的FIN报文。而这两种状态的区别是：FIN_WAIT1状态实际上是当SOCKET在ESTABLISHED状态时，它想主动关闭连接，向对方发送了FIN报文，此时该SOCKET即进入到FIN_WAIT1状态。而当对方回应ACK报文后，则进入到FIN_WAIT2状态，当然在实际的正常情况下，无论对方何种情况下，都应该马上回应ACK报文，所以FIN_WAIT1状态一般是比较难见到的，而FIN_WAIT2状态还有时常常可以用netstat看到。（主动方）</li>
+<li>FIN_WAIT2：上面已经详细解释了这种状态，实际上FIN_WAIT2状态下的SOCKET，表示半连接，也即有一方要求close连接，但另外还告诉对方，我暂时还有点数据需要传送给你(ACK信息)，稍后再关闭连接。（主动方）</li>
+<li>CLOSE_WAIT：这种状态的含义其实是表示在等待关闭。怎么理解呢？当对方close一个SOCKET后发送FIN报文给自己，你系统毫无疑问地会回应一个ACK报文给对方，此时则进入到CLOSE_WAIT状态。接下来呢，实际上你真正需要考虑的事情是察看你是否还有数据发送给对方，如果没有的话，那么你也就可以 close这个SOCKET，发送FIN报文给对方，也即关闭连接。所以你在CLOSE_WAIT状态下，需要完成的事情是等待你去关闭连接。（被动方）</li>
+<li>LAST_ACK: 这个状态还是比较容易好理解的，它是被动关闭一方在发送FIN报文后，最后等待对方的ACK报文。当收到ACK报文后，也即可以进入到CLOSED可用状态了。（被动方）</li>
+<li>TIME_WAIT: 表示收到了对方的FIN报文，并发送出了ACK报文，就等2MSL后即可回到CLOSED可用状态了。如果FINWAIT1状态下，收到了对方同时带FIN标志和ACK标志的报文时，可以直接进入到TIME_WAIT状态，而无须经过FIN_WAIT_2状态。（主动方）</li>
+<li>CLOSED: 表示连接中断。</li>
+</ul>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="https://github.com/jawil/blog/issues/14" target="_blank" rel="external">通俗大白话来理解TCP协议的三次握手和四次分手</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;三次握手&quot;&gt;&lt;a href=&quot;#三次握手&quot; class=&quot;headerlink&quot; title=&quot;三次握手&quot;&gt;&lt;/a&gt;三次握手&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;第一次／第二次握手：为了保证服务端能收到客户的端的信息并能做出正确的应答&lt;/li&gt;
+&lt;li&gt;第二次／第三次握手：
+    
+    </summary>
+    
+      <category term="Network" scheme="https://blog.ajavac.com/categories/Network/"/>
+    
+    
+      <category term="Common" scheme="https://blog.ajavac.com/tags/Common/"/>
+    
+      <category term="Network" scheme="https://blog.ajavac.com/tags/Network/"/>
+    
+  </entry>
   
   <entry>
     <title>MacOS系统自带简体拼音输入法Tips</title>
@@ -747,9 +823,9 @@
       <category term="Linux" scheme="https://blog.ajavac.com/categories/Linux/"/>
     
     
-      <category term="Config" scheme="https://blog.ajavac.com/tags/Config/"/>
-    
       <category term="Linux" scheme="https://blog.ajavac.com/tags/Linux/"/>
+    
+      <category term="Config" scheme="https://blog.ajavac.com/tags/Config/"/>
     
   </entry>
   
@@ -829,9 +905,9 @@
       <category term="Linux" scheme="https://blog.ajavac.com/categories/Linux/"/>
     
     
-      <category term="Linux" scheme="https://blog.ajavac.com/tags/Linux/"/>
-    
       <category term="Terminal" scheme="https://blog.ajavac.com/tags/Terminal/"/>
+    
+      <category term="Linux" scheme="https://blog.ajavac.com/tags/Linux/"/>
     
   </entry>
   
@@ -2084,6 +2160,51 @@
   </entry>
   
   <entry>
+    <title>JDK之String</title>
+    <link href="https://blog.ajavac.com/2017/03/26/Java/jdk_string/"/>
+    <id>https://blog.ajavac.com/2017/03/26/Java/jdk_string/</id>
+    <published>2017-03-26T10:35:55.000Z</published>
+    <updated>2017-05-15T06:07:49.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p><code>java.lang.String</code>是Java编程中最常见的类之一</p>
+<p>Java中使用Unicode字符集，使用UTF-16的编码实现方式，一个基本多语言平面（Basic Multilingual Plane，简称BMP）字符占用一个char（16bit），一个辅助平面（Supplementary Plane）字符占用两个char（16bit * 2）。</p>
+<p>比如说emoji表情就占用了两个char</p>
+</blockquote>
+<h2 id="String的特点"><a href="#String的特点" class="headerlink" title="String的特点"></a>String的特点</h2><ol>
+<li>是一个不可变类，一旦创建便不可改变</li>
+<li>类定义为<code>public final class String</code>，是一个终类，不可被继承</li>
+<li>实现了<code>java.io.Serializable</code>接口，可序列化和反序列化</li>
+<li>实现了<code>java.lang.Comparable&lt;String&gt;</code>接口，可以进行比较和排序</li>
+<li>实现了<code>java.lang.CharSequence</code>接口，是一个可读的字符序列</li>
+<li>String最多可存储<code>2^31-1</code>个char(每个char占用16bit)</li>
+<li>String最多可存储<code>(2^30-1)~(2^31-1)</code>个Unicode字符，原因在于Java中的Unicode编码方式（UTF-16），一个Unicode字符最多可能占用2个char</li>
+</ol>
+<p>​</p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ol>
+<li><code>length()</code>方法获取的是String字符串中char的长度</li>
+<li>String不宜直接存储密码等敏感数据，有dump风险，可用<code>char[]</code>存储（用完后清除），或者对敏感数据进行加盐hash</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;java.lang.String&lt;/code&gt;是Java编程中最常见的类之一&lt;/p&gt;
+&lt;p&gt;Java中使用Unicode字符集，使用UTF-16的编码实现方式，一个基本多语言平面（Basic Multilingual Plane，简称B
+    
+    </summary>
+    
+      <category term="Java" scheme="https://blog.ajavac.com/categories/Java/"/>
+    
+    
+      <category term="Java" scheme="https://blog.ajavac.com/tags/Java/"/>
+    
+      <category term="Basic" scheme="https://blog.ajavac.com/tags/Basic/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Java 8 新特性</title>
     <link href="https://blog.ajavac.com/2017/03/26/Java/java8/"/>
     <id>https://blog.ajavac.com/2017/03/26/Java/java8/</id>
@@ -2234,51 +2355,6 @@
 &lt;th&gt;特性&lt;/th&gt;
 &lt;th&gt;说明&lt;/th&gt;
 &lt;/t
-    
-    </summary>
-    
-      <category term="Java" scheme="https://blog.ajavac.com/categories/Java/"/>
-    
-    
-      <category term="Java" scheme="https://blog.ajavac.com/tags/Java/"/>
-    
-      <category term="Basic" scheme="https://blog.ajavac.com/tags/Basic/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>JDK之String</title>
-    <link href="https://blog.ajavac.com/2017/03/26/Java/jdk_string/"/>
-    <id>https://blog.ajavac.com/2017/03/26/Java/jdk_string/</id>
-    <published>2017-03-26T10:35:55.000Z</published>
-    <updated>2017-05-15T06:07:49.000Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p><code>java.lang.String</code>是Java编程中最常见的类之一</p>
-<p>Java中使用Unicode字符集，使用UTF-16的编码实现方式，一个基本多语言平面（Basic Multilingual Plane，简称BMP）字符占用一个char（16bit），一个辅助平面（Supplementary Plane）字符占用两个char（16bit * 2）。</p>
-<p>比如说emoji表情就占用了两个char</p>
-</blockquote>
-<h2 id="String的特点"><a href="#String的特点" class="headerlink" title="String的特点"></a>String的特点</h2><ol>
-<li>是一个不可变类，一旦创建便不可改变</li>
-<li>类定义为<code>public final class String</code>，是一个终类，不可被继承</li>
-<li>实现了<code>java.io.Serializable</code>接口，可序列化和反序列化</li>
-<li>实现了<code>java.lang.Comparable&lt;String&gt;</code>接口，可以进行比较和排序</li>
-<li>实现了<code>java.lang.CharSequence</code>接口，是一个可读的字符序列</li>
-<li>String最多可存储<code>2^31-1</code>个char(每个char占用16bit)</li>
-<li>String最多可存储<code>(2^30-1)~(2^31-1)</code>个Unicode字符，原因在于Java中的Unicode编码方式（UTF-16），一个Unicode字符最多可能占用2个char</li>
-</ol>
-<p>​</p>
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ol>
-<li><code>length()</code>方法获取的是String字符串中char的长度</li>
-<li>String不宜直接存储密码等敏感数据，有dump风险，可用<code>char[]</code>存储（用完后清除），或者对敏感数据进行加盐hash</li>
-</ol>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;&lt;code&gt;java.lang.String&lt;/code&gt;是Java编程中最常见的类之一&lt;/p&gt;
-&lt;p&gt;Java中使用Unicode字符集，使用UTF-16的编码实现方式，一个基本多语言平面（Basic Multilingual Plane，简称B
     
     </summary>
     
@@ -3194,9 +3270,9 @@
       <category term="Charset" scheme="https://blog.ajavac.com/categories/Charset/"/>
     
     
-      <category term="Common" scheme="https://blog.ajavac.com/tags/Common/"/>
-    
       <category term="Charset" scheme="https://blog.ajavac.com/tags/Charset/"/>
+    
+      <category term="Common" scheme="https://blog.ajavac.com/tags/Common/"/>
     
   </entry>
   
@@ -3489,9 +3565,9 @@
       <category term="HTTPS" scheme="https://blog.ajavac.com/categories/HTTPS/"/>
     
     
-      <category term="HTTPS" scheme="https://blog.ajavac.com/tags/HTTPS/"/>
-    
       <category term="Common" scheme="https://blog.ajavac.com/tags/Common/"/>
+    
+      <category term="HTTPS" scheme="https://blog.ajavac.com/tags/HTTPS/"/>
     
   </entry>
   

@@ -60,10 +60,6 @@
 			
 				<li><a href="/">主页</a></li>
 	        
-				<li><a href="https://blog.ajavac.com/">主站</a></li>
-	        
-				<li><a href="https://blog2.ajavac.com/">镜像</a></li>
-	        
 			</ul>
 		</nav>
 		<nav class="header-smart-menu">
@@ -116,10 +112,6 @@
 			
 				
 			
-				
-			
-				
-			
 			
 			
 			<nav class="header-nav">
@@ -133,14 +125,10 @@
 			</nav>
 
 			<nav class="header-menu js-header-menu">
-				<ul style="width: 70%">
+				<ul style="width: 50%">
 				
 				
-					<li style="width: 33.333333333333336%"><a href="/">主页</a></li>
-		        
-					<li style="width: 33.333333333333336%"><a href="https://blog.ajavac.com/">主站</a></li>
-		        
-					<li style="width: 33.333333333333336%"><a href="https://blog2.ajavac.com/">镜像</a></li>
+					<li style="width: 100%"><a href="/">主页</a></li>
 		        
 				</ul>
 			</nav>
@@ -156,6 +144,111 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-MySQL/mysql_innod_mvcc" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/22/MySQL/mysql_innod_mvcc/">关于MySQL中InnoDB的MVCC</a>
+    </h1>
+  
+
+        
+        <a href="/2017/03/22/MySQL/mysql_innod_mvcc/" class="archive-article-date">
+  	<time datetime="2017-03-22T10:35:40.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="关于MySQL中InnoDB的MVCC"><a href="#关于MySQL中InnoDB的MVCC" class="headerlink" title="关于MySQL中InnoDB的MVCC"></a>关于MySQL中InnoDB的MVCC</h1><h2 id="MySQL中的实现"><a href="#MySQL中的实现" class="headerlink" title="MySQL中的实现"></a>MySQL中的实现</h2><blockquote>
+<p>在InnoDB中的每行数据后都有额外的<strong>两个隐藏值</strong>来记录数据何时被<strong>创建</strong>(修改)和<strong>过期</strong>(删除)，这里的时间不是我们日常中的时间，而是事务的版本号，每开启一个新事务，版本号会递增。</p>
+</blockquote>
+<p>在MySQL默认隔离级别<code>Repeatable Read</code>下：</p>
+<p>设数据行创建版本号为<code>create</code>，删除版本号为<code>delete</code>，当前事务版本号为<code>now</code></p>
+<ul>
+<li><code>SELECT</code>，读取的数据行满足创建版本号&lt;=当前事务版本号，删除版本号为空或&gt;当前事务版本号，即 <code>(create &lt;= now &amp;&amp; (delete == null || delete &gt; now))</code></li>
+<li><code>INSERT</code>，保存当前事务版本号为行的创建版本号（<code>commit</code>时生效），即<code>create=now</code></li>
+<li><code>DELETE</code>，保存当前事务版本号为行的删除版本号（<code>commit</code>时生效），即<code>delete=now</code></li>
+<li><code>UPDATE</code>，插入一条新纪录，保存当前事务版本号为行创建版本号，同时保存当前事务版本号到原来删除的行（<code>commit</code>时生效），即新行<code>create=now</code>旧行<code>delte=now</code></li>
+</ul>
+<p>通过MVVC，虽然每行记录需要额外的存储空间，但是减少了锁的使用，使读数据性能很好。在MySQL的RR级别中，解决了幻读的读问题（快照读）。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://tech.meituan.com/innodb-lock.html" target="_blank" rel="external">Innodb中的事务隔离级别和锁的关系</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">DataBase</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Transaction</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/MySQL/" class="article-tag-list-link color1">MySQL</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/03/22/MySQL/mysql_innod_mvcc/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-MySQL/transaction" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -387,191 +480,6 @@
 
 
   
-    <article id="post-Common/character" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/13/Common/character/">字符编码</a>
-    </h1>
-  
-
-        
-        <a href="/2017/01/13/Common/character/" class="archive-article-date">
-  	<time datetime="2017-01-13T08:27:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-13</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>编程过程中偶尔会遇到乱码问题,对字符编码进行一定的理解可以加快解决问题的速度.</p>
-</blockquote>
-<h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><ol>
-<li><code>字符集</code>:系统支持的所有抽象字符的集合。</li>
-<li><code>常见字符集</code>：ASCII、ISO-8859-1、GB2312、GBK、GB18030、BIG5、Unicode等。</li>
-<li><code>编码</code>(encoding): 编码是信息从一种形式或格式<code>转换</code>为另一种形式的过程。解码，是编码的<code>逆过程</code>。</li>
-<li><code>字符编码</code>(character encoding): 把字符集中的字符编码为指定集合中某一对象（例如：比特模式、自然数序列、8位元组或者电脉冲），以便文本在计算机中存储和通过通信网络的传递。一般一种字符集对应一种字符编码方式，其中Unicode字符集有多种编码方式，比如UTF-8、UTF-16、UTF-32。不同字符集间转换一般使用Unicode字符集作为中介，先转换为Unicode字符，然后再查码表进行转换。</li>
-</ol>
-<h1 id="Unicode"><a href="#Unicode" class="headerlink" title="Unicode"></a>Unicode</h1><blockquote>
-<p>Unicode (万国码,国际码,统一码,单一码)是计算机领域的一项业界标准,对世界上大部分文字系统进行整理和编码,使电脑可以用更为简单的方式类呈现和处理文字.</p>
-</blockquote>
-<ol>
-<li>Java程序在运行时，内存中的字符使用Unicode字符集，使用UTF-16的编码方式（一般为2个字节，辅助平面字符需要4个字节）</li>
-<li>Unicode使用16位的编码空间，每个字符占用2个字节(附加字符需要4个字节)</li>
-<li>一个字符的Unicode编码是确定的</li>
-<li>Unicode的实现方式称为Unicode转换格式（Unicode Transformation Format，简称为UTF）.</li>
-</ol>
-<h1 id="UTF-8"><a href="#UTF-8" class="headerlink" title="UTF-8"></a>UTF-8</h1><blockquote>
-<p>UTF-8（8-bit Unicode Transformation Format）是一种针对Unicode的可变长度字元编码，也是一种前缀码。它可以用来表示Unicode标准中的任何字元，且其编码中的第一个位元组仍与ASCII相容，这使得原来处理ASCII字元的软体无须或只须做少部份修改，即可继续使用。因此，它逐渐成为电子邮件、网页及其他储存或传送文字的应用中，<code>优先采用</code>的编码。</p>
-</blockquote>
-<ol>
-<li>只包含7位ASCII字符的文件在ASCII和UTF-8两种编码方式下是一樣的</li>
-<li>UTF-8是一种变长编码方式(1-4个字节),兼容ASCII</li>
-<li>其中英文字符占用1个字节,中文字符占用3个字节,所以相对来说,占用存储空间较少</li>
-</ol>
-<h1 id="UTF-16"><a href="#UTF-16" class="headerlink" title="UTF-16"></a>UTF-16</h1><ol>
-<li>采用2个字节或者4个字节(辅助平面字符)的编码方式,是Java中字符的编码方式</li>
-<li>英文也占用2个字节,所以比较浪费空间</li>
-<li>优点是编解码方便,效率高,字符定位容易</li>
-<li>缺点是占用空间大,采用顺序编码,若字符损坏无法进行校验</li>
-</ol>
-<h1 id="UTF-32"><a href="#UTF-32" class="headerlink" title="UTF-32"></a>UTF-32</h1><ol>
-<li>采用4个字节的定长编码方式</li>
-<li>英文也占用4个字节</li>
-<li>占用空间大</li>
-<li>有大小端的区别</li>
-</ol>
-<h1 id="Java中的编码"><a href="#Java中的编码" class="headerlink" title="Java中的编码"></a>Java中的编码</h1><ol>
-<li>Java程序默认使用UTF-16编码(字符串<code>String</code>的编码)</li>
-<li>JVM编码:Uninx默认使用UTF-8,Windows默认使用GBK(文件系统编码方式),所以最好指定编码方式,加入JVM参数<code>-Dfile.encoding=utf8</code></li>
-<li>String的getBytes()方法默认使用的是JVM默认的编码方式来编码(不同操作系统可能会不一样,所以最好指定编码方式)</li>
-<li>String的getBytes(Charset)方法指定编码方式来编码字符串</li>
-<li>new String(byte[])方法默认使用的是JVM默认的编码方式来解码(不同操作系统可能会不一样,所以最好指定编码方式)</li>
-<li>new String(byte[],Charset)方法可以对byte[]进行指定编码方式解码</li>
-<li>乱码需要使用当时编码时候用的<code>错误解码方式</code>进行编码后再重新解码</li>
-<li>很多框架使用<code>ISO-8859-1</code>编码,存在黑洞问题,容易造成中文丢失,<code>new String(str.getBytes(&quot;utf-8&quot;),&quot;iso-8859-1&quot;);</code>有可能能解决问题</li>
-</ol>
-<h1 id="不同编码方式占用字节-byte"><a href="#不同编码方式占用字节-byte" class="headerlink" title="不同编码方式占用字节(byte)"></a>不同编码方式占用字节(byte)</h1><blockquote>
-<p> 非特殊字符情况下</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th>编码方式</th>
-<th>1个英文字符(ASCII)</th>
-<th>1个中文字符</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>GB2312</td>
-<td>1</td>
-<td>2</td>
-</tr>
-<tr>
-<td>GBK</td>
-<td>1</td>
-<td>2</td>
-</tr>
-<tr>
-<td>UTF-8</td>
-<td>1</td>
-<td>3</td>
-</tr>
-<tr>
-<td>UTF-16</td>
-<td>2</td>
-<td>2</td>
-</tr>
-<tr>
-<td>UTF-32</td>
-<td>4</td>
-<td>4</td>
-</tr>
-<tr>
-<td>Unicode</td>
-<td>2</td>
-<td>2</td>
-</tr>
-</tbody>
-</table>
-<p>其中GBK兼容GB2312,可以说GBK是GB2312的超集</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接:"></a>参考链接:</h1><p><a href="https://zh.wikipedia.org/wiki/编码" target="_blank" rel="external">WIKI_编码</a></p>
-<p><a href="https://zh.wikipedia.org/wiki/字符编码" target="_blank" rel="external">WIKI_字符编码</a></p>
-<p><a href="https://zh.wikipedia.org/wiki/Unicode" target="_blank" rel="external">WIKI_Unicode</a></p>
-<p><a href="http://www.cnblogs.com/skynet/archive/2011/05/03/2035105.html" target="_blank" rel="external">字符集和字符编码（Charset &amp; Encoding）</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Common</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Charset</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Charset/" class="article-tag-list-link color3">Charset</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/01/13/Common/character/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
@@ -586,7 +494,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2017 wyp0596
+    		&copy; 2018 wyp0596
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -669,7 +577,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">HTTPS</a>
+                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -677,7 +585,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
+                <a href="javascript:void(0)" class="js-tag color1">HTTPS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -689,7 +597,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -698,6 +606,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Seckill</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -737,7 +649,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Config</a>
+                <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -745,7 +657,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
+                <a href="javascript:void(0)" class="js-tag color2">Config</a>
               </li>
              
               <li class="article-tag-list-item">
