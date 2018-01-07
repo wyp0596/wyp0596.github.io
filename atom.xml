@@ -2160,51 +2160,6 @@
   </entry>
   
   <entry>
-    <title>JDK之String</title>
-    <link href="https://blog.ajavac.com/2017/03/26/Java/jdk_string/"/>
-    <id>https://blog.ajavac.com/2017/03/26/Java/jdk_string/</id>
-    <published>2017-03-26T10:35:55.000Z</published>
-    <updated>2017-05-15T06:07:49.000Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p><code>java.lang.String</code>是Java编程中最常见的类之一</p>
-<p>Java中使用Unicode字符集，使用UTF-16的编码实现方式，一个基本多语言平面（Basic Multilingual Plane，简称BMP）字符占用一个char（16bit），一个辅助平面（Supplementary Plane）字符占用两个char（16bit * 2）。</p>
-<p>比如说emoji表情就占用了两个char</p>
-</blockquote>
-<h2 id="String的特点"><a href="#String的特点" class="headerlink" title="String的特点"></a>String的特点</h2><ol>
-<li>是一个不可变类，一旦创建便不可改变</li>
-<li>类定义为<code>public final class String</code>，是一个终类，不可被继承</li>
-<li>实现了<code>java.io.Serializable</code>接口，可序列化和反序列化</li>
-<li>实现了<code>java.lang.Comparable&lt;String&gt;</code>接口，可以进行比较和排序</li>
-<li>实现了<code>java.lang.CharSequence</code>接口，是一个可读的字符序列</li>
-<li>String最多可存储<code>2^31-1</code>个char(每个char占用16bit)</li>
-<li>String最多可存储<code>(2^30-1)~(2^31-1)</code>个Unicode字符，原因在于Java中的Unicode编码方式（UTF-16），一个Unicode字符最多可能占用2个char</li>
-</ol>
-<p>​</p>
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ol>
-<li><code>length()</code>方法获取的是String字符串中char的长度</li>
-<li>String不宜直接存储密码等敏感数据，有dump风险，可用<code>char[]</code>存储（用完后清除），或者对敏感数据进行加盐hash</li>
-</ol>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;&lt;code&gt;java.lang.String&lt;/code&gt;是Java编程中最常见的类之一&lt;/p&gt;
-&lt;p&gt;Java中使用Unicode字符集，使用UTF-16的编码实现方式，一个基本多语言平面（Basic Multilingual Plane，简称B
-    
-    </summary>
-    
-      <category term="Java" scheme="https://blog.ajavac.com/categories/Java/"/>
-    
-    
-      <category term="Java" scheme="https://blog.ajavac.com/tags/Java/"/>
-    
-      <category term="Basic" scheme="https://blog.ajavac.com/tags/Basic/"/>
-    
-  </entry>
-  
-  <entry>
     <title>Java 8 新特性</title>
     <link href="https://blog.ajavac.com/2017/03/26/Java/java8/"/>
     <id>https://blog.ajavac.com/2017/03/26/Java/java8/</id>
@@ -2355,6 +2310,51 @@
 &lt;th&gt;特性&lt;/th&gt;
 &lt;th&gt;说明&lt;/th&gt;
 &lt;/t
+    
+    </summary>
+    
+      <category term="Java" scheme="https://blog.ajavac.com/categories/Java/"/>
+    
+    
+      <category term="Java" scheme="https://blog.ajavac.com/tags/Java/"/>
+    
+      <category term="Basic" scheme="https://blog.ajavac.com/tags/Basic/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>JDK之String</title>
+    <link href="https://blog.ajavac.com/2017/03/26/Java/jdk_string/"/>
+    <id>https://blog.ajavac.com/2017/03/26/Java/jdk_string/</id>
+    <published>2017-03-26T10:35:55.000Z</published>
+    <updated>2017-05-15T06:07:49.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p><code>java.lang.String</code>是Java编程中最常见的类之一</p>
+<p>Java中使用Unicode字符集，使用UTF-16的编码实现方式，一个基本多语言平面（Basic Multilingual Plane，简称BMP）字符占用一个char（16bit），一个辅助平面（Supplementary Plane）字符占用两个char（16bit * 2）。</p>
+<p>比如说emoji表情就占用了两个char</p>
+</blockquote>
+<h2 id="String的特点"><a href="#String的特点" class="headerlink" title="String的特点"></a>String的特点</h2><ol>
+<li>是一个不可变类，一旦创建便不可改变</li>
+<li>类定义为<code>public final class String</code>，是一个终类，不可被继承</li>
+<li>实现了<code>java.io.Serializable</code>接口，可序列化和反序列化</li>
+<li>实现了<code>java.lang.Comparable&lt;String&gt;</code>接口，可以进行比较和排序</li>
+<li>实现了<code>java.lang.CharSequence</code>接口，是一个可读的字符序列</li>
+<li>String最多可存储<code>2^31-1</code>个char(每个char占用16bit)</li>
+<li>String最多可存储<code>(2^30-1)~(2^31-1)</code>个Unicode字符，原因在于Java中的Unicode编码方式（UTF-16），一个Unicode字符最多可能占用2个char</li>
+</ol>
+<p>​</p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ol>
+<li><code>length()</code>方法获取的是String字符串中char的长度</li>
+<li>String不宜直接存储密码等敏感数据，有dump风险，可用<code>char[]</code>存储（用完后清除），或者对敏感数据进行加盐hash</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;java.lang.String&lt;/code&gt;是Java编程中最常见的类之一&lt;/p&gt;
+&lt;p&gt;Java中使用Unicode字符集，使用UTF-16的编码实现方式，一个基本多语言平面（Basic Multilingual Plane，简称B
     
     </summary>
     
@@ -3270,9 +3270,9 @@
       <category term="Charset" scheme="https://blog.ajavac.com/categories/Charset/"/>
     
     
-      <category term="Charset" scheme="https://blog.ajavac.com/tags/Charset/"/>
-    
       <category term="Common" scheme="https://blog.ajavac.com/tags/Common/"/>
+    
+      <category term="Charset" scheme="https://blog.ajavac.com/tags/Charset/"/>
     
   </entry>
   
@@ -3565,9 +3565,9 @@
       <category term="HTTPS" scheme="https://blog.ajavac.com/categories/HTTPS/"/>
     
     
-      <category term="Common" scheme="https://blog.ajavac.com/tags/Common/"/>
-    
       <category term="HTTPS" scheme="https://blog.ajavac.com/tags/HTTPS/"/>
+    
+      <category term="Common" scheme="https://blog.ajavac.com/tags/Common/"/>
     
   </entry>
   
