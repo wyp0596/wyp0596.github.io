@@ -869,9 +869,9 @@
     
       <category term="Java" scheme="https://blog.ajavac.com/tags/Java/"/>
     
-      <category term="Collection" scheme="https://blog.ajavac.com/tags/Collection/"/>
-    
       <category term="Basic" scheme="https://blog.ajavac.com/tags/Basic/"/>
+    
+      <category term="Collection" scheme="https://blog.ajavac.com/tags/Collection/"/>
     
   </entry>
   
@@ -1705,7 +1705,7 @@
     <link href="https://blog.ajavac.com/2017/05/31/Docker/docker_dev/"/>
     <id>https://blog.ajavac.com/2017/05/31/Docker/docker_dev/</id>
     <published>2017-05-31T08:40:53.000Z</published>
-    <updated>2017-07-27T02:42:25.000Z</updated>
+    <updated>2018-02-06T10:39:51.228Z</updated>
     
     <content type="html"><![CDATA[<h2 id="安装Docker"><a href="#安装Docker" class="headerlink" title="安装Docker"></a>安装Docker</h2><p><a href="https://www.docker.com/community-edition#/download" target="_blank" rel="external">Docker官网</a></p>
 <h3 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h3><blockquote>
@@ -1740,6 +1740,7 @@
 <li><code>~/my_data/mongo</code> 代表存储mongo的配置以及数据的目录</li>
 </ol>
 <h3 id="连接测试-2"><a href="#连接测试-2" class="headerlink" title="连接测试"></a>连接测试</h3><p><code>docker run -it --link some-mongo:mongo --rm mongo sh -c &#39;exec mongo &quot;$MONGO_PORT_27017_TCP_ADDR:$MONGO_PORT_27017_TCP_PORT/test&quot;&#39;</code></p>
+<h3 id="用户操作"><a href="#用户操作" class="headerlink" title="用户操作"></a>用户操作</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">docker exec -it some-mongo mongo admin</div><div class="line"><span class="meta">#</span> 创建管理员账户</div><div class="line">db.createUser(&#123; user: 'useredit', pwd: 'useredit', roles: [ &#123; role: "userAdminAnyDatabase", db: "admin" &#125; ] &#125;);</div><div class="line"><span class="meta">#</span> 用管理账户登录</div><div class="line">db.auth("useredit","useredit")</div><div class="line"><span class="meta">#</span> 创建一个数据库test</div><div class="line">use test</div><div class="line"><span class="meta">#</span> 创建该数据库的用户 admin</div><div class="line">db.createUser(&#123; user: 'admin', pwd: 'admin', roles: [ &#123; role: "readWrite", db: "test" &#125; ] &#125;);</div></pre></td></tr></table></figure>
 <h2 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h2><blockquote>
 <p><a href="https://hub.docker.com/_/nginx/" target="_blank" rel="external">官方Repository</a></p>
 </blockquote>
@@ -2096,9 +2097,9 @@
       <category term="Linux" scheme="https://blog.ajavac.com/categories/Linux/"/>
     
     
-      <category term="Basic" scheme="https://blog.ajavac.com/tags/Basic/"/>
-    
       <category term="Linux" scheme="https://blog.ajavac.com/tags/Linux/"/>
+    
+      <category term="Basic" scheme="https://blog.ajavac.com/tags/Basic/"/>
     
   </entry>
   
@@ -2237,6 +2238,51 @@
       <category term="Effective_Java" scheme="https://blog.ajavac.com/tags/Effective-Java/"/>
     
       <category term="book" scheme="https://blog.ajavac.com/tags/book/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>JDK之String</title>
+    <link href="https://blog.ajavac.com/2017/03/26/Java/jdk_string/"/>
+    <id>https://blog.ajavac.com/2017/03/26/Java/jdk_string/</id>
+    <published>2017-03-26T10:35:55.000Z</published>
+    <updated>2017-05-15T06:07:49.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p><code>java.lang.String</code>是Java编程中最常见的类之一</p>
+<p>Java中使用Unicode字符集，使用UTF-16的编码实现方式，一个基本多语言平面（Basic Multilingual Plane，简称BMP）字符占用一个char（16bit），一个辅助平面（Supplementary Plane）字符占用两个char（16bit * 2）。</p>
+<p>比如说emoji表情就占用了两个char</p>
+</blockquote>
+<h2 id="String的特点"><a href="#String的特点" class="headerlink" title="String的特点"></a>String的特点</h2><ol>
+<li>是一个不可变类，一旦创建便不可改变</li>
+<li>类定义为<code>public final class String</code>，是一个终类，不可被继承</li>
+<li>实现了<code>java.io.Serializable</code>接口，可序列化和反序列化</li>
+<li>实现了<code>java.lang.Comparable&lt;String&gt;</code>接口，可以进行比较和排序</li>
+<li>实现了<code>java.lang.CharSequence</code>接口，是一个可读的字符序列</li>
+<li>String最多可存储<code>2^31-1</code>个char(每个char占用16bit)</li>
+<li>String最多可存储<code>(2^30-1)~(2^31-1)</code>个Unicode字符，原因在于Java中的Unicode编码方式（UTF-16），一个Unicode字符最多可能占用2个char</li>
+</ol>
+<p>​</p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ol>
+<li><code>length()</code>方法获取的是String字符串中char的长度</li>
+<li>String不宜直接存储密码等敏感数据，有dump风险，可用<code>char[]</code>存储（用完后清除），或者对敏感数据进行加盐hash</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;java.lang.String&lt;/code&gt;是Java编程中最常见的类之一&lt;/p&gt;
+&lt;p&gt;Java中使用Unicode字符集，使用UTF-16的编码实现方式，一个基本多语言平面（Basic Multilingual Plane，简称B
+    
+    </summary>
+    
+      <category term="Java" scheme="https://blog.ajavac.com/categories/Java/"/>
+    
+    
+      <category term="Java" scheme="https://blog.ajavac.com/tags/Java/"/>
+    
+      <category term="Basic" scheme="https://blog.ajavac.com/tags/Basic/"/>
     
   </entry>
   
@@ -2391,51 +2437,6 @@
 &lt;th&gt;特性&lt;/th&gt;
 &lt;th&gt;说明&lt;/th&gt;
 &lt;/t
-    
-    </summary>
-    
-      <category term="Java" scheme="https://blog.ajavac.com/categories/Java/"/>
-    
-    
-      <category term="Java" scheme="https://blog.ajavac.com/tags/Java/"/>
-    
-      <category term="Basic" scheme="https://blog.ajavac.com/tags/Basic/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>JDK之String</title>
-    <link href="https://blog.ajavac.com/2017/03/26/Java/jdk_string/"/>
-    <id>https://blog.ajavac.com/2017/03/26/Java/jdk_string/</id>
-    <published>2017-03-26T10:35:55.000Z</published>
-    <updated>2017-05-15T06:07:49.000Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p><code>java.lang.String</code>是Java编程中最常见的类之一</p>
-<p>Java中使用Unicode字符集，使用UTF-16的编码实现方式，一个基本多语言平面（Basic Multilingual Plane，简称BMP）字符占用一个char（16bit），一个辅助平面（Supplementary Plane）字符占用两个char（16bit * 2）。</p>
-<p>比如说emoji表情就占用了两个char</p>
-</blockquote>
-<h2 id="String的特点"><a href="#String的特点" class="headerlink" title="String的特点"></a>String的特点</h2><ol>
-<li>是一个不可变类，一旦创建便不可改变</li>
-<li>类定义为<code>public final class String</code>，是一个终类，不可被继承</li>
-<li>实现了<code>java.io.Serializable</code>接口，可序列化和反序列化</li>
-<li>实现了<code>java.lang.Comparable&lt;String&gt;</code>接口，可以进行比较和排序</li>
-<li>实现了<code>java.lang.CharSequence</code>接口，是一个可读的字符序列</li>
-<li>String最多可存储<code>2^31-1</code>个char(每个char占用16bit)</li>
-<li>String最多可存储<code>(2^30-1)~(2^31-1)</code>个Unicode字符，原因在于Java中的Unicode编码方式（UTF-16），一个Unicode字符最多可能占用2个char</li>
-</ol>
-<p>​</p>
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ol>
-<li><code>length()</code>方法获取的是String字符串中char的长度</li>
-<li>String不宜直接存储密码等敏感数据，有dump风险，可用<code>char[]</code>存储（用完后清除），或者对敏感数据进行加盐hash</li>
-</ol>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;&lt;code&gt;java.lang.String&lt;/code&gt;是Java编程中最常见的类之一&lt;/p&gt;
-&lt;p&gt;Java中使用Unicode字符集，使用UTF-16的编码实现方式，一个基本多语言平面（Basic Multilingual Plane，简称B
     
     </summary>
     

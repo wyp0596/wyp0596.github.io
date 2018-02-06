@@ -309,6 +309,113 @@
 
 
   
+    <article id="post-Java/jdk_string" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/26/Java/jdk_string/">JDK之String</a>
+    </h1>
+  
+
+        
+        <a href="/2017/03/26/Java/jdk_string/" class="archive-article-date">
+  	<time datetime="2017-03-26T10:35:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p><code>java.lang.String</code>是Java编程中最常见的类之一</p>
+<p>Java中使用Unicode字符集，使用UTF-16的编码实现方式，一个基本多语言平面（Basic Multilingual Plane，简称BMP）字符占用一个char（16bit），一个辅助平面（Supplementary Plane）字符占用两个char（16bit * 2）。</p>
+<p>比如说emoji表情就占用了两个char</p>
+</blockquote>
+<h2 id="String的特点"><a href="#String的特点" class="headerlink" title="String的特点"></a>String的特点</h2><ol>
+<li>是一个不可变类，一旦创建便不可改变</li>
+<li>类定义为<code>public final class String</code>，是一个终类，不可被继承</li>
+<li>实现了<code>java.io.Serializable</code>接口，可序列化和反序列化</li>
+<li>实现了<code>java.lang.Comparable&lt;String&gt;</code>接口，可以进行比较和排序</li>
+<li>实现了<code>java.lang.CharSequence</code>接口，是一个可读的字符序列</li>
+<li>String最多可存储<code>2^31-1</code>个char(每个char占用16bit)</li>
+<li>String最多可存储<code>(2^30-1)~(2^31-1)</code>个Unicode字符，原因在于Java中的Unicode编码方式（UTF-16），一个Unicode字符最多可能占用2个char</li>
+</ol>
+<p>​</p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ol>
+<li><code>length()</code>方法获取的是String字符串中char的长度</li>
+<li>String不宜直接存储密码等敏感数据，有dump风险，可用<code>char[]</code>存储（用完后清除），或者对敏感数据进行加盐hash</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Basic</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java/" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/03/26/Java/jdk_string/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Java/java8" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -527,113 +634,6 @@
 
 
   
-    <article id="post-Java/jdk_string" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/26/Java/jdk_string/">JDK之String</a>
-    </h1>
-  
-
-        
-        <a href="/2017/03/26/Java/jdk_string/" class="archive-article-date">
-  	<time datetime="2017-03-26T10:35:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p><code>java.lang.String</code>是Java编程中最常见的类之一</p>
-<p>Java中使用Unicode字符集，使用UTF-16的编码实现方式，一个基本多语言平面（Basic Multilingual Plane，简称BMP）字符占用一个char（16bit），一个辅助平面（Supplementary Plane）字符占用两个char（16bit * 2）。</p>
-<p>比如说emoji表情就占用了两个char</p>
-</blockquote>
-<h2 id="String的特点"><a href="#String的特点" class="headerlink" title="String的特点"></a>String的特点</h2><ol>
-<li>是一个不可变类，一旦创建便不可改变</li>
-<li>类定义为<code>public final class String</code>，是一个终类，不可被继承</li>
-<li>实现了<code>java.io.Serializable</code>接口，可序列化和反序列化</li>
-<li>实现了<code>java.lang.Comparable&lt;String&gt;</code>接口，可以进行比较和排序</li>
-<li>实现了<code>java.lang.CharSequence</code>接口，是一个可读的字符序列</li>
-<li>String最多可存储<code>2^31-1</code>个char(每个char占用16bit)</li>
-<li>String最多可存储<code>(2^30-1)~(2^31-1)</code>个Unicode字符，原因在于Java中的Unicode编码方式（UTF-16），一个Unicode字符最多可能占用2个char</li>
-</ol>
-<p>​</p>
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ol>
-<li><code>length()</code>方法获取的是String字符串中char的长度</li>
-<li>String不宜直接存储密码等敏感数据，有dump风险，可用<code>char[]</code>存储（用完后清除），或者对敏感数据进行加盐hash</li>
-</ol>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Basic</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java/" class="article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/03/26/Java/jdk_string/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
@@ -739,11 +739,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
+                <a href="javascript:void(0)" class="js-tag color4">Git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -759,11 +759,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -776,30 +776,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">book</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Collection</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">HashMap</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Map</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hash</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Basic</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Tomcat</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -819,11 +795,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Basic</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">DataBase</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Transaction</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Collection</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">HashMap</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Map</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hash</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Tomcat</a>
               </li>
              
               <li class="article-tag-list-item">

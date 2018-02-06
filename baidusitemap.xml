@@ -4,6 +4,26 @@
 
     
   <url>
+    <loc>https://blog.ajavac.com/2017/05/31/Docker/docker_dev/</loc>
+    <lastmod>2018-02-06T10:39:51.228Z</lastmod>
+    <data>
+        <display>
+        <title>利用Docker搭建开发环境</title>
+        <pubTime>2017-05-31T08:40:53.000Z</pubTime>
+        
+        <tag>Docker</tag>
+         
+         
+           
+             
+              <breadCrumb title="Docker" url="https://blog.ajavac.com/categories/Docker/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://blog.ajavac.com/2018/02/06/MySQL/mysql_index/</loc>
     <lastmod>2018-02-06T09:40:06.725Z</lastmod>
     <data>
@@ -117,34 +137,14 @@
         <title>Linux 基础</title>
         <pubTime>2017-04-10T01:19:17.000Z</pubTime>
         
-        <tag>Basic</tag>
-         
         <tag>Linux</tag>
+         
+        <tag>Basic</tag>
          
          
            
              
               <breadCrumb title="Linux" url="https://blog.ajavac.com/categories/Linux/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://blog.ajavac.com/2017/05/31/Docker/docker_dev/</loc>
-    <lastmod>2017-07-27T02:42:25.000Z</lastmod>
-    <data>
-        <display>
-        <title>利用Docker搭建开发环境</title>
-        <pubTime>2017-05-31T08:40:53.000Z</pubTime>
-        
-        <tag>Docker</tag>
-         
-         
-           
-             
-              <breadCrumb title="Docker" url="https://blog.ajavac.com/categories/Docker/"/>
           
         </display>
     </data>
@@ -161,9 +161,9 @@
         
         <tag>Java</tag>
          
-        <tag>Collection</tag>
-         
         <tag>Basic</tag>
+         
+        <tag>Collection</tag>
          
          
            

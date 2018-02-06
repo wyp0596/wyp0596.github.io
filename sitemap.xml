@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://blog.ajavac.com/2017/05/31/Docker/docker_dev/</loc>
+    
+    <lastmod>2018-02-06T10:39:51.228Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://blog.ajavac.com/2018/02/06/MySQL/mysql_index/</loc>
     
     <lastmod>2018-02-06T09:40:06.725Z</lastmod>
@@ -40,13 +47,6 @@
     <loc>https://blog.ajavac.com/2017/04/10/Linux/linux_basic/</loc>
     
     <lastmod>2017-08-03T01:18:35.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://blog.ajavac.com/2017/05/31/Docker/docker_dev/</loc>
-    
-    <lastmod>2017-07-27T02:42:25.000Z</lastmod>
     
   </url>
   
