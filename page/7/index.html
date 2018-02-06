@@ -145,6 +145,170 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-EffectiveJava/chapter3" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/27/EffectiveJava/chapter3/">《Effective Java》读书笔记——第3章</a>
+    </h1>
+  
+
+        
+        <a href="/2017/03/27/EffectiveJava/chapter3/" class="archive-article-date">
+  	<time datetime="2017-03-27T15:13:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="对于所有对象都通用的方法"><a href="#对于所有对象都通用的方法" class="headerlink" title="对于所有对象都通用的方法"></a>对于所有对象都通用的方法</h2><h3 id="No-8-覆盖equals时请遵守通用约定"><a href="#No-8-覆盖equals时请遵守通用约定" class="headerlink" title="No.8 覆盖equals时请遵守通用约定"></a>No.8 覆盖equals时请遵守通用约定</h3><blockquote>
+<p>类具有自己特有的”逻辑相等”概念时应该覆盖Object.equals方法</p>
+</blockquote>
+<p>覆盖equals时，必须要遵守它的通用约定：</p>
+<ol>
+<li>自反性（reflexive）对于任何非null的引用值x，x.equals(x)必须为true</li>
+<li>对称性（symmetric）对于任何非null的引用值x和y，当且仅当x.equals(y)为true时，y.equals(x)必须返回true</li>
+<li>传递性（transitive）对于任何非null的引用值x、y和z，如果x.equals(y)为true，并且y.equals(z)为true，那么x.equals(z)也必须为true</li>
+<li>一致性（consistent）只要操作对象信息未被修改，多次调用equals结果必须一致</li>
+<li>非空性（Non-nullity）对于任何非null的引用值x，x.equals(null)必须为false</li>
+</ol>
+<p>实现高质量equals方法的诀窍：</p>
+<ol>
+<li>使用<code>==</code>检查“参数是否为这个对象的引用”</li>
+<li>使用<code>instanceof</code>检查”参数是否为正确类型”</li>
+<li>把参数转换成正确类型</li>
+<li>检查参数中的关键（significant）域与该对象中对应的域是否相匹配</li>
+<li>检查是否达到了对称性、传递性、一致性的要求</li>
+<li>覆盖equals时总要覆盖hashCode</li>
+<li>不要企图让equals方法过于智能</li>
+<li>不要将equals声明中的Object对象替换成其他的类型</li>
+<li>使用<code>@Override</code>注解</li>
+</ol>
+<h3 id="No-9-覆盖equals时总要覆盖hashCode"><a href="#No-9-覆盖equals时总要覆盖hashCode" class="headerlink" title="No.9 覆盖equals时总要覆盖hashCode"></a>No.9 覆盖equals时总要覆盖hashCode</h3><blockquote>
+<p>每个覆盖了equals方法的类中，也必须覆盖hashCode方法</p>
+</blockquote>
+<p>约定：</p>
+<ol>
+<li>应用程序的一次执行中，对同一个对象的调用多次，hashCode方法必须始终如一的返回同一个整数。在同一个程序的多次执行过程中，每次执行锁返回的整数可以不一致</li>
+<li>如果两个对象的根据equals方法比较是相等的，那么调用它们的hashCode方法的整数结果也必须相等</li>
+<li>如果两个对象的根据equals方法比较是不相等的，那么调用它们的hashCode方法的整数结果不一定要不相等</li>
+</ol>
+<p>推荐散列算法:</p>
+<ol>
+<li><code>int result = 17;</code></li>
+<li>为所有的域分别计算<code>int</code>类型的散列码(若是对象则调用其<code>hashCode()</code>方法):<ol>
+<li><code>boolean</code>类型：<code>f ? 1 : 0</code></li>
+<li><code>byte</code>、<code>char</code>、<code>short</code>、<code>int</code>类型：<code>(int) f</code></li>
+<li><code>long</code>类型：<code>(int) (f ^ (f &gt;&gt;&gt; 32))</code></li>
+<li><code>float</code>类型：<code>Float.floatToIntBits(f)</code></li>
+<li><code>double</code>类型：<code>Double.doubleToLongBits(f)</code>后按<code>long</code>类型处理</li>
+<li>引用类型(对象)：调用其<code>hashCode()</code>方法（若域为<code>null</code>则为0）</li>
+<li>数组类型：对每个元素当做单独的域处理或者使用<code>Arrays.hashCode()</code>方法</li>
+</ol>
+</li>
+<li>将每个域计算出的散列码合并：<code>result = 31 * result + c;</code></li>
+<li>返回<code>result</code></li>
+<li>验证该散列算法是否符合约定，“相等的实例是否都具有相等的散列码”</li>
+</ol>
+<p>总结：</p>
+<ol>
+<li><strong>相等的对象具有相等的散列码</strong></li>
+<li><strong>不相等的对象的散列码不一定不相等</strong></li>
+<li>不要试图从散列码计算中排除掉一个对象的关键部分来提高性能</li>
+<li>一个比较好的散列算法：<code>31*i</code>，因为<code>31*i == (i &lt;&lt; 5) - 1</code></li>
+</ol>
+<h3 id="No-10-始终要覆盖toString"><a href="#No-10-始终要覆盖toString" class="headerlink" title="No.10 始终要覆盖toString"></a>No.10 始终要覆盖toString</h3><blockquote>
+<p>toString 方法旨在返回一个”简洁的，但信息丰富，并且易于阅读的表达形式”，建议所有的子类都覆盖这个方法</p>
+</blockquote>
+<ol>
+<li>toString 方法应该返回对象中包含的所有值得关注的信息</li>
+<li>当对象被传递给println、printf、字符串级联操作符（+）、assert、调试器打印等情况时，toString方法会被自动调用</li>
+</ol>
+<h3 id="No-11-谨慎地覆盖clone"><a href="#No-11-谨慎地覆盖clone" class="headerlink" title="No.11 谨慎地覆盖clone"></a>No.11 谨慎地覆盖clone</h3><ol>
+<li>所有实现了Cloneable接口的类都应该用一个公有的方法覆盖clone，此公有方法1首先应该调用<code>super.clone()</code>，然后修正任何需要修正的域。</li>
+<li>其他接口都不应该扩展（extends）这个接口（Cloneable）</li>
+<li>为了继承而设计的类也不应该实现（implement）这个接口（Cloneable）</li>
+</ol>
+<h3 id="No-12-考虑实现Comparable接口"><a href="#No-12-考虑实现Comparable接口" class="headerlink" title="No.12 考虑实现Comparable接口"></a>No.12 考虑实现Comparable接口</h3><ol>
+<li>对实现了Comparable接口的对象数组a进行排序只需要<code>Arrays.sort(a);</code></li>
+<li>如果在编写一个值类，它具有非常明显的内在排序关系，那么应该坚决考虑实现这个接口</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Effective_Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">book</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/book/" class="article-tag-list-link color5">book</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/03/27/EffectiveJava/chapter3/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Java/java8" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -470,496 +634,6 @@
 
 
   
-    <article id="post-Java/java_basic" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/25/Java/java_basic/">Java基础</a>
-    </h1>
-  
-
-        
-        <a href="/2017/03/25/Java/java_basic/" class="archive-article-date">
-  	<time datetime="2017-03-25T13:55:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><h3 id="内置类型——基本数据类型"><a href="#内置类型——基本数据类型" class="headerlink" title="内置类型——基本数据类型"></a>内置类型——基本数据类型</h3><table>
-<thead>
-<tr>
-<th>名称</th>
-<th>大小</th>
-<th>默认值</th>
-<th>取值说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>boolean</td>
-<td>1bit</td>
-<td><code>false</code></td>
-<td>布尔值，作二元判断，<code>true</code>或者<code>false</code></td>
-</tr>
-<tr>
-<td>byte</td>
-<td>8bit</td>
-<td><code>0x00</code></td>
-<td>有符号整数，范围<code>-128 ~ 127</code>，转换成int时需注意高位补齐</td>
-</tr>
-<tr>
-<td>short</td>
-<td>16bit</td>
-<td><code>0</code></td>
-<td>有符号整数，范围<code>-32768 ~ 32767</code></td>
-</tr>
-<tr>
-<td>char</td>
-<td>16bit</td>
-<td><code>\u0000</code></td>
-<td>Unicode字符，少数字符使用2个<code>char</code>表示</td>
-</tr>
-<tr>
-<td>int</td>
-<td>32bit</td>
-<td><code>0</code></td>
-<td>有符号整数，范围<code>-2^31 ~ (2^31 - 1)</code></td>
-</tr>
-<tr>
-<td>float</td>
-<td>32bit</td>
-<td><code>0.0F</code></td>
-<td>浮点数，范围<code>1.4E-45~3.4028235E38</code></td>
-</tr>
-<tr>
-<td>long</td>
-<td>64bit</td>
-<td><code>0L</code></td>
-<td>有符号整数，范围<code>-2^63 ~ (2^63 - 1)</code></td>
-</tr>
-<tr>
-<td>double</td>
-<td>64bit</td>
-<td><code>0.0D</code></td>
-<td>浮点数，范围<code>4.9E-324~1.7976931348623157E308</code></td>
-</tr>
-</tbody>
-</table>
-<p>ps：浮点数有精度，要不失真使用<code>java.math.BigDecimal</code>和<code>java.math.BigInteger</code></p>
-<h3 id="扩展类型——引用数据类型"><a href="#扩展类型——引用数据类型" class="headerlink" title="扩展类型——引用数据类型"></a>扩展类型——引用数据类型</h3><p>形如:</p>
-<p><code>String str = &quot;I am a String !&quot;;</code></p>
-<h2 id="三大特性"><a href="#三大特性" class="headerlink" title="三大特性"></a>三大特性</h2><p>面向对象编程有三大特性：</p>
-<ol>
-<li>封装</li>
-<li>继承</li>
-<li>多态</li>
-</ol>
-<h2 id="类访问权限"><a href="#类访问权限" class="headerlink" title="类访问权限"></a>类访问权限</h2><table>
-<thead>
-<tr>
-<th></th>
-<th style="text-align:center">同一个类</th>
-<th style="text-align:center">同一个包</th>
-<th style="text-align:center">不同包的子类</th>
-<th style="text-align:center">不同包的非子类</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>private</td>
-<td style="text-align:center">✔️</td>
-<td style="text-align:center"></td>
-<td style="text-align:center"></td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td>default</td>
-<td style="text-align:center">✔️</td>
-<td style="text-align:center">✔️</td>
-<td style="text-align:center"></td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td>protected</td>
-<td style="text-align:center">✔️</td>
-<td style="text-align:center">✔️</td>
-<td style="text-align:center">✔️</td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td>public</td>
-<td style="text-align:center">✔️</td>
-<td style="text-align:center">✔️</td>
-<td style="text-align:center">✔️</td>
-<td style="text-align:center">✔️</td>
-</tr>
-</tbody>
-</table>
-<h2 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h2><blockquote>
-<p>所谓多态意指相同的消息给予不同的对象会引发不同的动作称之。</p>
-<p> ——维基百科</p>
-</blockquote>
-<p>存在的必要条件：</p>
-<ol>
-<li>继承</li>
-<li>重写</li>
-<li>向上转型（父类引用指向子类对象）</li>
-</ol>
-<p>实现方式：</p>
-<ol>
-<li>重写</li>
-<li>接口</li>
-<li>抽象类和抽象方法</li>
-</ol>
-<p>比如：<code>List&lt;String&gt; list = new ArrayList&lt;&gt;)();</code></p>
-<h2 id="重载（Overload）、重写（Override）"><a href="#重载（Overload）、重写（Override）" class="headerlink" title="重载（Overload）、重写（Override）"></a>重载（Overload）、重写（Override）</h2><p><strong>重载(Overload)</strong>指的是一个类里面有同名方法，其<strong>参数</strong>不同，除了参数要独一无二外没什么特殊限制。</p>
-<p><strong>重写(Override)</strong>指的是子类对父类方法的实现进行重新编写。</p>
-<table>
-<thead>
-<tr>
-<th>区别</th>
-<th>重载（Overload）</th>
-<th>重写（Override）</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>参数列表</td>
-<td>必须修改</td>
-<td>不可修改</td>
-</tr>
-<tr>
-<td>返回类型</td>
-<td>可以修改</td>
-<td>不可修改</td>
-</tr>
-<tr>
-<td>异常</td>
-<td>可以修改</td>
-<td>可以减小异常范围（子类异常或无异常）</td>
-</tr>
-<tr>
-<td>访问权限</td>
-<td>可以修改</td>
-<td>可以降低访问限制(如protected–&gt;public)</td>
-</tr>
-</tbody>
-</table>
-<h2 id="Java内存模型"><a href="#Java内存模型" class="headerlink" title="Java内存模型"></a>Java内存模型</h2><blockquote>
-<p>Java内存模型的主要目标是定义程序中各个变量（不包括局部变量，因为局部变量是线程私有的，不会被共享，不存在竞争问题）的访问规则，即在虚拟机中将变量存储到内存和从内存中取出变量这样的底层细节。</p>
-</blockquote>
-<ol>
-<li>所有变量都存储在主内存（Main Memory）中</li>
-<li>每条线程有自己的工作内存（Working Memory），保存了该线程用到的变量的主内存副本拷贝（不会整个对象拷贝）</li>
-<li>线程对变量的所有操作（读取、赋值等）都必须在工作内存中进行，而不能直接读写主内存中的变量</li>
-<li>不同线程间不能直接访问对方工作内存中的变量，线程间的变量值得传递需要通过主内存来完成</li>
-</ol>
-<p><img src="/img/java/java_memory.jpg" alt="Java内存模型"></p>
-<h2 id="Object方法"><a href="#Object方法" class="headerlink" title="Object方法"></a>Object方法</h2><blockquote>
-<p>Java是单根继承结构，有一个终极基类<code>Object</code>，它的存在保证所有对象都具备某些功能（具有一个共同接口），使得垃圾回收器的实现变得容易。</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th>方法</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>getClass</td>
-<td>获得运行时对象的类型</td>
-</tr>
-<tr>
-<td>hashCode</td>
-<td>计算对象的hash值</td>
-</tr>
-<tr>
-<td>equals</td>
-<td>判一个对象是否与自身相等</td>
-</tr>
-<tr>
-<td>toString</td>
-<td>将对象表示为字符串,在一些字符串操作的地方会自动调用</td>
-</tr>
-<tr>
-<td>notify</td>
-<td>(当该对象作为锁时可用)唤醒该对象监视下的一个等待的线程</td>
-</tr>
-<tr>
-<td>notifyAll</td>
-<td>(当该对象作为锁时可用)唤醒该对象监视下的所有等待的线程</td>
-</tr>
-<tr>
-<td>wait</td>
-<td>(当该对象作为锁时可用)线程进入等待状态，可以设置等待时长</td>
-</tr>
-<tr>
-<td>clone</td>
-<td>复制对象，需要实现Cloneable接口</td>
-</tr>
-<tr>
-<td>finalize</td>
-<td>对象终结时候执行的方法</td>
-</tr>
-</tbody>
-</table>
-<h2 id="sleep、notify、wait"><a href="#sleep、notify、wait" class="headerlink" title="sleep、notify、wait"></a>sleep、notify、wait</h2><table>
-<thead>
-<tr>
-<th></th>
-<th>sleep(静态方法)</th>
-<th>notify</th>
-<th>wait</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>所属类</td>
-<td>Thread</td>
-<td>Object</td>
-<td>Object</td>
-</tr>
-<tr>
-<td>作用</td>
-<td>程序停止一定时间（传入参数），让给其他程序执行</td>
-<td>唤醒一个等待的线程，不确定是哪个</td>
-<td>进入等待状态直到被唤醒，若带参数则会自动唤醒</td>
-</tr>
-<tr>
-<td>锁的持有情况</td>
-<td>不变</td>
-<td>不变</td>
-<td>放弃</td>
-</tr>
-</tbody>
-</table>
-<h2 id="String、StringBuffer、StringBuilder"><a href="#String、StringBuffer、StringBuilder" class="headerlink" title="String、StringBuffer、StringBuilder"></a>String、StringBuffer、StringBuilder</h2><table>
-<thead>
-<tr>
-<th></th>
-<th>String</th>
-<th>StringBuffer</th>
-<th>StringBuilder</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>是否可变</td>
-<td>❌</td>
-<td>✔️</td>
-<td>✔️</td>
-</tr>
-<tr>
-<td>线程安全</td>
-<td>✔️</td>
-<td>✔️</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>内部实现</td>
-<td>final修饰的char数组</td>
-<td>char数组，自动扩容、拷贝</td>
-<td>char数组，自动扩容、拷贝</td>
-</tr>
-<tr>
-<td>作用</td>
-<td>表示字符串</td>
-<td>构建字符串，同步，单线程下效率较StringBuilder低</td>
-<td>构建字符串，非同步，效率高</td>
-</tr>
-</tbody>
-</table>
-<ol>
-<li>提防<code>+</code>或者<code>+=</code>连续拼接大量字符串，会使得性能低下 ，大量字符串拼接应考虑<code>StringBuilder</code>（单线程下首选）或者<code>StringBuffer</code>（需要线程安全的情况下）</li>
-<li>Java编译会对的<code>+</code>或者<code>+=</code>字符串拼接进行优化（优化成<code>StringBuilder</code>或者<code>StringBuffer</code>），所以简单的拼接可以直接使用</li>
-</ol>
-<h2 id="原子性、可见性和有序性"><a href="#原子性、可见性和有序性" class="headerlink" title="原子性、可见性和有序性"></a>原子性、可见性和有序性</h2><ul>
-<li>原子性（Atomicity）：基本数据类型的读写具备原子性（虽然非协定要求，但是long和double在现代虚拟机中也实现了原子性），在<code>synchronized</code>代码块之间的操作也具备原子性</li>
-<li>可见性（Visibility）：一个线程修改了共享变量的值，其他线程能立刻得知这个修改，<code>volatile</code>保证的多线程操作时变量的可见性，而普通变量则不能保证这一点，<code>synchronized</code>和<code>final</code>也可以保证可见性</li>
-<li>有序性（Ordering）：如果在本线程内观察，所有的操作都是有序的（县线程内表现为串行的语义，Within-Thread As-If-Serial Semantics）。如果在一个线程中观察另一个线程，所有操作都是无序的（”指令重排序现象“和”工作内存与主内存同步延迟现象“）。<code>volatile</code>和<code>synchronized</code>来保证线程间操作的有序性</li>
-</ul>
-<h2 id="先行发生（happens-before）原则"><a href="#先行发生（happens-before）原则" class="headerlink" title="先行发生（happens-before）原则"></a>先行发生（happens-before）原则</h2><p>如果连个操作之间的关系不在以下规则之中，并且无法从以下规则推到出来，它们就没有顺序性保障，虚拟机可以对它们随意的进行重排序</p>
-<ul>
-<li>程序次序规则（Program Order Rule）：在一个线程内，按照程序代码的控制流顺序，书写在前面的代码先行发生于书写在后面的代码</li>
-<li>管程锁定规则（Monitor Lock Rule）：一个unlock操作先行发生于后面（时间上先后）对于同一个锁的lock操作</li>
-<li><code>volatile</code>变量规则（Volatile Variable Rule）：对一个<code>volatile</code>变量的写操作先行发生于后面（时间上先后）对这个变量的读操作</li>
-<li>线程启动规则（Thread Start Rule）：Thread对象的start()方法先行发生于此线程的每一个动作</li>
-<li>线程终止规则（Thread Termination Rule）：线程中的每一个动作都先行发生于对此线程的终止检测</li>
-<li>线程中断规则（Thread Interruption Rule）：对线程中interrupt()方法的调用先行发生于被中断线程的代码检测到中断事件的发生</li>
-<li>对象终结规则（Finalizer Rule）：一个对象的初始化完成先行于它的finalize()方法的开始</li>
-<li>传递性（Transitivity）：如果操作A先行发生于操作B，操作B先行发生于操作C，那么，操作A先行发生于操作C</li>
-</ul>
-<blockquote>
-<p>一个操作”时间上的先发生“不代表这个操作会是”先行发生“；一个操作”先行发生“也不能代表这个操作”时间上的先发生“（指令重排序）。衡量并发安全问题不要受到时间顺序的干扰，一切必须以先行发生原则为准。</p>
-</blockquote>
-<h2 id="volatile和synchronized"><a href="#volatile和synchronized" class="headerlink" title="volatile和synchronized"></a>volatile和synchronized</h2><blockquote>
-<p>关键字<code>volatile</code>可以说是Java虚拟机提供的最轻量级的同步机制</p>
-</blockquote>
-<p>一个变量被声明为<code>volatile</code>后具备两种特性：</p>
-<ol>
-<li>保证此变量对所有线程的可见性，即修改可以被立即得知，此变量在各个线程的工作内存中不存在一致性问题（每次使用前都要先刷新）</li>
-<li>禁止指令重排序优化</li>
-</ol>
-<p>因为在Java中的运算并非原子操作，所以<code>volatile</code>变量的运算在并发下一样是<strong>不安全的</strong>，<code>volatile</code>只能保证<strong>可见性</strong>，在不符合以下规则的场景下需要通过加锁（使用<code>synchronized</code>或<code>java.util.concurrent</code>中的原子类）来保证<strong>原子性</strong>：</p>
-<ol>
-<li>运算结果不依赖变量的<strong>当前值</strong>，或者能保证只有<strong>单一线程</strong>修改变量的值</li>
-<li>变量不需要与<strong>其他的状态变量</strong>（可能存在不一致）共同参与不变约束</li>
-</ol>
-<p><code>volatile</code>与<code>synchronized</code>的区别</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>volatile</th>
-<th>synchronized</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>是否加锁</td>
-<td>否</td>
-<td>是</td>
-</tr>
-<tr>
-<td>是否造成线程阻塞</td>
-<td>否</td>
-<td>是</td>
-</tr>
-<tr>
-<td>是否具备可见性</td>
-<td>是</td>
-<td>是</td>
-</tr>
-<tr>
-<td>是否具备原子性</td>
-<td>否</td>
-<td>是</td>
-</tr>
-<tr>
-<td>是否可以被编译器优化</td>
-<td>否</td>
-<td>是</td>
-</tr>
-<tr>
-<td>同步机制重量级</td>
-<td>轻</td>
-<td>重</td>
-</tr>
-<tr>
-<td>使用的地方</td>
-<td>变量</td>
-<td>变量、方法</td>
-</tr>
-</tbody>
-</table>
-<h2 id="线程间通信方式"><a href="#线程间通信方式" class="headerlink" title="线程间通信方式"></a>线程间通信方式</h2><ol>
-<li>同步：通过<code>synchronized</code>实现线程间通信</li>
-<li><code>while</code>轮询：不断地检测条件，会浪费CPU资源，存在可见性问题（可能造成死循环）</li>
-<li><code>wait/notify</code>机制：存在通知过早问题，会打乱程序的执行逻辑</li>
-<li>管道通信：类似消息传递机制，使用<code>java.io.PipedInputStream</code>和<code>java.io.PipedOutputStream</code>进行通信</li>
-</ol>
-<h2 id="线程的各种状态"><a href="#线程的各种状态" class="headerlink" title="线程的各种状态"></a>线程的各种状态</h2><blockquote>
-<p>Java语言定义了5种线程状态（新建、运行、等待、阻塞、结束），任意时间点，线程有且只能有其中一种状态。Java中一般使用抢占式的线程调度方式</p>
-</blockquote>
-<ol>
-<li>新建（New）：创建后尚未启动的线程</li>
-<li>运行（Runable）：包括Running和Ready</li>
-<li>无限期等待（Waiting）：等待被其他线程显式地唤醒，进入该状态的方法有<code>无参Thread.join()</code>、<code>无参Object.wait()</code>和<code>LockSupport.park()</code>等</li>
-<li>限期等待（Timed Waiting）：到时间后会自动唤醒，进入该状态的方法有<code>Thread.sleep()</code>、<code>带参Thread.join()</code>、<code>带参Object.wait()</code>、<code>LockSupport.parkNanos()</code>和<code>LockSupport.parkUntil()</code>等</li>
-<li>阻塞（Blocked）：线程被阻塞了，等待获取到一个排他锁，在另一个线程放弃这个锁的时候发生</li>
-<li>结束（Terminated）：已终止线程的状态，线程已经结束执行。</li>
-</ol>
-<p>阻塞状态在等待另一个线程释放排它锁，而等待状态在等待时间到或者被唤醒。</p>
-<p><img src="/img/java/thread_status.jpg" alt="线程状态"></p>
-<h2 id="关于Java中的finally"><a href="#关于Java中的finally" class="headerlink" title="关于Java中的finally"></a>关于Java中的finally</h2><h3 id="finally可能没被执行"><a href="#finally可能没被执行" class="headerlink" title="finally可能没被执行"></a>finally可能没被执行</h3><ol>
-<li>在try语句执行前程序就返回(结束了)</li>
-<li>在try块中有System.exit(0),虚拟机停止</li>
-</ol>
-<h3 id="finally语句执行情况"><a href="#finally语句执行情况" class="headerlink" title="finally语句执行情况"></a>finally语句执行情况</h3><ol>
-<li>finally语句在return语句执行之后return返回之前执行的</li>
-<li>finally块中的return语句会覆盖try块中的return返回</li>
-<li>如果finally语句中没有return语句覆盖返回值，那么原来的返回值可能因为finally里的修改而改变也可能不变(传值问题)</li>
-<li>try块里的return语句在异常的情况下不会被执行，这样具体返回哪个看情况</li>
-<li>当发生异常后，catch中的return执行情况与未发生异常时try中return的执行情况完全一样</li>
-</ol>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
-<li>《Thinking in Java》</li>
-<li>《深入理解Java虚拟机》</li>
-</ol>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Basic</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java/" class="article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/03/25/Java/java_basic/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
@@ -1065,19 +739,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Mac</a>
+                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+                <a href="javascript:void(0)" class="js-tag color4">Mac</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1086,6 +756,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Seckill</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1129,19 +803,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Config</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
               </li>
              
               <li class="article-tag-list-item">

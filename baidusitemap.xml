@@ -4,6 +4,28 @@
 
     
   <url>
+    <loc>https://blog.ajavac.com/2018/02/06/MySQL/mysql_index/</loc>
+    <lastmod>2018-02-06T09:40:06.725Z</lastmod>
+    <data>
+        <display>
+        <title>MySQL索引</title>
+        <pubTime>2018-02-06T09:39:22.000Z</pubTime>
+        
+        <tag>Common</tag>
+         
+        <tag>MySQL</tag>
+         
+         
+           
+             
+              <breadCrumb title="MySQL" url="https://blog.ajavac.com/categories/MySQL/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://blog.ajavac.com/2017/09/03/Common/tcp_handshake/</loc>
     <lastmod>2017-09-03T07:09:16.000Z</lastmod>
     <data>
@@ -205,9 +227,9 @@
         <title>Linux常用命令</title>
         <pubTime>2017-06-25T13:11:20.000Z</pubTime>
         
-        <tag>Linux</tag>
-         
         <tag>Terminal</tag>
+         
+        <tag>Linux</tag>
          
          
            

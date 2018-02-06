@@ -145,6 +145,110 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Java/java_web_config" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/01/Java/java_web_config/">Java Web 项目配置文件提取方案</a>
+    </h1>
+  
+
+        
+        <a href="/2016/12/01/Java/java_web_config/" class="archive-article-date">
+  	<time datetime="2016-12-01T07:02:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Java-Web-项目配置文件提取方案"><a href="#Java-Web-项目配置文件提取方案" class="headerlink" title="Java Web 项目配置文件提取方案"></a>Java Web 项目配置文件提取方案</h1><blockquote>
+<p>如果使用war包部署项目,配置文件在war包里面会有很多不便,所以考虑将配置文件提取出来,当然,这是针对传统Java Web项目</p>
+</blockquote>
+<h2 id="开发时"><a href="#开发时" class="headerlink" title="开发时"></a>开发时</h2><p>在开发时候,配置文件使用项目中的配置文件</p>
+<p>首先,修改web.xml,添加定制配置文件目录项目中的<code>/WEB-INF/config</code>作为基础配置文件目录</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">context-param</span>&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">param-name</span>&gt;</span>configDir<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">param-value</span>&gt;</span>/WEB-INF/config<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">context-param</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>在需要导入配置的地方可以用如下方式导入</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">context:property-placeholder</span> <span class="attr">location</span>=<span class="string">"$&#123;configDir&#125;/database.properties"</span> <span class="attr">ignore-unresolvable</span>=<span class="string">"true"</span>/&gt;</span></div></pre></td></tr></table></figure>
+<p>比如,spring的配置注入</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"configProperties"</span> <span class="attr">class</span>=<span class="string">"org.springframework.beans.factory.config.PropertiesFactoryBean"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"locations"</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">list</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">value</span>&gt;</span>$&#123;configDir&#125;/*.properties<span class="tag">&lt;/<span class="name">value</span>&gt;</span></div><div class="line">            <span class="tag">&lt;/<span class="name">list</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">property</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"propertyConfigurer"</span> <span class="attr">class</span>=<span class="string">"org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"properties"</span> <span class="attr">ref</span>=<span class="string">"configProperties"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></div></pre></td></tr></table></figure>
+<h2 id="生产环境"><a href="#生产环境" class="headerlink" title="生产环境"></a>生产环境</h2><blockquote>
+<p>生产环境中,使用其他目录作为配置文件目录,已确保更新war包时候不会把原配置替换掉</p>
+</blockquote>
+<p>要自定义配置目录，则可以修改webapp的Context Descriptor。以tomcat为例：<br>在如下目录${CATALINA_HOME}/conf/Catalina/localhost/下建立[webapp_name].xml，这里是<br>registryService.xml，内容如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">Context</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">Parameter</span> <span class="attr">name</span>=<span class="string">"configDir"</span> <span class="attr">value</span>=<span class="string">"file:/app/config"</span> <span class="attr">override</span>=<span class="string">"false"</span>/&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">Context</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>其中,<code>value=&quot;file:/app/config&quot;</code>表示配置文件都放在<code>/app/config</code>目录下</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Tomcat</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java/" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/12/01/Java/java_web_config/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Nginx/nginx_guide" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -471,175 +575,6 @@
 
 
   
-    <article id="post-Common/git_primer" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/22/Common/git_primer/">Git基础</a>
-    </h1>
-  
-
-        
-        <a href="/2016/07/22/Common/git_primer/" class="archive-article-date">
-  	<time datetime="2016-07-22T01:48:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-07-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>参考链接:<a href="http://www.liaoxuefeng.com/" target="_blank" rel="external">廖雪峰的官方网站</a></p>
-</blockquote>
-<h1 id="Quick-Learn-Git"><a href="#Quick-Learn-Git" class="headerlink" title="Quick Learn Git !"></a>Quick Learn Git !</h1><h2 id="快捷键"><a href="#快捷键" class="headerlink" title="快捷键"></a>快捷键</h2><p><code>mkdir &lt;dirname&gt;</code> 创建文件夹</p>
-<p><code>cd &lt;dirname&gt;</code>目录移动</p>
-<p><code>pwd</code> 显示当前目录</p>
-<p><code>git init</code> 把当前目录变成Git可以管理的仓库</p>
-<p><code>ls -ah</code> 显示所有文件，包括隐藏</p>
-<p><code>git add &lt;file1 file2&gt;</code> 添加文件到仓库</p>
-<p><code>git commit -m &quot;description...&quot;</code> 提交变更</p>
-<p><code>git status</code> 查看git状态</p>
-<p><code>git diff &lt;file&gt;</code> 查看file的修改情况</p>
-<p><code>git log</code> 查看git历史记录</p>
-<p><code>git log -pretty=oneline</code> 单行查看git历史记录</p>
-<p><code>git reset --hard HEAD^</code> git回上一个版本</p>
-<p><code>cat &lt;file&gt;</code> 查看file的内容</p>
-<p><code>git reset --hard 363824</code> 版本回到commit id为363824的版本</p>
-<p><code>git reflog</code> 查看所有的历史git版本</p>
-<p><code>git diff HEAD -- &lt;file&gt;</code> 查看工作区和版本库最新版本区别</p>
-<p><code>git checkout -- &lt;file&gt;</code> 丢弃工作区的修改并回到版本库最新版本(stage和库取最新)</p>
-<p><code>git reset HEAD &lt;file&gt;</code> 撤销掉stage版本（unstage）</p>
-<p><code>git rm &lt;file&gt;</code> 从版本库删除文件</p>
-<h2 id="git工作区、暂存区概念"><a href="#git工作区、暂存区概念" class="headerlink" title="git工作区、暂存区概念"></a>git工作区、暂存区概念</h2><p><img src="/img/git/1.jpeg" alt="git工作区"></p>
-<h2 id="GItHub-设置"><a href="#GItHub-设置" class="headerlink" title="GItHub 设置"></a>GItHub 设置</h2><p><code>ssh-keygen -t rsa -C &quot;wyp0596@qq.com&quot;</code></p>
-<p>一路回车</p>
-<p>上GitHub添加Key</p>
-<p><img src="/img/git/2.png" alt=""></p>
-<h2 id="GitHub"><a href="#GitHub" class="headerlink" title="GitHub"></a>GitHub</h2><p><code>git remote add origin git@github.com:wyp0596/learngit.git</code> 关联</p>
-<p><code>git push -u origin master</code> 推送。。第一次推送用－u 以后不需要</p>
-<p><code>git clone git@github.com:wyp0596/learngit.git</code> 克隆</p>
-<h2 id="分支管理"><a href="#分支管理" class="headerlink" title="分支管理"></a>分支管理</h2><p><code>git checkout -b dev</code> 创建dev分支并切换分支</p>
-<p>相当于</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">$ git branch dev</div><div class="line"></div><div class="line">$ git checkout dev</div></pre></td></tr></table></figure>
-<p><code>git branch</code> 查看当前分支</p>
-<p><code>git checkout master</code> 切换回master分支</p>
-<p><code>git merge dev</code> 把dev分支合并到master分支上</p>
-<p><code>git branch -d dev</code> 删除dev分支</p>
-<p><code>git log --graph --pretty=oneline --abbrev-commit</code></p>
-<p>查看分支的合并情况</p>
-<p><code>git merge --no-ff -m &quot;merge with no-ff&quot; dev</code> 不使用ff模式合并分支dev</p>
-<h2 id="保存、恢复现场"><a href="#保存、恢复现场" class="headerlink" title="保存、恢复现场"></a>保存、恢复现场</h2><p><code>git stash</code> 保存现场</p>
-<p><code>git stash list</code> 现场列表</p>
-<p><code>git stash pop</code> 恢复现场，并删除存档（多现场要指定现场stash@{1}）</p>
-<p><code>git stash apply</code> 恢复现场</p>
-<p><code>git stash drop</code> 删除存档</p>
-<h2 id="多人协作"><a href="#多人协作" class="headerlink" title="多人协作"></a>多人协作</h2><ol>
-<li>首先，可以试图用<code>git push origin branch-name</code>推送自己的修改；</li>
-</ol>
-<ol>
-<li>如果推送失败，则因为远程分支比你的本地更新，需要先用git pull试图合并；</li>
-</ol>
-<ol>
-<li>如果合并有冲突，则解决冲突，并在本地提交；</li>
-</ol>
-<ol>
-<li>没有冲突或者解决掉冲突后，再用<code>git push origin branch-name</code>推送就能成功！</li>
-</ol>
-<p>如果git pull提示“no tracking information”，则说明本地分支和远程分支的链接关系没有创建，用命令<code>git branch --set-upstream branch-name origin/branch-name</code>。</p>
-<p>这就是多人协作的工作模式，一旦熟悉了，就非常简单。</p>
-<ul>
-<li>查看远程库信息，使用git remote -v；</li>
-</ul>
-<ul>
-<li>在本地创建和远程分支对应的分支，使用git checkout -b branch-name origin/branch-name，本地和远程分支的名称最好一致；</li>
-</ul>
-<h2 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h2><p><code>git tag</code> 标签列表</p>
-<p><code>git tag v1.0</code> 添加标签v1.0到当前commit</p>
-<p><code>git log --pretty=oneline --abbrev-commit</code> 查看commmit</p>
-<p><code>git tag v0.9 622333</code> 添加标签v1.0到指定commit</p>
-<p><code>git show v0.9</code></p>
-<p><code>$ git tag -a v0.1 -m &quot;version 0.1 released&quot; 3628164</code></p>
-<p>带说明的标签</p>
-<p><code>$ git tag -s v0.2 -m &quot;signed version 0.2 released&quot; fec145a</code> 用私钥签名一个标签</p>
-<p><code>git tag -d v0.1</code> 删除本地标签</p>
-<p><code>git push origin v1.0</code> 上传标签</p>
-<p><code>git push origin --tags</code> 推送所有未推送标签</p>
-<p><code>git push origin :refs/tags/v0.9</code> 删除远程标签</p>
-<h2 id="自定义Git"><a href="#自定义Git" class="headerlink" title="自定义Git"></a>自定义Git</h2><p><code>git config --global color.ui true</code> 加上颜色</p>
-<p><a href="https://github.com/github/gitignore" target="_blank" rel="external">.gitignore</a></p>
-<p>偷懒流</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">$ git config --global alias.st status</div><div class="line"></div><div class="line">$ git config --global alias.co checkout</div><div class="line"></div><div class="line">$ git config --global alias.ci commit</div><div class="line"></div><div class="line">$ git config --global alias.br branch</div><div class="line"></div><div class="line">$ git config --global alias.unstage &apos;reset HEAD&apos;</div><div class="line"></div><div class="line">$ git config --global alias.last &apos;log -1&apos;</div><div class="line"></div><div class="line">$ git config --global alias.lg &quot;log --color --graph --pretty=format:&apos;%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset&apos; --abbrev-commit&quot;</div></pre></td></tr></table></figure>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Common</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Git/" class="article-tag-list-link color4">Git</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/07/22/Common/git_primer/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/10/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/12/">Next &raquo;</a>
@@ -745,19 +680,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Mac</a>
+                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+                <a href="javascript:void(0)" class="js-tag color4">Mac</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -766,6 +697,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Seckill</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -809,19 +744,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Config</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
               </li>
              
               <li class="article-tag-list-item">

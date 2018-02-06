@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://blog.ajavac.com/2018/02/06/MySQL/mysql_index/</loc>
+    
+    <lastmod>2018-02-06T09:40:06.725Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://blog.ajavac.com/2017/09/03/Common/tcp_handshake/</loc>
     
     <lastmod>2017-09-03T07:09:16.000Z</lastmod>

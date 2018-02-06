@@ -145,6 +145,180 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-EffectiveJava/chapter2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/22/EffectiveJava/chapter2/">《Effective Java》读书笔记——第2章</a>
+    </h1>
+  
+
+        
+        <a href="/2017/03/22/EffectiveJava/chapter2/" class="archive-article-date">
+  	<time datetime="2017-03-22T11:03:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="创建和销毁对象"><a href="#创建和销毁对象" class="headerlink" title="创建和销毁对象"></a>创建和销毁对象</h2><h3 id="No-1-考虑用静态工厂方法代替构造器"><a href="#No-1-考虑用静态工厂方法代替构造器" class="headerlink" title="No.1 考虑用静态工厂方法代替构造器"></a>No.1 考虑用静态工厂方法代替构造器</h3><p>静态工厂方法的优点：</p>
+<ol>
+<li>它们有名称</li>
+<li>不必再每次调用它们的时候都创建一个新对象</li>
+<li>它们可以返回原返回类型的任何子类型的对象</li>
+<li>在创建参数化类型实例的时候，它们使代码变得更加简洁</li>
+</ol>
+<p>静态工厂方法的缺点：</p>
+<ol>
+<li>类如果不含公有的或者受保护的构造器，就不能被子类化</li>
+<li>它们与其他的静态方法实际上没有任何区别</li>
+</ol>
+<p>静态工厂方法的一些惯用名称：</p>
+<ul>
+<li>valueOf</li>
+<li>of</li>
+<li>getInstance</li>
+<li>newInstance</li>
+<li>getType</li>
+<li>newType</li>
+</ul>
+<h3 id="No-2-遇到多个构造器参数时要考虑用构建器"><a href="#No-2-遇到多个构造器参数时要考虑用构建器" class="headerlink" title="No.2 遇到多个构造器参数时要考虑用构建器"></a>No.2 遇到多个构造器参数时要考虑用构建器</h3><blockquote>
+<p>静态工厂方法和构造器都不能很好地扩展到大量的可选参数，JavaBeans模式有着严重的缺点（构造过程中可能处于不一致的状态，无法保证一致性），而Builder模式在大量可选参数的情况下可以满足可读性、一致性等要求。</p>
+</blockquote>
+<p>总之，如果类的构造器或者静态工厂方法中具有多个参数（<strong>大于4个</strong>），设计这种类的时候，Builder模式就是不错的选择，尤其是在大多数参数是可选的时候。与传统的重叠构造器模式相比，Builder模式的客户端代码将更易于阅读和编写，构建器也比JavaBeans更加安全。</p>
+<h3 id="No-3-用私有构造器或者枚举类型强化Singleton属性"><a href="#No-3-用私有构造器或者枚举类型强化Singleton属性" class="headerlink" title="No.3 用私有构造器或者枚举类型强化Singleton属性"></a>No.3 用私有构造器或者枚举类型强化Singleton属性</h3><ol>
+<li>静态final域和私有构造器仍可能受到攻击</li>
+</ol>
+<ol>
+<li><strong>单元素的枚举类型</strong>已经成为实现Singleton的最佳方法。</li>
+</ol>
+<h3 id="No-4-通过私有构造器强化不可实例化的能力"><a href="#No-4-通过私有构造器强化不可实例化的能力" class="headerlink" title="No.4 通过私有构造器强化不可实例化的能力"></a>No.4 通过私有构造器强化不可实例化的能力</h3><blockquote>
+<p>工具类只有静态方法，实例化没有意义</p>
+</blockquote>
+<ol>
+<li>企图通过将类做成抽象类来强制该类不可被实例化，这是行不通的。该类可以被子类化，并且其子类可以被实例化</li>
+<li>将构造器私有化可以强化该类不可实例化的能力，但是它也使得该类不可被子类化</li>
+</ol>
+<h3 id="No-5-避免创建不必要的对象"><a href="#No-5-避免创建不必要的对象" class="headerlink" title="No.5 避免创建不必要的对象"></a>No.5 避免创建不必要的对象</h3><blockquote>
+<p>要避免创建不必要的对象</p>
+</blockquote>
+<ol>
+<li>如果对象是不可变的（immutable），它就始终可以被重用</li>
+<li>可以通过静态工厂方法避免创建不必要的对象，比如<code>Boolean.valueOf(String)</code></li>
+<li>重用那些已知不会被修改的对象</li>
+<li>优先使用<strong>基本类型</strong>而不是<strong>装箱基本类型</strong>，当心无意识的<strong>自动装箱</strong></li>
+<li>小对象的创建和回收动作是廉价的，所以不能绝对化的认为要避免创建对象，通过创建附加对象，提升程序的清晰性、简洁性和功能性，这通常是好事</li>
+</ol>
+<p>实践：</p>
+<ol>
+<li>比如<code>String str= new String(&quot;test&quot;);</code>就是很不好的例子，应该使用<code>String str= &quot;test&quot;;</code></li>
+<li>字符串的多次拼接应该考虑使用<code>StringBuilder</code>而不是简单的<code>+</code>或者<code>+=</code> ，除非只是一次性的拼接（编译器会自动优化）</li>
+</ol>
+<h3 id="No-6-消除过期的对象引用"><a href="#No-6-消除过期的对象引用" class="headerlink" title="No.6 消除过期的对象引用"></a>No.6 消除过期的对象引用</h3><ol>
+<li>清空对象引用应该是一种例外，而不是一种规范行为</li>
+<li>只要类是自己管理内存，程序员就应该警惕内存泄漏问题</li>
+<li>内存泄漏的另一个常见来源是缓存</li>
+<li>内存泄漏的第三个常见来源是监听器和其他回调</li>
+<li>最好能在内存泄漏发生之前就知道如何预测此类问题，并阻止它们发生</li>
+</ol>
+<p>解决方案：</p>
+<ol>
+<li>使用弱引用<code>WeakHashMap</code></li>
+<li>后台线程定期清理没用的缓存项，比如<code>LinkedHashMap</code>的<code>removeEldestEntry</code></li>
+<li>对于更加复杂的缓存，必须直接使用<code>java.lang.ref</code></li>
+</ol>
+<h3 id="No-7-避免使用终结方法"><a href="#No-7-避免使用终结方法" class="headerlink" title="No.7 避免使用终结方法"></a>No.7 避免使用终结方法</h3><ol>
+<li>终结方法（finalizer）通常是不可预测的，也是很危险的，一般情况下是不必要的</li>
+<li>不应该依赖终结方法来更新重要的持久状态，因为不保证终结方法会被执行</li>
+<li>使用终结方法有一个非常严重的（Severe）性能损失</li>
+<li>最好使用<strong>显式终结方法</strong>，通常与<code>try...finally</code>结构结合起来使用，以确保及时终止。比如<code>InputStream</code>、<code>OutputStream</code>和<code>java.sql.Connection</code></li>
+</ol>
+<p>用途：</p>
+<ol>
+<li>终结方法可以充当“<strong>安全网</strong>（safety net）“，在客户端为进行显式终止来正常结束的情况下释放资源，但是如果终结方法发现资源还未被终止，则应该在日志中记录这一警告，比如<code>FileInputStream</code></li>
+<li>第二个用途与对象的本地对等体（native peer）有关，终结方法应该完成所有必要的工作，<strong>释放关键的资源</strong></li>
+</ol>
+<p>注意：</p>
+<ol>
+<li>如果子类覆盖了超类的终结方法，但是忘了手动调用超类的终结方法，那么超类的终结方法将永远的不到调用</li>
+<li>可以将终结方法放在一个匿名的类中，它的唯一用途就是终结外围实例（enclosing instance），被称为终结方法守卫者（finalizer guardian）</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Effective_Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">book</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/book/" class="article-tag-list-link color5">book</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/03/22/EffectiveJava/chapter2/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-MySQL/mysql_innod_mvcc" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -372,114 +546,6 @@
 
 
   
-    <article id="post-EffectiveJava/chapter1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/14/EffectiveJava/chapter1/">《Effective Java》读书笔记——第1章</a>
-    </h1>
-  
-
-        
-        <a href="/2017/03/14/EffectiveJava/chapter1/" class="archive-article-date">
-  	<time datetime="2017-03-14T08:20:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>有效地使用Java及其基本类库十分重要，尤其是：</p>
-<ol>
-<li><code>java.lang</code></li>
-<li><code>java.util</code></li>
-<li><code>java.util.concurrent</code></li>
-<li><code>java.io</code></li>
-</ol>
-<p>编写程序的目标是：清晰、正确、可用、健壮、灵活和可维护</p>
-<ol>
-<li>Java语言支持四种类型：接口（interface）、类（class）、数组（array）和基本类型（primitive）</li>
-<li>前三种为引用类型（reference type），类实例和数组是对象（object），而基本类型的值则不是对象</li>
-<li>类的成员（member）由它的域（field）、方法（method）、成员类（member class）和成员接口（member interface）组成</li>
-<li>方法的签名（signature）由它的名称和所有参数类型组成，签名不包括它的返回类型</li>
-<li>API（Application Programming Interface）指类、接口、构造器（constructor）、成员和序列化形式（serialized form），通过他们可以访问类、接口或者包</li>
-<li>一个包导出的API由该包中的每个公有（public）类或者接口中所有公有的或者受保护的（protected）成员和构造器组成</li>
-</ol>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Effective_Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">book</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/book/" class="article-tag-list-link color5">book</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/03/14/EffectiveJava/chapter1/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
@@ -585,19 +651,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Mac</a>
+                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+                <a href="javascript:void(0)" class="js-tag color4">Mac</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -606,6 +668,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Seckill</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -649,19 +715,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Config</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
               </li>
              
               <li class="article-tag-list-item">

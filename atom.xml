@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://blog.ajavac.com/"/>
-  <updated>2017-09-03T07:09:16.000Z</updated>
+  <updated>2018-02-06T09:40:06.725Z</updated>
   <id>https://blog.ajavac.com/</id>
   
   <author>
@@ -14,6 +14,87 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MySQL索引</title>
+    <link href="https://blog.ajavac.com/2018/02/06/MySQL/mysql_index/"/>
+    <id>https://blog.ajavac.com/2018/02/06/MySQL/mysql_index/</id>
+    <published>2018-02-06T09:39:22.000Z</published>
+    <updated>2018-02-06T09:40:06.725Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p><a href="http://blog.codinglabs.org/articles/theory-of-mysql-index.html" target="_blank" rel="external">MySQL索引背后的数据结构及算法原理</a></p>
+<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><ol>
+<li>索引的本质是一种数据结构</li>
+<li>索引一般存储于磁盘上, 所以受磁盘I/O影响</li>
+<li>磁盘需要寻道/寻址的时间, 而且有一次读入连续的一段数据的特点(局部性原理/磁盘预读), 所以高度低的 B-Tree/B+Tree 比红黑数更适合作为索引的数据结构, B-Tree/B+Tree 高度低, 磁盘I/O次数少, 效率更高</li>
+<li>B-Tree 所有节点上都有data域, B+Tree 只有叶子节点有data域, 而且有的进一步优化, 增加顺序访问指针</li>
+</ol>
+<h2 id="聚集索引"><a href="#聚集索引" class="headerlink" title="聚集索引"></a>聚集索引</h2><blockquote>
+<p>InnoDB 使用聚集索引</p>
+</blockquote>
+<ol>
+<li>索引结构为 B+Tree</li>
+<li><strong>数据文件本身就是索引文件, 叶节点data域保存了完整的数据记录</strong></li>
+<li>索引的key为数据表的主键, 表数据文件本身就是主索引</li>
+<li>InnoDB 要求表必须有主键(没有会自动生成一个隐含字段作为主键)</li>
+<li>InnoDB 辅助索引都引用主键作为data域(所以需要检索两遍)</li>
+<li>InnoDB 不建议使用过长的字段做主键(会导致辅助索引过大)</li>
+<li>InnoDB 不建议使用非单调字段作为主键(会导致插入数据时候分裂调整频繁而低效, 使用自增字段作为主键是一个好选择)</li>
+</ol>
+<h2 id="非聚集索引"><a href="#非聚集索引" class="headerlink" title="非聚集索引"></a>非聚集索引</h2><blockquote>
+<p>MyISAM 使用非聚集索引</p>
+</blockquote>
+<ol>
+<li>索引结构为 B+Tree</li>
+<li><strong>索引文件和数据文件是分离的, 索引文件仅保存数据记录的地址</strong></li>
+<li>MyISAM 索引的key为数据表的键, data域为数据记录的地址</li>
+<li>MyISAM 不要求表有主键</li>
+<li>MyISAM 辅助索引的data域也为数据记录的地址</li>
+</ol>
+<h2 id="最左前缀原理"><a href="#最左前缀原理" class="headerlink" title="最左前缀原理"></a>最左前缀原理</h2><blockquote>
+<p>单列索引对一个字段进行索引, 联合索引对多个字段进行索引</p>
+</blockquote>
+<p>查询sql是否能利用联合索引跟查询的字段和联合索引的字段顺序有关:</p>
+<p>MySql的查询优化器会自动调整where子句的条件顺序以适用索引</p>
+<p>假设有联合索引索引: <code>&lt;k1,k2,k3&gt;</code></p>
+<p>以下查询可命中索引:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">select * from table where k1 = '1' and k2 = '2' and k3 = '3'; # 全命中</div><div class="line">select * from table where k1 = '1' and k2 = '2'; # 部分命中</div><div class="line">select * from table where k1 like '1%'; # 右边模糊</div><div class="line">select * from table where k1 &gt; '1'; # 范围匹配</div><div class="line">select * from table where k1 in ('1','2','3'); # 多值精确匹配</div></pre></td></tr></table></figure>
+<p>以下查询无法命中索引:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select * from table where left(k1,2) = '21'; # 使用函数</div><div class="line">select * from table where k1 like '%2'; # 左模糊</div><div class="line">select * from table where k2 = '2'; # 无法匹配</div><div class="line">select * from table where k3 = '2'; # 无法匹配</div></pre></td></tr></table></figure>
+<h2 id="索引选择"><a href="#索引选择" class="headerlink" title="索引选择"></a>索引选择</h2><blockquote>
+<p>索引虽然可以加快查询速度, 但是索引文件本身需要存储空间, 而且会加重插入/删除/修改记录时的负担, 也增加MySQL运行时维护索引的负担</p>
+</blockquote>
+<ol>
+<li>2000条以内记录没必要建立索引</li>
+<li>索引的选择性（Selectivity）低的字段不建议建立索引, 比如性别</li>
+<li>长字段建立前缀索引</li>
+<li>前缀索引兼顾索引大小和查询速度，缺点是不能用于ORDER BY和GROUP BY操作，也不能用于Covering index（即当索引本身包含查询所需全部数据时，不再访问数据文件本身）</li>
+</ol>
+<p>前缀索引长度分析sql:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">SELECT</span> <span class="keyword">count</span>(<span class="keyword">DISTINCT</span>(<span class="keyword">concat</span>(first_name, <span class="keyword">left</span>(last_name, <span class="number">4</span>))))/<span class="keyword">count</span>(*) <span class="keyword">AS</span> Selectivity <span class="keyword">FROM</span> user_info;</div></pre></td></tr></table></figure>
+<h2 id="InnoDB-主键选择"><a href="#InnoDB-主键选择" class="headerlink" title="InnoDB 主键选择"></a>InnoDB 主键选择</h2><blockquote>
+<p>InnoDB上尽可能采用业务无关的自增字段作为主键</p>
+</blockquote>
+<ol>
+<li>如非必要, 选择一个与业务无关的自增字段作为主键</li>
+<li>使用随机主键会增加开销, MySQL频繁移动/分页操作造成大量的碎片</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;参考文献&quot;&gt;&lt;a href=&quot;#参考文献&quot; class=&quot;headerlink&quot; title=&quot;参考文献&quot;&gt;&lt;/a&gt;参考文献&lt;/h2&gt;&lt;p&gt;&lt;a href=&quot;http://blog.codinglabs.org/articles/theory-of-mysql-i
+    
+    </summary>
+    
+      <category term="MySQL" scheme="https://blog.ajavac.com/categories/MySQL/"/>
+    
+    
+      <category term="Common" scheme="https://blog.ajavac.com/tags/Common/"/>
+    
+      <category term="MySQL" scheme="https://blog.ajavac.com/tags/MySQL/"/>
+    
+  </entry>
   
   <entry>
     <title>TCP三次握手和四次分手</title>
@@ -905,9 +986,9 @@
       <category term="Linux" scheme="https://blog.ajavac.com/categories/Linux/"/>
     
     
-      <category term="Linux" scheme="https://blog.ajavac.com/tags/Linux/"/>
-    
       <category term="Terminal" scheme="https://blog.ajavac.com/tags/Terminal/"/>
+    
+      <category term="Linux" scheme="https://blog.ajavac.com/tags/Linux/"/>
     
   </entry>
   

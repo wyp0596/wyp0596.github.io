@@ -145,6 +145,151 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-MySQL/mysql_index" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/02/06/MySQL/mysql_index/">MySQL索引</a>
+    </h1>
+  
+
+        
+        <a href="/2018/02/06/MySQL/mysql_index/" class="archive-article-date">
+  	<time datetime="2018-02-06T09:39:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p><a href="http://blog.codinglabs.org/articles/theory-of-mysql-index.html" target="_blank" rel="external">MySQL索引背后的数据结构及算法原理</a></p>
+<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><ol>
+<li>索引的本质是一种数据结构</li>
+<li>索引一般存储于磁盘上, 所以受磁盘I/O影响</li>
+<li>磁盘需要寻道/寻址的时间, 而且有一次读入连续的一段数据的特点(局部性原理/磁盘预读), 所以高度低的 B-Tree/B+Tree 比红黑数更适合作为索引的数据结构, B-Tree/B+Tree 高度低, 磁盘I/O次数少, 效率更高</li>
+<li>B-Tree 所有节点上都有data域, B+Tree 只有叶子节点有data域, 而且有的进一步优化, 增加顺序访问指针</li>
+</ol>
+<h2 id="聚集索引"><a href="#聚集索引" class="headerlink" title="聚集索引"></a>聚集索引</h2><blockquote>
+<p>InnoDB 使用聚集索引</p>
+</blockquote>
+<ol>
+<li>索引结构为 B+Tree</li>
+<li><strong>数据文件本身就是索引文件, 叶节点data域保存了完整的数据记录</strong></li>
+<li>索引的key为数据表的主键, 表数据文件本身就是主索引</li>
+<li>InnoDB 要求表必须有主键(没有会自动生成一个隐含字段作为主键)</li>
+<li>InnoDB 辅助索引都引用主键作为data域(所以需要检索两遍)</li>
+<li>InnoDB 不建议使用过长的字段做主键(会导致辅助索引过大)</li>
+<li>InnoDB 不建议使用非单调字段作为主键(会导致插入数据时候分裂调整频繁而低效, 使用自增字段作为主键是一个好选择)</li>
+</ol>
+<h2 id="非聚集索引"><a href="#非聚集索引" class="headerlink" title="非聚集索引"></a>非聚集索引</h2><blockquote>
+<p>MyISAM 使用非聚集索引</p>
+</blockquote>
+<ol>
+<li>索引结构为 B+Tree</li>
+<li><strong>索引文件和数据文件是分离的, 索引文件仅保存数据记录的地址</strong></li>
+<li>MyISAM 索引的key为数据表的键, data域为数据记录的地址</li>
+<li>MyISAM 不要求表有主键</li>
+<li>MyISAM 辅助索引的data域也为数据记录的地址</li>
+</ol>
+<h2 id="最左前缀原理"><a href="#最左前缀原理" class="headerlink" title="最左前缀原理"></a>最左前缀原理</h2><blockquote>
+<p>单列索引对一个字段进行索引, 联合索引对多个字段进行索引</p>
+</blockquote>
+<p>查询sql是否能利用联合索引跟查询的字段和联合索引的字段顺序有关:</p>
+<p>MySql的查询优化器会自动调整where子句的条件顺序以适用索引</p>
+<p>假设有联合索引索引: <code>&lt;k1,k2,k3&gt;</code></p>
+<p>以下查询可命中索引:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">select * from table where k1 = '1' and k2 = '2' and k3 = '3'; # 全命中</div><div class="line">select * from table where k1 = '1' and k2 = '2'; # 部分命中</div><div class="line">select * from table where k1 like '1%'; # 右边模糊</div><div class="line">select * from table where k1 &gt; '1'; # 范围匹配</div><div class="line">select * from table where k1 in ('1','2','3'); # 多值精确匹配</div></pre></td></tr></table></figure>
+<p>以下查询无法命中索引:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">select * from table where left(k1,2) = '21'; # 使用函数</div><div class="line">select * from table where k1 like '%2'; # 左模糊</div><div class="line">select * from table where k2 = '2'; # 无法匹配</div><div class="line">select * from table where k3 = '2'; # 无法匹配</div></pre></td></tr></table></figure>
+<h2 id="索引选择"><a href="#索引选择" class="headerlink" title="索引选择"></a>索引选择</h2><blockquote>
+<p>索引虽然可以加快查询速度, 但是索引文件本身需要存储空间, 而且会加重插入/删除/修改记录时的负担, 也增加MySQL运行时维护索引的负担</p>
+</blockquote>
+<ol>
+<li>2000条以内记录没必要建立索引</li>
+<li>索引的选择性（Selectivity）低的字段不建议建立索引, 比如性别</li>
+<li>长字段建立前缀索引</li>
+<li>前缀索引兼顾索引大小和查询速度，缺点是不能用于ORDER BY和GROUP BY操作，也不能用于Covering index（即当索引本身包含查询所需全部数据时，不再访问数据文件本身）</li>
+</ol>
+<p>前缀索引长度分析sql:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">SELECT</span> <span class="keyword">count</span>(<span class="keyword">DISTINCT</span>(<span class="keyword">concat</span>(first_name, <span class="keyword">left</span>(last_name, <span class="number">4</span>))))/<span class="keyword">count</span>(*) <span class="keyword">AS</span> Selectivity <span class="keyword">FROM</span> user_info;</div></pre></td></tr></table></figure>
+<h2 id="InnoDB-主键选择"><a href="#InnoDB-主键选择" class="headerlink" title="InnoDB 主键选择"></a>InnoDB 主键选择</h2><blockquote>
+<p>InnoDB上尽可能采用业务无关的自增字段作为主键</p>
+</blockquote>
+<ol>
+<li>如非必要, 选择一个与业务无关的自增字段作为主键</li>
+<li>使用随机主键会增加开销, MySQL频繁移动/分页操作造成大量的碎片</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Common</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/MySQL/" class="article-tag-list-link color1">MySQL</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/02/06/MySQL/mysql_index/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Common/tcp_handshake" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -561,161 +706,6 @@
 
 
   
-    <article id="post-Java/java7" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/15/Java/java7/">Java 7 新特性</a>
-    </h1>
-  
-
-        
-        <a href="/2017/08/15/Java/java7/" class="archive-article-date">
-  	<time datetime="2017-08-15T07:39:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>Oracle 公司于 2011 年 7 月 7 日发布 Java 7，添加了许多新特性</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th>序号</th>
-<th>特性</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>switch中添加对字符串的支持</td>
-<td>开关语句支持字符串</td>
-</tr>
-<tr>
-<td>2</td>
-<td>try-with-resource</td>
-<td>自动化资源管理</td>
-</tr>
-<tr>
-<td>3</td>
-<td>钻石符号<code>&lt;&gt;</code></td>
-<td>类型自动推导</td>
-</tr>
-<tr>
-<td>4</td>
-<td>多异常捕捉</td>
-<td>一次性捕捉多种异常</td>
-</tr>
-<tr>
-<td>5</td>
-<td>访问文件系统</td>
-<td>新的文件访问方式</td>
-</tr>
-<tr>
-<td>6</td>
-<td>异步I/O</td>
-<td></td>
-</tr>
-<tr>
-<td>7</td>
-<td>二进制常量以及下划线支持</td>
-</tr>
-</tbody>
-</table>
-<h2 id="switch中添加对字符串的支持"><a href="#switch中添加对字符串的支持" class="headerlink" title="switch中添加对字符串的支持"></a>switch中添加对字符串的支持</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">	String aStr = <span class="string">"string"</span>;</div><div class="line">  	<span class="keyword">switch</span> (aStr) &#123;</div><div class="line">      <span class="keyword">case</span> <span class="string">"1"</span>:</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">      <span class="keyword">case</span> <span class="string">"2"</span>:</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">      <span class="keyword">default</span>:</div><div class="line">        System.out.println(aStr);</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="try-with-resource"><a href="#try-with-resource" class="headerlink" title="try-with-resource"></a>try-with-resource</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">try</span> ( InputStream is  = <span class="keyword">new</span> FileInputStream(<span class="string">"a.txt"</span>);</div><div class="line">      OutputStream os = <span class="keyword">new</span> FileOutputStream(<span class="string">"b.txt"</span>)) &#123;</div><div class="line">    <span class="keyword">char</span> charStr = (<span class="keyword">char</span>) is.read();</div><div class="line">    os.write(charStr);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ol>
-<li>只要操作类实现了<code>AutoCloseable</code>接口就可以在try语句块退出时自动调用close方法来关闭资源流</li>
-<li>关闭方法的异常也可以直接catch</li>
-<li>可以声明多个资源</li>
-</ol>
-<h3 id="钻石符号"><a href="#钻石符号" class="headerlink" title="钻石符号"></a>钻石符号</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 钻石符号自动判断类型</span></div><div class="line">List&lt;String&gt; strList = <span class="keyword">new</span> ArrayList&lt;&gt;();</div></pre></td></tr></table></figure>
-<h3 id="多异常捕捉"><a href="#多异常捕捉" class="headerlink" title="多异常捕捉"></a>多异常捕捉</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    Thread.sleep(<span class="number">20000</span>);</div><div class="line">    FileInputStream fis = <span class="keyword">new</span> FileInputStream(<span class="string">"/a/b.txt"</span>);</div><div class="line">&#125; <span class="keyword">catch</span> (InterruptedException | IOException e) &#123;</div><div class="line">    e.printStackTrace();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>使用<code>|</code>可以声明同时对多类异常进行捕捉</p>
-<h3 id="访问文件系统"><a href="#访问文件系统" class="headerlink" title="访问文件系统"></a>访问文件系统</h3><h3 id="Path"><a href="#Path" class="headerlink" title="Path"></a>Path</h3><blockquote>
-<p>表示文件路径和文件</p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Path path   = Paths.get(<span class="string">"/home/"</span>, <span class="string">"a.txt"</span>);</div><div class="line">File file = path.toFile();</div></pre></td></tr></table></figure>
-<h3 id="Files"><a href="#Files" class="headerlink" title="Files"></a>Files</h3><blockquote>
-<p>快速操作文件</p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 读取文件内容</span></div><div class="line"><span class="keyword">byte</span>[] data    = Files.readAllBytes(Paths.get(<span class="string">"a.txt"</span>));</div><div class="line">String content = <span class="keyword">new</span> String(data, StandardCharsets.UTF_8);</div><div class="line"></div><div class="line"><span class="comment">// 按行读取文件</span></div><div class="line">List&lt;String&gt; lines = Files.readAllLines(Paths.get(<span class="string">"a.txt"</span>));</div><div class="line"></div><div class="line"><span class="comment">// 写入文件</span></div><div class="line">Files.write(Paths.get(<span class="string">"b.txt"</span>), <span class="string">"Hello World"</span>.getBytes());</div><div class="line"></div><div class="line"><span class="comment">// 创建文件夹，若父文件夹不存在则自动创建</span></div><div class="line">Files.createDirectories(Paths.get(<span class="string">"abc"</span>,<span class="string">"cda"</span>,<span class="string">"a.txt"</span>));</div><div class="line"></div><div class="line"><span class="comment">// 拷贝文件</span></div><div class="line">Files.copy(Paths.get(<span class="string">"a.txt"</span>),Paths.get(<span class="string">"b.txt"</span>));</div></pre></td></tr></table></figure>
-<p>### </p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Basic</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java/" class="article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/08/15/Java/java7/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -821,19 +811,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Mac</a>
+                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+                <a href="javascript:void(0)" class="js-tag color4">Mac</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -842,6 +828,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Seckill</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -885,19 +875,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Config</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
               </li>
              
               <li class="article-tag-list-item">

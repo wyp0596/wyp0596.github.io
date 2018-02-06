@@ -145,6 +145,161 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Java/java7" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/15/Java/java7/">Java 7 新特性</a>
+    </h1>
+  
+
+        
+        <a href="/2017/08/15/Java/java7/" class="archive-article-date">
+  	<time datetime="2017-08-15T07:39:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-15</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>Oracle 公司于 2011 年 7 月 7 日发布 Java 7，添加了许多新特性</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>特性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>switch中添加对字符串的支持</td>
+<td>开关语句支持字符串</td>
+</tr>
+<tr>
+<td>2</td>
+<td>try-with-resource</td>
+<td>自动化资源管理</td>
+</tr>
+<tr>
+<td>3</td>
+<td>钻石符号<code>&lt;&gt;</code></td>
+<td>类型自动推导</td>
+</tr>
+<tr>
+<td>4</td>
+<td>多异常捕捉</td>
+<td>一次性捕捉多种异常</td>
+</tr>
+<tr>
+<td>5</td>
+<td>访问文件系统</td>
+<td>新的文件访问方式</td>
+</tr>
+<tr>
+<td>6</td>
+<td>异步I/O</td>
+<td></td>
+</tr>
+<tr>
+<td>7</td>
+<td>二进制常量以及下划线支持</td>
+</tr>
+</tbody>
+</table>
+<h2 id="switch中添加对字符串的支持"><a href="#switch中添加对字符串的支持" class="headerlink" title="switch中添加对字符串的支持"></a>switch中添加对字符串的支持</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">	String aStr = <span class="string">"string"</span>;</div><div class="line">  	<span class="keyword">switch</span> (aStr) &#123;</div><div class="line">      <span class="keyword">case</span> <span class="string">"1"</span>:</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">      <span class="keyword">case</span> <span class="string">"2"</span>:</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">      <span class="keyword">default</span>:</div><div class="line">        System.out.println(aStr);</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="try-with-resource"><a href="#try-with-resource" class="headerlink" title="try-with-resource"></a>try-with-resource</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">try</span> ( InputStream is  = <span class="keyword">new</span> FileInputStream(<span class="string">"a.txt"</span>);</div><div class="line">      OutputStream os = <span class="keyword">new</span> FileOutputStream(<span class="string">"b.txt"</span>)) &#123;</div><div class="line">    <span class="keyword">char</span> charStr = (<span class="keyword">char</span>) is.read();</div><div class="line">    os.write(charStr);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>只要操作类实现了<code>AutoCloseable</code>接口就可以在try语句块退出时自动调用close方法来关闭资源流</li>
+<li>关闭方法的异常也可以直接catch</li>
+<li>可以声明多个资源</li>
+</ol>
+<h3 id="钻石符号"><a href="#钻石符号" class="headerlink" title="钻石符号"></a>钻石符号</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 钻石符号自动判断类型</span></div><div class="line">List&lt;String&gt; strList = <span class="keyword">new</span> ArrayList&lt;&gt;();</div></pre></td></tr></table></figure>
+<h3 id="多异常捕捉"><a href="#多异常捕捉" class="headerlink" title="多异常捕捉"></a>多异常捕捉</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    Thread.sleep(<span class="number">20000</span>);</div><div class="line">    FileInputStream fis = <span class="keyword">new</span> FileInputStream(<span class="string">"/a/b.txt"</span>);</div><div class="line">&#125; <span class="keyword">catch</span> (InterruptedException | IOException e) &#123;</div><div class="line">    e.printStackTrace();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用<code>|</code>可以声明同时对多类异常进行捕捉</p>
+<h3 id="访问文件系统"><a href="#访问文件系统" class="headerlink" title="访问文件系统"></a>访问文件系统</h3><h3 id="Path"><a href="#Path" class="headerlink" title="Path"></a>Path</h3><blockquote>
+<p>表示文件路径和文件</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Path path   = Paths.get(<span class="string">"/home/"</span>, <span class="string">"a.txt"</span>);</div><div class="line">File file = path.toFile();</div></pre></td></tr></table></figure>
+<h3 id="Files"><a href="#Files" class="headerlink" title="Files"></a>Files</h3><blockquote>
+<p>快速操作文件</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 读取文件内容</span></div><div class="line"><span class="keyword">byte</span>[] data    = Files.readAllBytes(Paths.get(<span class="string">"a.txt"</span>));</div><div class="line">String content = <span class="keyword">new</span> String(data, StandardCharsets.UTF_8);</div><div class="line"></div><div class="line"><span class="comment">// 按行读取文件</span></div><div class="line">List&lt;String&gt; lines = Files.readAllLines(Paths.get(<span class="string">"a.txt"</span>));</div><div class="line"></div><div class="line"><span class="comment">// 写入文件</span></div><div class="line">Files.write(Paths.get(<span class="string">"b.txt"</span>), <span class="string">"Hello World"</span>.getBytes());</div><div class="line"></div><div class="line"><span class="comment">// 创建文件夹，若父文件夹不存在则自动创建</span></div><div class="line">Files.createDirectories(Paths.get(<span class="string">"abc"</span>,<span class="string">"cda"</span>,<span class="string">"a.txt"</span>));</div><div class="line"></div><div class="line"><span class="comment">// 拷贝文件</span></div><div class="line">Files.copy(Paths.get(<span class="string">"a.txt"</span>),Paths.get(<span class="string">"b.txt"</span>));</div></pre></td></tr></table></figure>
+<p>### </p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Basic</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java/" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/08/15/Java/java7/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Docker/docker_registry" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -414,308 +569,6 @@
 
 
   
-    <article id="post-Java/java_collection" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/28/Java/java_collection/">Java 集合框架</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/28/Java/java_collection/" class="archive-article-date">
-  	<time datetime="2017-06-28T09:50:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h1><blockquote>
-<p>Java集合框架是指导Java的集合类。Collection 接口是一组允许重复的对象。Set 接口继承 Collection，但不允许重复，使用自己内部的一个排列机制。 List 接口继承 Collection，允许重复，以元素安插的次序来放置元素，不会重新排列。Map接口是一组成对的键－值对象，即所持有的是key-value pairs。Map中不能有重复的key。拥有自己的内部排列机制。</p>
-<p> ——  wiki</p>
-</blockquote>
-<p><img src="/img/java/java_collection.jpg" alt="Java集合框架"></p>
-<ol>
-<li><code>Collection</code> 接口继承了 <code>Iterable</code> 接口</li>
-<li><code>List</code> <code>Queue</code> <code>Set</code> 接口继承了 <code>Collection</code> 接口</li>
-</ol>
-<h1 id="List"><a href="#List" class="headerlink" title="List"></a>List</h1><ol>
-<li><code>List</code> 接口继承了 <code>Collection</code> 接口</li>
-<li>表示一个有序集合(有序序列), 所有元素通过插入产生, 可以通过数字索引查找</li>
-<li>允许重复元素</li>
-</ol>
-<h2 id="Vector"><a href="#Vector" class="headerlink" title="Vector"></a>Vector</h2><ol>
-<li><code>List</code>的一种基于<strong>可变数组</strong>的实现</li>
-<li>允许所有的元素, 包括<code>null</code></li>
-<li>与<code>ArrayList</code>大致相同, 除了它是<strong>同步</strong>的, 在单线程环境下优先使用<code>ArrayList</code></li>
-<li>特点是: 线程安全(同步), 查找速度快(可按索引), 添加和删除速度较慢( 相对<code>LinkedList</code> )</li>
-<li>当<code>capacity</code>(容量) 不足时候自动进行扩容, 为原来2倍(可定制)</li>
-<li>通过预先确定容量可以节省扩容消耗的时间</li>
-<li><code>fail-fast</code>机制避免遍历时列表被修改(会抛出异常<code>ConcurrentModificationException</code>)</li>
-<li>不能过分依赖<code>fail-fast</code>机制,  只能充当一份基本的保障, 用来查找bug</li>
-<li>遍历优先使用<code>forEach</code>方法</li>
-<li>当需要在遍历时候添加或者删除元素时, 使用<code>ListIterator</code></li>
-</ol>
-<h2 id="ArrayList"><a href="#ArrayList" class="headerlink" title="ArrayList"></a>ArrayList</h2><ol>
-<li><code>List</code>的一种基于<strong>可变数组</strong>的实现</li>
-<li>允许所有的元素, 包括<code>null</code></li>
-<li>与<code>Vector</code>大致相同, 除了它是<strong>非同步</strong>的</li>
-<li>特点是: 非线程安全(非同步), 查找速度快(可按索引), 添加和删除速度较慢( 相对<code>LinkedList</code> )</li>
-<li>当<code>capacity</code>(容量) 不足时候自动进行扩容, 为原来1.5倍</li>
-<li>通过预先确定容量可以节省扩容消耗的时间</li>
-<li><code>fail-fast</code>机制避免遍历时列表被修改(会抛出异常<code>ConcurrentModificationException</code>)</li>
-<li>不能过分依赖<code>fail-fast</code>机制,  只能充当一份基本的保障, 用来查找bug</li>
-<li>遍历优先使用<code>forEach</code>方法</li>
-<li>当需要在遍历时候添加或者删除元素时, 使用<code>ListIterator</code></li>
-</ol>
-<h2 id="LinkedList"><a href="#LinkedList" class="headerlink" title="LinkedList"></a>LinkedList</h2><ol>
-<li><code>List</code> 的一种基于<strong>双向链表</strong>的实现</li>
-<li>允许所有的元素, 包括<code>null</code></li>
-<li>特点是: 非线程安全(<strong>非同步</strong>), 查找速度慢(需要遍历), 添加和删除速度快(相对<code>ArrayList</code>不需要数组拷贝)</li>
-<li><code>fail-fast</code>机制避免遍历时列表被修改(会抛出异常<code>ConcurrentModificationException</code>)</li>
-<li>不能过分依赖<code>fail-fast</code>机制,  只能充当一份基本的保障, 用来查找bug</li>
-<li>遍历优先使用<code>forEach</code>方法</li>
-<li>当需要在遍历时候添加或者删除元素时, 使用<code>ListIterator</code></li>
-</ol>
-<h1 id="Queue"><a href="#Queue" class="headerlink" title="Queue"></a>Queue</h1><ol>
-<li><code>Queue</code> 接口继承了 <code>Collection</code> 接口</li>
-<li>表示一个有优先级的队列</li>
-<li>部分队列有容量的限制, 大部分则没有限制(即插入操作不会失败)</li>
-<li>一般队列是<strong>FIFO (first-in-first-out)</strong>方式的</li>
-<li>优先队列(PriorityQueue) 通过比较来排列元素顺序</li>
-<li>没有定义非阻塞队列方法, 非阻塞队列接口为 <code>BlockingQueue</code></li>
-<li>通常不允许添加<code>null</code>元素, <code>LinkedList</code>允许, 但最好不要, 因为<code>null</code>常常用来作为特殊的返回值</li>
-<li>队列的实现类通常没有实现基于元素的<code>equals</code>和<code>hashCode</code>方法, 因为即使队列元素相同, 队列顺序也常常不同</li>
-</ol>
-<table>
-<thead>
-<tr>
-<th>功能</th>
-<th>抛出异常</th>
-<th>返回特殊值(如<code>null</code>或者<code>false</code>)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>添加元素</td>
-<td>add(e)</td>
-<td>offer(e)</td>
-</tr>
-<tr>
-<td>获取并删除队列头部元素</td>
-<td>remove()</td>
-<td>poll()</td>
-</tr>
-<tr>
-<td>获取队列头部元素</td>
-<td>element()</td>
-<td>peek()</td>
-</tr>
-</tbody>
-</table>
-<h2 id="LinkedList-1"><a href="#LinkedList-1" class="headerlink" title="LinkedList"></a>LinkedList</h2><ol>
-<li><code>Dqueue</code> (双端队列)/<code>Queue</code>(队列)的一种基于<strong>双向链表</strong>的实现</li>
-<li>也可以用作栈, 即 <strong>LIFO (last-in-first-out)</strong></li>
-<li>允许所有的元素, 包括<code>null</code>, 但是不建议</li>
-<li>特点是: 非线程安全(<strong>非同步</strong>), 可充当队列或者栈, 无容量限制</li>
-</ol>
-<h2 id="PriorityQueue"><a href="#PriorityQueue" class="headerlink" title="PriorityQueue"></a>PriorityQueue</h2><ol>
-<li>继承自<code>AbstractQueue</code>, 是优先级队列的一种实现 (小顶堆)</li>
-<li>不允许<code>null</code>元素</li>
-<li>无外部容量限制, 内部容量限制为数组最大容量</li>
-<li>特点是: 非线程安全(<strong>非同步</strong>), 可自定义优先级(比较规则)</li>
-<li>容量不足时自动扩容, 若原容量小于64则扩容为原来2倍加2, 否则扩容为原来1.5倍</li>
-</ol>
-<h1 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h1><ol>
-<li><code>Set</code> 接口继承了 <code>Collection</code> 接口</li>
-<li>存储一组不重复的元素, 他们之间都是不相等的(通过<code>equals</code>方法判断)</li>
-<li>最多存储一个<code>null</code>元素</li>
-<li>虽然没有禁止, 但是如果保存可变元素, 可能会破坏<code>Set</code>的不重复特性</li>
-<li>一般来说, 禁止保存自身作为元素</li>
-<li><code>Set</code>接口的实现类可以选择对元素进行限制</li>
-</ol>
-<h2 id="HashSet"><a href="#HashSet" class="headerlink" title="HashSet"></a>HashSet</h2><ol>
-<li>基于<code>HashMap</code>实现</li>
-<li>允许<code>null</code>元素</li>
-<li>无序, 非同步</li>
-</ol>
-<h2 id="LinkedHashSet"><a href="#LinkedHashSet" class="headerlink" title="LinkedHashSet"></a>LinkedHashSet</h2><ol>
-<li>基于<code>LinkedHashMap</code>实现, 继承了<code>HashSet</code></li>
-<li>允许<code>null</code>元素</li>
-<li>有序, 非同步</li>
-<li>相同元素重复插入时, 顺序不变</li>
-</ol>
-<h2 id="TreeSet"><a href="#TreeSet" class="headerlink" title="TreeSet"></a>TreeSet</h2><ol>
-<li>通常情况下基于<code>TreeMap</code>实现, 实现了<code>NavigableSet</code>接口</li>
-<li>不允许<code>null</code>元素</li>
-<li>有序, 非同步</li>
-<li>相同元素重复插入时, 顺序不变</li>
-</ol>
-<h1 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h1><ol>
-<li>一种用户保存键值对映射的数据结构</li>
-<li>不可保存重复的键值</li>
-<li>每个键可以映射最多一个值</li>
-<li>取代了类<code>Dictionary</code></li>
-<li>提供了三种视图(view): 键视图/值视图/键值对视图</li>
-<li>警惕可变类作为map的键的情况, 可能导致键值对不可达</li>
-<li>一般不允许自引用</li>
-</ol>
-<h2 id="Hashtable"><a href="#Hashtable" class="headerlink" title="Hashtable"></a>Hashtable</h2><ol>
-<li>继承了<code>Dictionary&lt;K,V&gt;</code>, 实现了<code>Map&lt;K,V&gt;</code></li>
-<li><code>非null</code>的对象可以作为键或者值</li>
-<li>线程安全, 有序</li>
-<li>键必须要实现<code>hashCode</code>和<code>equals</code>方法</li>
-<li><code>initial capacity</code>(初始容量) 和 <code>load factor</code>(负载因子, 默认0.75) 影响其性能</li>
-<li>扩容时是原来的两倍+1</li>
-<li><code>fail-fast</code>机制避免了在<code>iterator</code>(遍历)过程中对Hashtable进行操作, 若发生操作则抛出<code>ConcurrentModificationException</code>异常</li>
-<li>不能过分依赖<code>fail-fast</code>机制,  只能充当一份基本的保障, 用来查找bug</li>
-<li><code>Hashtable</code>是同步的, 现在版本已不推荐使用. 需要线程安全可以使用<code>ConcurrentHashMap</code>, 不需要线程安全可以使用<code>HashMap</code></li>
-</ol>
-<h2 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h2><ol>
-<li>继承了<code>AbstractMap&lt;K,V&gt;</code>, 实现了<code>Map&lt;K,V&gt;</code></li>
-<li>允许<code>null</code>作为键或者值</li>
-<li>非线程安全, 无序</li>
-<li>除了允许<code>null</code>和非同步外和<code>Hashtable</code>比较类似</li>
-<li><code>initial capacity</code>(初始容量, 默认16) 和 <code>load factor</code>(负载因子, 默认0.75) 影响其性能</li>
-<li>扩容时是原来的两倍</li>
-<li><code>fail-fast</code>机制避免了在<code>iterator</code>(遍历)过程中对HashMap进行操作, 若发生操作则抛出<code>ConcurrentModificationException</code>异常</li>
-<li>不能过分依赖<code>fail-fast</code>机制,  只能充当一份基本的保障, 用来查找bug</li>
-</ol>
-<h2 id="LinkedHashMap"><a href="#LinkedHashMap" class="headerlink" title="LinkedHashMap"></a>LinkedHashMap</h2><ol>
-<li>继承了<code>HashMap&lt;K,V&gt;</code>, 实现了<code>Map&lt;K,V&gt;</code></li>
-<li>允许<code>null</code>作为键或者值</li>
-<li>非线程安全, 有序</li>
-<li>它比<code>HashMap</code>多记录了插入键值对的顺序(使用双向链表, 可以改为访问顺序), 重复插入同个键不影响顺序</li>
-<li><code>initial capacity</code>(初始容量, 默认16) 和 <code>load factor</code>(负载因子, 默认0.75) 影响其性能</li>
-<li>扩容时是原来的两倍</li>
-<li><code>fail-fast</code>机制避免了在<code>iterator</code>(遍历)过程中对LinkedHashMap进行操作, 若发生操作则抛出<code>ConcurrentModificationException</code>异常</li>
-<li>不能过分依赖<code>fail-fast</code>机制,  只能充当一份基本的保障, 用来查找bug</li>
-<li>因为维持了双向链表, 所以遍历性能比<code>HashMap</code>高</li>
-</ol>
-<h2 id="TreeMap"><a href="#TreeMap" class="headerlink" title="TreeMap"></a>TreeMap</h2><ol>
-<li>继承了<code>AbstractMap&lt;K,V&gt;</code>, 实现了<code>NavigableMap&lt;K,V&gt;</code></li>
-<li>基于红黑树实现，通过键的比较方法（compareTo）或者比较器（Comparator）进行排序，开销是log(n)</li>
-<li>不允许<code>null</code>作为键或者值</li>
-<li>非线程安全, 有序</li>
-<li>插入后不应该再修改该键</li>
-<li><code>fail-fast</code>机制避免了在<code>iterator</code>(遍历)过程中对TreeMap进行操作, 若发生操作则抛出<code>ConcurrentModificationException</code>异常</li>
-<li>不能过分依赖<code>fail-fast</code>机制,  只能充当一份基本的保障, 用来查找bug</li>
-</ol>
-<h1 id="Utils"><a href="#Utils" class="headerlink" title="Utils"></a>Utils</h1><blockquote>
-<p>JDK 提供了一些工具类用来方便地操作集合和数组</p>
-</blockquote>
-<h2 id="Arrays"><a href="#Arrays" class="headerlink" title="Arrays"></a>Arrays</h2><blockquote>
-<p>包含许多操作数组的静态方法</p>
-</blockquote>
-<ol>
-<li><code>sort</code> 方法用来对数组进行排序</li>
-<li><code>parallelSort</code> 方法用来对数组进行并行排序</li>
-<li><code>binarySearch</code> 方法用来二分查找数组中的元素</li>
-<li><code>equals</code> 用来比较两个数组的内容</li>
-<li><code>fill</code> 用来往数组中填充内容</li>
-<li><code>copyOf</code> 用来复制数组</li>
-<li><code>asList</code> 用来将数组转化成ArrayList</li>
-<li><code>hashCode</code> 用来计算数组的hash值</li>
-<li><code>toString</code> 用来将数组转化成字符串</li>
-</ol>
-<h2 id="Collections"><a href="#Collections" class="headerlink" title="Collections"></a>Collections</h2><blockquote>
-<p> 包含许多操作集合的静态方法</p>
-</blockquote>
-<ol>
-<li><code>sort</code> 方法用来对List进行排序</li>
-<li><code>binarySearch</code> 方法用来对List进行二分查找</li>
-<li><code>reverse</code> 方法用来对List进行顺序反转操作</li>
-<li><code>shuffle</code> 方法用来对List进行随机排列</li>
-<li><code>swap</code> 方法用来交换List中两个元素</li>
-<li><code>fill</code> 方法用来对List进行填充</li>
-<li><code>copy</code> 方法用来拷贝List</li>
-<li><code>min</code> 方法用来获取集合中的最小值</li>
-<li><code>max</code> 方法用来获取集合中的最大值</li>
-<li><code>replaceAll</code> 方法用来对List中的某一值进行替换</li>
-<li><code>unmodifiableList</code> 方法用来包装List以获得一个不可变的List</li>
-<li><code>synchronizedList</code> 方法用来包装List以获得一个线程安全的List</li>
-<li><code>emptyList</code> 方法用来获得一个不可变的空List</li>
-<li><code>singletonList</code> 方法用来获得一个单值的List</li>
-</ol>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ol>
-<li><a href="https://zh.wikipedia.org/wiki/Java%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6" target="_blank" rel="external">Java 集合框架 — Wiki</a></li>
-</ol>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Collection</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Basic</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java/" class="article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/28/Java/java_collection/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
@@ -821,19 +674,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Mac</a>
+                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+                <a href="javascript:void(0)" class="js-tag color4">Mac</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -842,6 +691,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Seckill</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -885,19 +738,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Config</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
               </li>
              
               <li class="article-tag-list-item">
