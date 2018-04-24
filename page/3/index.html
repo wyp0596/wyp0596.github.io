@@ -141,6 +141,133 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Nginx/nginx_cors" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/17/Nginx/nginx_cors/">Nginx跨域</a>
+    </h1>
+  
+
+        
+        <a href="/2017/07/17/Nginx/nginx_cors/" class="archive-article-date">
+  	<time datetime="2017-07-17T03:31:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-17</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><ol>
+<li>跨域(CORS)全称是 (Cross-origin resource sharing),</li>
+<li>由于浏览器的安全限制, 所以才会存在跨域问题</li>
+<li>当一个网站的去请求另一个网站的资源时会发生</li>
+<li>新版浏览器都支持该功能 (不低于IE10)</li>
+</ol>
+<p><img src="/img/nginx/cors.jpg" alt="跨域请求流程"></p>
+<h2 id="简单请求"><a href="#简单请求" class="headerlink" title="简单请求"></a>简单请求</h2><h3 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h3><p>必须同时满足以下条件:</p>
+<ol>
+<li>请求方法是以下三种方法之一:<ol>
+<li>HEAD</li>
+<li>GET</li>
+<li>POST</li>
+</ol>
+</li>
+<li>头信息不超过以下字段:<ol>
+<li>Accept</li>
+<li>Accept-Language</li>
+<li>Content-Language</li>
+<li>Last-Event-ID</li>
+<li>Content-Type: 只限(<code>application/x-www-form-urlencoded</code>、<code>multipart/form-data</code>、<code>text/plain</code>)</li>
+</ol>
+</li>
+</ol>
+<p>不满足条件的为非简单请求, 浏览器会直接发出CORS请求, 也就是在头信息中增加一个<code>Origin</code>字段</p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>Nginx可以通过简单的配置实现简单请求的跨域</p>
+<p>在<code>http</code>或者<code>server</code>或者<code>location</code>里面添加<code>add_header &#39;Access-Control-Allow-Origin&#39; &#39;*&#39;;</code>这行命令, 即允许任意<code>Origin</code>地址进行跨域请求</p>
+<p>比如在http里面添加:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">http &#123;</div><div class="line">	add_header Access-Control-Allow-Origin *;</div><div class="line">	</div><div class="line">	# 以下省略</div></pre></td></tr></table></figure>
+<h2 id="非简单请求"><a href="#非简单请求" class="headerlink" title="非简单请求"></a>非简单请求</h2><h3 id="简介-2"><a href="#简介-2" class="headerlink" title="简介"></a>简介</h3><p>不满足简单请求的皆为非简单请求:</p>
+<ol>
+<li>比如请求方法是PUT或者DELETE</li>
+<li>比如<code>Content-Type</code>是<code>application/json</code></li>
+</ol>
+<p>非简单请求在正式通信(简单请求)之前会进行一次预检请求(preflight)</p>
+<p>预检请求是一个<code>OPTIONS</code>请求, 所以需要对该请求进行处理</p>
+<h3 id="配置-1"><a href="#配置-1" class="headerlink" title="配置"></a>配置</h3><p>在<code>location</code>里面对<code>OPTIONS</code>请求进行特殊配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">location / &#123;</div><div class="line">	if ($request_method = &apos;OPTIONS&apos;) &#123;</div><div class="line">      add_header &apos;Access-Control-Allow-Origin&apos; &apos;*&apos;;</div><div class="line">      add_header &apos;Access-Control-Allow-Methods&apos; &apos;*&apos;;</div><div class="line">      # Custom headers and headers various </div><div class="line">      add_header &apos;Access-Control-Allow-Headers&apos; &apos;Content-Type&apos;;</div><div class="line">      # Tell client that this pre-flight info is valid for 20 days</div><div class="line">      add_header &apos;Access-Control-Max-Age&apos; 1728000;</div><div class="line">      add_header &apos;Content-Type&apos; &apos;text/plain charset=UTF-8&apos;;</div><div class="line">      add_header &apos;Content-Length&apos; 0;</div><div class="line">      return 204;</div><div class="line">	&#125; </div><div class="line">	# 以下省略</div></pre></td></tr></table></figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.ruanyifeng.com/blog/2016/04/cors.html" target="_blank" rel="external">跨域资源共享 CORS 详解</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Common</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Nginx</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Nginx/" class="article-tag-list-link color1">Nginx</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/07/17/Nginx/nginx_cors/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Java/java_collection" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -388,11 +515,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Collection</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Basic</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Basic</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Collection</a>
         		</li>
       		
 		</ul>
@@ -542,152 +669,9 @@
 
 
   
-    <article id="post-Linux/linux_command" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/25/Linux/linux_command/">Linux常用命令</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/25/Linux/linux_command/" class="archive-article-date">
-  	<time datetime="2017-06-25T13:11:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>开发过程中可能用到的一些命令</p>
-</blockquote>
-<h2 id="netstat"><a href="#netstat" class="headerlink" title="netstat"></a>netstat</h2><blockquote>
-<p>查看网络信息</p>
-</blockquote>
-<p><code>netstat -an | grep 8080</code><br><code>8080</code>替换成需要查看的端口号</p>
-<h2 id="lsof"><a href="#lsof" class="headerlink" title="lsof"></a>lsof</h2><blockquote>
-<p>查看网络信息</p>
-</blockquote>
-<p><code>lsof -i:80</code><br>-i参数表示网络链接，:80指明端口号，该命令会同时列出PID，方便kill</p>
-<h2 id="lscpu"><a href="#lscpu" class="headerlink" title="lscpu"></a>lscpu</h2><blockquote>
-<p>查看cpu信息</p>
-</blockquote>
-<p>类似效果</p>
-<ol>
-<li><code>cat /proc/cpuinfo</code></li>
-</ol>
-<h2 id="free"><a href="#free" class="headerlink" title="free"></a>free</h2><blockquote>
-<p>查看内存信息</p>
-</blockquote>
-<p><code>free -m</code></p>
-<p><code>free -h</code></p>
-<p>类似效果</p>
-<ol>
-<li><code>cat /proc/meminfo</code></li>
-<li><code>dmidecode -t memory</code></li>
-</ol>
-<h2 id="lsblk"><a href="#lsblk" class="headerlink" title="lsblk"></a>lsblk</h2><blockquote>
-<p>查看磁盘信息</p>
-</blockquote>
-<p>类似效果</p>
-<ol>
-<li><code>fdisk -l</code></li>
-</ol>
-<h2 id="ifconfig"><a href="#ifconfig" class="headerlink" title="ifconfig"></a>ifconfig</h2><blockquote>
-<p>查看网卡信息</p>
-</blockquote>
-<p><code>ifconfig -a</code></p>
-<p>类似效果</p>
-<ol>
-<li><code>lspci | grep -i &#39;eth&#39;</code></li>
-<li><code>ip add</code></li>
-<li><code>ip link show</code></li>
-<li><code>ethtool eth0</code></li>
-</ol>
-<h2 id="lspci"><a href="#lspci" class="headerlink" title="lspci"></a>lspci</h2><blockquote>
-<p>查看硬件信息</p>
-</blockquote>
-<p><code>lscpi -t</code></p>
-<p><code>lspci -v</code> 或者 <code>lspci -vv</code></p>
-<p>类似效果</p>
-<ol>
-<li><code>dmidecode -q</code></li>
-</ol>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Terminal</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Linux/" class="article-tag-list-link color1">Linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/25/Linux/linux_command/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
     </nav>
   
 
@@ -774,11 +758,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">HTTPS</a>
+                <a href="javascript:void(0)" class="js-tag color4">ELK</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Common</a>
+                <a href="javascript:void(0)" class="js-tag color4">ElasticSearch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Kibana</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Logstash</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Filebeat</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">HTTPS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -802,23 +802,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Docker</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">DataBase</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Transaction</a>
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -831,6 +819,42 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">book</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Config</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Common</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Basic</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">DataBase</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Transaction</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -850,27 +874,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Basic</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Tomcat</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Config</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
               </li>
             
             <div class="clearfix"></div>

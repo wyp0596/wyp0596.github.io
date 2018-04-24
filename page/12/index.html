@@ -141,6 +141,199 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Common/certificate" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/24/Common/certificate/">证书相关知识</a>
+    </h1>
+  
+
+        
+        <a href="/2016/11/24/Common/certificate/" class="archive-article-date">
+  	<time datetime="2016-11-24T07:32:53.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="证书相关知识"><a href="#证书相关知识" class="headerlink" title="证书相关知识"></a>证书相关知识</h1><h2 id="加密算法"><a href="#加密算法" class="headerlink" title="加密算法"></a>加密算法</h2><h3 id="对称密钥加密"><a href="#对称密钥加密" class="headerlink" title="对称密钥加密"></a>对称密钥加密</h3><blockquote>
+<p>加/解密一般使用<strong>同一个密钥</strong>或者可互相推算的密钥,通常称之为”Session Key”,计算速度较快.</p>
+</blockquote>
+<p>常见的对称加密算法有DES、3DES、AES、Blowfish、IDEA、RC5、RC6。</p>
+<h3 id="非对称密钥加密"><a href="#非对称密钥加密" class="headerlink" title="非对称密钥加密"></a>非对称密钥加密</h3><blockquote>
+<p>加/解密使用<strong>不同的密钥</strong>,通常有两个密钥,成为”公钥”和”私钥”,需要配对使用.公钥加密的数据只有私钥可以解开,私钥加密的数据只有公钥才能解开.一般公钥是公开的,可被人知道,私钥需要妥善保存.计算速度慢.</p>
+</blockquote>
+<p>常见的公钥加密算法有：RSA、ElGamal、背包算法、Rabin（RSA的特例）等。</p>
+<p>使用最广泛的是RSA算法。</p>
+<h2 id="摘要算法"><a href="#摘要算法" class="headerlink" title="摘要算法"></a>摘要算法</h2><blockquote>
+<p>散列函数（或散列算法，又称哈希函数，英语：Hash Function）是一种从任何一种数据中创建小的数字“指纹”的方法。散列函数把消息或数据压缩成摘要，使得数据量变小，将数据的格式固定下来。好的散列函数在输入域中很少出现散列冲突。</p>
+</blockquote>
+<p>常见摘要算法: MD5、SHA1、SHA256、SHA512</p>
+<p>特点:</p>
+<ol>
+<li>摘要信息压缩了输入信息</li>
+<li>摘要结果不可逆</li>
+<li>源信息被修改则摘要结果改变(雪崩效应)</li>
+<li>一般来说,摘要结果不同,说明输入信息不同</li>
+</ol>
+<p>常用来保证数据的完整性</p>
+<h2 id="数字证书"><a href="#数字证书" class="headerlink" title="数字证书"></a>数字证书</h2><blockquote>
+<p>是一种用于电脑的身份识别机制,一般由<strong>权威的值得信赖的第三方机构</strong>(一般是由政府审核并授权的机构)来统一对外发放,也成为CA证书</p>
+</blockquote>
+<p>比较常见的还有国际权威的数字证书认证机构，比如 GlobalSign、VeriSign、GeoTrust、Comodo， 一般收取高额费用。<br>也有免费的数字证书认证机构，比如CAcert和 StartSSL。</p>
+<p>所以自签证书是个掩耳盗铃的事情</p>
+<h3 id="证书颁发过程"><a href="#证书颁发过程" class="headerlink" title="证书颁发过程"></a>证书颁发过程</h3><blockquote>
+<p>用户首先产生自己的密钥对，并将公共密钥及部分个人身份信息传送给认证中心。认证中心在核实身份后，将执行一些必要的步骤，以确信请求确实由用户发送而来，然后，认证中心将发给用户一个数字证书，该证书内包含用户的个人信息和他的公钥信息，同时还附有认证中心的签名信息(根证书私钥签名)。用户就可以使用自己的数字证书进行相关的各种活动。数字证书由独立的证书发行机构发布，数字证书各不相同，每种证书可提供不同级别的可信度。</p>
+</blockquote>
+<h3 id="证书内容"><a href="#证书内容" class="headerlink" title="证书内容"></a>证书内容</h3><ol>
+<li>证书颁发机构的名称</li>
+<li>证书本身的数字签名</li>
+<li>证书持有者公钥</li>
+<li>证书签名用到的Hash算法</li>
+</ol>
+<h3 id="证书有效性验证"><a href="#证书有效性验证" class="headerlink" title="证书有效性验证"></a>证书有效性验证</h3><p>浏览器默认都会内置CA根证书，其中根证书包含了CA的公钥</p>
+<p>证书的签发是一级一级往下签发,还有一个CRL列表(吊销列表)</p>
+<ol>
+<li>证书颁发的机构是伪造的：浏览器不认识，直接认为是危险证书</li>
+<li>证书颁发的机构是确实存在的，于是根据CA名，找到对应内置的CA根证书、CA的公钥。用CA的公钥，对伪造的证书的摘要进行解密，发现解不了，认为是危险证书。</li>
+<li>对于篡改的证书，使用CA的公钥对数字签名进行解密得到摘要A，然后再根据签名的Hash算法计算出证书的摘要B，对比A与B，若相等则正常，若不相等则是被篡改过的。</li>
+<li>证书可在其过期前被吊销，通常情况是该证书的私钥已经失密。较新的浏览器如Chrome、Firefox、Opera和Internet Explorer都实现了在线证书状态协议（OCSP）以排除这种情形：浏览器将网站提供的证书的序列号通过OCSP发送给证书颁发机构，后者会告诉浏览器证书是否还是有效的。</li>
+</ol>
+<blockquote>
+<p>1、2点是对伪造证书进行的，3是对于篡改后的证书验证，4是对于过期失效的验证。</p>
+</blockquote>
+<h2 id="HTTPs"><a href="#HTTPs" class="headerlink" title="HTTPs"></a>HTTPs</h2><h3 id="HTTPS和HTTP的区别"><a href="#HTTPS和HTTP的区别" class="headerlink" title="HTTPS和HTTP的区别"></a>HTTPS和HTTP的区别</h3><ol>
+<li>HTTP默认使用<strong>80端口</strong>，HTTPS默认使用<strong>443端口</strong></li>
+<li>HTTPS协议需要CA证书</li>
+<li>HTTP是超文本传输协议，信息是明文传输；HTTPsS则是具有安全性的SSL/TLS加密传输协议</li>
+<li>HTTP和HTTPS使用的是完全不同的连接方式</li>
+<li>HTTP的连接很简单，是无状态的</li>
+<li>HTTPS协议是由SSL/TLS+HTTP协议构建的可进行加密传输、身份认证的网络协议，比HTTP协议安全</li>
+<li>HTTP协议相对简单,所以传输速度较HTTPS快,但是现在差别已经不是很大.</li>
+<li>HTTPS部署相对复杂</li>
+</ol>
+<h3 id="SSL-与-TLS"><a href="#SSL-与-TLS" class="headerlink" title="SSL 与 TLS"></a>SSL 与 TLS</h3><p><strong>SSL(Secure Socket Layer)安全套接字层</strong></p>
+<p>SSL为Netscape所研发，用以保障在Internet上数据传输之安全，利用数据加密(Encryption)技术，可确保数据在网络上之传输过程中不会被截取，当前为3.0版本。</p>
+<p>SSL协议可分为两层： SSL记录协议（SSL Record Protocol）：它建立在可靠的传输协议（如TCP）之上，为高层协议提供数据封装、压缩、加密等基本功能的支持。 SSL握手协议（SSL Handshake Protocol）：它建立在SSL记录协议之上，用于在实际的数据传输开始前，通讯双方进行身份认证、协商加密算法、交换加密密钥等。</p>
+<p><strong>TLS (Transport Layer Security，传输层安全协议)</strong><br>用于两个应用程序之间提供保密性和数据完整性。<br>TLS 1.0是IETF（Internet Engineering Task Force，Internet工程任务组）制定的一种新的协议，它建立在SSL 3.0协议规范之上，是SSL 3.0的后续版本，可以理解为SSL 3.1，它是写入了 RFC 的。该协议由两层组成： TLS 记录协议（TLS Record）和 TLS 握手协议（TLS Handshake）。较低的层为 TLS 记录协议，位于某个可靠的传输协议（例如 TCP）上面。</p>
+<p><strong>SSL/TLS协议作用：</strong></p>
+<ol>
+<li>认证用户和服务器，确保数据发送到正确的客户机和服务器；</li>
+<li>加密数据以防止数据中途被窃取；</li>
+<li>维护数据的完整性，确保数据在传输过程中不被改变。</li>
+</ol>
+<p><strong>TLS比SSL的优势</strong></p>
+<ol>
+<li>对于消息认证使用密钥散列法：TLS 使用“消息认证代码的密钥散列法”（HMAC），当记录在开放的网络（如因特网）上传送时，该代码确保记录不会被变更。SSLv3.0还提供键控消息认证，但HMAC比SSLv3.0使用的（消息认证代码）MAC 功能更安全。</li>
+<li>增强的伪随机功能（PRF）：PRF生成密钥数据。在TLS中，HMAC定义PRF。PRF使用两种散列算法保证其安全性。如果任一算法暴露了，只要第二种算法未暴露，则数据仍然是安全的。</li>
+<li>改进的已完成消息验证：TLS和SSLv3.0都对两个端点提供已完成的消息，该消息认证交换的消息没有被变更。然而，TLS将此已完成消息基于PRF和HMAC值之上，这也比SSLv3.0更安全。</li>
+<li>一致证书处理：与SSLv3.0不同，TLS试图指定必须在TLS之间实现交换的证书类型。</li>
+<li>特定警报消息：TLS提供更多的特定和附加警报，以指示任一会话端点检测到的问题。TLS还对何时应该发送某些警报进行记录。</li>
+</ol>
+<p>https实际就是在TCP层与http层之间加入了SSL/TLS来为上层的安全保驾护航，主要用到对称加密、非对称加密、证书，等技术进行客户端与服务器的数据加密传输，最终达到保证整个通信的安全性。</p>
+<p><img src="/img/https/1.png" alt="普通SSL"></p>
+<p><img src="/img/https/2.png" alt="较安全的SSL"></p>
+<p><img src="/img/https/3.png" alt="更安全的SSL"></p>
+<h3 id="session的恢复"><a href="#session的恢复" class="headerlink" title="session的恢复"></a>session的恢复</h3><h4 id="session-ID"><a href="#session-ID" class="headerlink" title="session ID"></a>session ID</h4><p>session ID的思想很简单，就是每一次对话都有一个编号（session ID）。如果对话中断，下次重连的时候，只要客户端给出这个编号，且服务器有这个编号的记录，双方就可以重新使用已有的”对话密钥”，而不必重新生成一把。</p>
+<p>session ID是目前所有浏览器都支持的方法，但是它的缺点在于session ID往往只保留在一台服务器上。所以，如果客户端的请求发到另一台服务器，就无法恢复对话</p>
+<h4 id="session-ticket"><a href="#session-ticket" class="headerlink" title="session ticket"></a>session ticket</h4><p>客户端发送一个服务器在上一次对话中发送过来的session ticket。这个session ticket是加密的，只有服务器才能解密，其中包括本次对话的主要信息，比如对话密钥和加密方法。当服务器收到session ticket以后，解密后就不必重新生成对话密钥了。</p>
+<p>目前只有Firefox和Chrome浏览器支持。</p>
+<h2 id="可信时间戳"><a href="#可信时间戳" class="headerlink" title="可信时间戳"></a>可信时间戳</h2><blockquote>
+<p>可信时间戳是由权威可信时间戳服务中心签发的一个能证明数据电文(电子文件）在一个时间点是已经存在的、完整的、可验证的，具备法律效力的电子凭证，可信时间戳主要用于电子文件防篡改和事后抵赖，确定电子文件产生的准确时间。</p>
+</blockquote>
+<p><img src="/img/https/4.jpeg" alt="可信时间戳"></p>
+<h2 id="PKI"><a href="#PKI" class="headerlink" title="PKI"></a>PKI</h2><p><img src="/img/https/5.png" alt="PKI"></p>
+<blockquote>
+<p>The PKI role that assures valid and correct registration is called a registration authority (RA). An RA is responsible for accepting requests for digital certificates and authenticating the entity making the request.In a Microsoft PKI, a registration authority is usually called a subordinate CA. An entity must be uniquely identifiable within each CA domain on the basis of information about that entity. A third-party validation authority (VA) can provide this entity information on behalf of the CA.</p>
+</blockquote>
+<p>概念:</p>
+<ol>
+<li>CA 数字证书认证机构(Certificate Authority)</li>
+<li>RA 审核注册管理机构(Registration Authority)</li>
+<li>VA  有效性认证机构(Validation Authority )</li>
+</ol>
+<blockquote>
+<p>PKI是“Public Key Infrastructure”的缩写，意为“公钥基础设施”。简单地说，PKI技术就是利用公钥理论和技术建立的提供信息安全服务的基础设施。公钥体制是目前应用最广泛的一种加密体制，在这一体制中，加密密钥与解密密钥各不相同，发送信息的人利用接收者的公钥发送加密信息，接收者再利用自己专有的私钥进行解密。这种方式既保证了信息的机密性，又能保证信息具有不可抵赖性。目前，公钥体制广泛地用于CA认证、数字签名和密钥交换等领域。PKI可以作为支持<strong>认证、完整性、机密性和不可否认性</strong>的技术基础，从技术上解决网上身份认证、信息完整性和抗抵赖等安全问题，为网络应用提供可靠的安全保障。</p>
+</blockquote>
+<p>参考文献:</p>
+<p><a href="https://zh.wikipedia.org/wiki/對稱密鑰加密" target="_blank" rel="external">1.對稱密鑰加密</a></p>
+<p><a href="https://zh.wikipedia.org/wiki/公开密钥加密" target="_blank" rel="external">2.公开密钥加密</a></p>
+<p><a href="https://zh.wikipedia.org/wiki/散列函數" target="_blank" rel="external">3.散列函數</a></p>
+<p><a href="https://zh.wikipedia.org/wiki/電子證書" target="_blank" rel="external">4.電子證書</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Public_key_infrastructure" target="_blank" rel="external">5.Public_key_infrastructure</a></p>
+<p><a href="http://www.wxtlife.com/2016/03/27/详解https是如何确保安全的？/" target="_blank" rel="external">6.详解https是如何确保安全的</a></p>
+<p><a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html" target="_blank" rel="external">7.图解SSL/TLS协议</a></p>
+<p><a href="http://baike.baidu.com/view/4770720.htm" target="_blank" rel="external">8.可信时间戳</a></p>
+<p><a href="https://www.wosign.cn/Basic/PKImore.htm" target="_blank" rel="external">9.公钥基础设施 PKI 技术与应用发展</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">HTTPS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Common/" class="article-tag-list-link color2">Common</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/11/24/Common/certificate/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Common/git_primer" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -255,10 +448,6 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Common</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
         		</li>
       		
@@ -271,7 +460,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Git/" class="article-tag-list-link color4">Git</a>
+        			<a href="/categories/Common/" class="article-tag-list-link color2">Common</a>
         		</li>
       		
 		</ul>
@@ -410,11 +599,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Common</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Common</a>
         		</li>
       		
 		</ul>
@@ -465,148 +654,9 @@
 
 
   
-    <article id="post-MySQL/mysql_install" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/14/MySQL/mysql_install/">MySQL安装和配置</a>
-    </h1>
-  
-
-        
-        <a href="/2016/07/14/MySQL/mysql_install/" class="archive-article-date">
-  	<time datetime="2016-07-14T03:12:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-07-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="安装MySQL"><a href="#安装MySQL" class="headerlink" title="安装MySQL"></a>安装MySQL</h1><h2 id="Docker安装"><a href="#Docker安装" class="headerlink" title="Docker安装"></a>Docker安装</h2><blockquote>
-<p><a href="https://hub.docker.com/_/mysql/" target="_blank" rel="external">mysql官方镜像</a></p>
-</blockquote>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>1.最基础的运行方式,容器名为some-mysql,密码为admin</div><div class="line">docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=admin -d mysql</div><div class="line"><span class="meta">#</span>2.持久化文件保存到外部磁盘/docker/host/dir</div><div class="line">docker run --name some-mysql -v /docker/host/dir:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=admin -d mysql</div><div class="line"><span class="meta">#</span>3.宿主-容器端口映射3306:3306</div><div class="line">docker run --name some-mysql -v /docker/host/dir:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=admin -d -p 3306:3306 mysql</div><div class="line"><span class="meta">#</span>4.其他容器连接mysql</div><div class="line">docker run --name some-app --link some-mysql:mysql -d application-that-uses-mysql</div><div class="line"><span class="meta">#</span>5.mysql命令行测试连接</div><div class="line">docker run -it --link some-mysql:mysql --rm mysql sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'</div></pre></td></tr></table></figure>
-<h2 id="Ubuntu"><a href="#Ubuntu" class="headerlink" title="Ubuntu"></a>Ubuntu</h2><p>ubuntu上安装mysql非常简单只需要几条命令就可以完成。</p>
-<ol>
-<li><code>sudo apt-get install mysql-server</code></li>
-<li><code>sudo apt-get install mysql-client</code></li>
-<li><code>sudo apt-get install libmysqlclient-dev</code><br>安装过程中会提示设置密码什么的，注意设置了不要忘了，安装完成之后可以使用如下命令来检查是否安装成功：<br><code>sudo netstat -tap | grep mysql</code></li>
-</ol>
-<p>通过上述命令检查之后，如果看到有mysql 的socket处于 listen 状态则表示安装成功。</p>
-<p>登陆mysql数据库可以通过如下命令：<br><code>mysql -u root -p</code><br>此时输入密码就可以登录到mysql</p>
-<h2 id="Mac安装"><a href="#Mac安装" class="headerlink" title="Mac安装"></a>Mac安装</h2><ol>
-<li>HomeBrew安装</li>
-<li>官网安装</li>
-</ol>
-<p>略</p>
-<h2 id="Win安装"><a href="#Win安装" class="headerlink" title="Win安装"></a>Win安装</h2><ol>
-<li>绿色安装<ol>
-<li>按需修改<code>my.ini</code>(复制my-default.ini并改名为my.ini)</li>
-<li>mysql的bin目录下执行<code>mysqld --initialize-insecure</code>来初始化mysql</li>
-<li><code>mysqld —install</code>安装MySQL服务</li>
-<li><code>net start mysql</code>启动mysql服务</li>
-<li><code>mysql -uroot</code>免密码登录mysql</li>
-<li><code>mysql&gt;alter user &#39;root&#39;@&#39;localhost&#39; identified by &#39;password&#39;;</code>修改root的密码</li>
-</ol>
-</li>
-<li>官网安装</li>
-</ol>
-<h1 id="配置MySQL"><a href="#配置MySQL" class="headerlink" title="配置MySQL"></a>配置MySQL</h1><h2 id="添加远程用户"><a href="#添加远程用户" class="headerlink" title="添加远程用户"></a>添加远程用户</h2><ol>
-<li><p><code>mysql&gt;GRANT ALL PRIVILEGES ON *.* TO username@&quot;%&quot; IDENTIFIED BY &#39;password&#39; WITH GRANT OPTION;</code><em>添加一个用户username/密码为password, 并授权可以从其他任何主机发起访问。</em></p>
-</li>
-<li><p><code>mysql&gt;flush privileges;</code>   <em>刷新刚才的内容</em></p>
-<p>​</p>
-</li>
-</ol>
-<h2 id="数据库编码格式修改"><a href="#数据库编码格式修改" class="headerlink" title="数据库编码格式修改"></a>数据库编码格式修改</h2><p>在Mac或Linux下，需要编辑MySQL的配置文件，把数据库默认的编码全部改为UTF-8。<br>Linux下MySQL的配置文件默认存放在<code>/etc/my.cnf</code>或者<code>/etc/mysql/my.cnf</code><br>Mac下MySQL的配置文件默认存放在<code>/usr/local/mysql/support-files/</code><br><code>sudo cp my-default.cnf /etc/my.cnf</code><br><code>sudo vim my.cnf</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">[mysql]</div><div class="line">default-character-set=utf8</div><div class="line">[mysqld]</div><div class="line">port = 3306</div><div class="line">max_connections=200</div><div class="line">character-set-server=utf8</div><div class="line">default-storage-engine=INNODB</div><div class="line">sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES</div><div class="line">key_buffer_size = 256M</div><div class="line">max_allowed_packet = 1M</div><div class="line">table_open_cache = 256</div><div class="line">sort_buffer_size = 1M</div><div class="line">read_buffer_size = 1M</div><div class="line">read_rnd_buffer_size = 4M</div><div class="line">myisam_sort_buffer_size = 64M</div><div class="line">thread_cache_size = 8M</div><div class="line">query_cache_size = 16M</div></pre></td></tr></table></figure>
-<p>重启MySQL后，可以通过MySQL的客户端命令行检查编码：<br><code>show variables like &#39;%char%&#39;;</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">mysql&gt; show variables like &apos;%char%&apos;; </div><div class="line">+--------------------------+--------------------------------------------------------+</div><div class="line">| character_set_client     | utf8                                                   |</div><div class="line">| character_set_connection | utf8                                                   |</div><div class="line">| character_set_database   | utf8                                                   |</div><div class="line">| character_set_filesystem | binary                                                 |</div><div class="line">| character_set_results    | utf8                                                   |</div><div class="line">| character_set_server     | utf8                                                   |</div><div class="line">| character_set_system     | utf8                                                   |</div><div class="line">| character_sets_dir       | /usr/local/mysql-5.1.65-osx10.6-x86_64/share/charsets/ |</div><div class="line">+--------------------------+--------------------------------------------------------+</div><div class="line">8 rows in set (0.00 sec)</div></pre></td></tr></table></figure>
-<p>看到utf8字样就表示编码设置正确。</p>
-<h1 id="精简MySQL"><a href="#精简MySQL" class="headerlink" title="精简MySQL"></a>精简MySQL</h1><p>精简方法如下：</p>
-<ol>
-<li>删除docs，include，lib，mysql-test，scripts，sql-bench目录，只保留bin，data和share目录。</li>
-<li>删除bin目录里后缀名为.pdb的文件(调试文件)。</li>
-</ol>
-<p>如果还想精简，那再继续下一步。</p>
-<ol>
-<li>删除bin目录下除mysqladmin.exe，mysqld.exe，mysql.exe以外的所有文件。</li>
-<li>还可以删除data目录下的ib_logfile0，ib_logfile1，ibdata1以及后缀名为err和pid的Log文件。</li>
-</ol>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Common</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/MySQL/" class="article-tag-list-link color1">MySQL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/07/14/MySQL/mysql_install/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/11/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span>
+      <a class="extend prev" rel="prev" href="/page/11/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/13/">Next &raquo;</a>
     </nav>
   
 
@@ -693,11 +743,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">HTTPS</a>
+                <a href="javascript:void(0)" class="js-tag color4">ELK</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Common</a>
+                <a href="javascript:void(0)" class="js-tag color4">ElasticSearch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Kibana</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Logstash</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Filebeat</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">HTTPS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -721,23 +787,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Docker</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">DataBase</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Transaction</a>
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -750,6 +804,42 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">book</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Config</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Common</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Basic</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">DataBase</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Transaction</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -769,27 +859,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Basic</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Tomcat</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Config</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
               </li>
             
             <div class="clearfix"></div>

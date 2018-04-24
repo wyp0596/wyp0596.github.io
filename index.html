@@ -141,6 +141,143 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Common/elk" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/24/Common/elk/">ELK简易Nginx日志系统搭建:ElasticSearch+Kibana+Filebeat</a>
+    </h1>
+  
+
+        
+        <a href="/2018/04/24/Common/elk/" class="archive-article-date">
+  	<time datetime="2018-04-24T07:42:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>该教程以 ubuntu 16.04 为例, 其他系统类似</p>
+<p>官网: <a href="https://www.elastic.co" target="_blank" rel="external">https://www.elastic.co</a></p>
+<p>使用ElasticSearch 和 Kibana, 日志输入采用Filebeat, 没有使用Logstash</p>
+<p>参考: <a href="https://github.com/shildondu/elkstack_filebeat" target="_blank" rel="external">https://github.com/shildondu/elkstack_filebeat</a></p>
+</blockquote>
+<h2 id="准备阶段"><a href="#准备阶段" class="headerlink" title="准备阶段"></a>准备阶段</h2><ol>
+<li>一台比较干净的可联外网的  ubuntu 16.04 系统的服务器, 并具备root权限</li>
+<li>安装 <code>JDK 1.8</code> 和 <code>supervisor</code>和<code>nginx</code></li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> 安装JDK和supervisor和nginx</div><div class="line">sudo apt-get update &amp;&amp; sudo apt-get install openjdk-8-jdk supervisor nginx</div><div class="line"><span class="meta">#</span> 启动nginx</div><div class="line">nginx -t &amp;&amp; nginx</div><div class="line"><span class="meta">#</span> 测试nginx</div><div class="line">curl localhost</div></pre></td></tr></table></figure>
+<h2 id="创建用户与下载安装包"><a href="#创建用户与下载安装包" class="headerlink" title="创建用户与下载安装包"></a>创建用户与下载安装包</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> 创建用户elk</div><div class="line">sudo useradd -d /home/elk/ -m elk</div><div class="line">su elk</div><div class="line">cd /home/elk/</div><div class="line"><span class="meta">#</span> 下载安装包</div><div class="line">wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.3.tar.gz</div><div class="line">wget https://artifacts.elastic.co/downloads/kibana/kibana-6.2.3-linux-x86_64.tar.gz</div><div class="line">wget https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.3-amd64.deb</div><div class="line"><span class="meta">#</span> 解压安装包</div><div class="line">tar -xzvf elasticsearch-6.2.3.tar.gz</div><div class="line">tar -xzvf kibana-6.2.3-linux-x86_64.tar.gz</div><div class="line"><span class="meta">#</span> 安装filebeat</div><div class="line">dpkg -i filebeat-6.2.3-amd64.deb</div></pre></td></tr></table></figure>
+<h2 id="安装-elasticsearch"><a href="#安装-elasticsearch" class="headerlink" title="安装 elasticsearch"></a>安装 elasticsearch</h2><blockquote>
+<p>搜索引擎</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">su elk</div><div class="line">cd /home/elk/elasticsearch-6.2.3/</div><div class="line">bin/elasticsearch-plugin install ingest-geoip</div><div class="line">bin/elasticsearch-plugin install ingest-user-agent</div><div class="line"></div><div class="line"><span class="meta">#</span> 配置全局访问, 不限制访问者ip</div><div class="line">echo "network.host: 0.0.0.0" &gt;&gt; config/elasticsearch.yml</div><div class="line"><span class="meta">#</span> 启动elasticsearch</div><div class="line">bin/elasticsearch -d -p pid.txt</div><div class="line"><span class="meta">#</span> 测试elasticsearch启动</div><div class="line">curl localhost:9200</div></pre></td></tr></table></figure>
+<h2 id="kibana"><a href="#kibana" class="headerlink" title="kibana"></a>kibana</h2><blockquote>
+<p>用于搜索以及展示数据</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">su elk</div><div class="line">cd /home/elk/kibana-6.2.3-linux-x86_64/</div><div class="line"></div><div class="line"><span class="meta">#</span> 修改配置文件,让kibana支持外网访问</div><div class="line">echo "server.host: 0.0.0.0" &gt;&gt; config/kibana.yml</div><div class="line"></div><div class="line">bin/kibana</div></pre></td></tr></table></figure>
+<h2 id="filebeat"><a href="#filebeat" class="headerlink" title="filebeat"></a>filebeat</h2><blockquote>
+<p>监控日志文件, 并输出的ElasticSearch</p>
+<p>详见 <a href="https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-module-nginx.html" target="_blank" rel="external">https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-module-nginx.html</a></p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> 启用filebeat的nginx模块(提前安装好nginx)</div><div class="line">filebeat modules enable nginx</div><div class="line"></div><div class="line"><span class="meta">#</span> nginx的模块配置</div><div class="line"><span class="meta">#</span> vim /etc/filebeat/modules.d/nginx.yml</div><div class="line"></div><div class="line"><span class="meta">#</span> filebeat基本配置, 配置ElasticSearch和Kibana</div><div class="line"><span class="meta">#</span> vim /etc/filebeat/filebeat.yml</div><div class="line">output.elasticsearch:</div><div class="line">   hosts: ["xxx.xxx.xxx.xxx:9200"]</div><div class="line"></div><div class="line"><span class="meta">#</span> 设置filebeat</div><div class="line">filebeat setup -e</div><div class="line"><span class="meta">#</span> 启动filebeat</div><div class="line">service filebeat start</div></pre></td></tr></table></figure>
+<h2 id="配置-supervisor"><a href="#配置-supervisor" class="headerlink" title="配置 supervisor"></a>配置 supervisor</h2><blockquote>
+<p>让服务可以后台运行</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[program:elasticsearch]</div><div class="line">directory=/home/elk/elasticsearch-6.2.3/</div><div class="line">command=/home/elk/elasticsearch-6.2.3/bin/elasticsearch</div><div class="line">autorestart=true</div><div class="line">user=elk</div><div class="line">stdout_logfile=NONE</div><div class="line"></div><div class="line"></div><div class="line">[program:kibana]</div><div class="line">directory=/home/elk/kibana-6.2.3-linux-x86_64/</div><div class="line">command=/home/elk/kibana-6.2.3-linux-x86_64/bin/kibana</div><div class="line">autorestart=true</div><div class="line">user=elk</div><div class="line">stdout_logfile=NONE</div></pre></td></tr></table></figure>
+<h2 id="结果展示"><a href="#结果展示" class="headerlink" title="结果展示"></a>结果展示</h2><p><img src="/img/elk/elk.png" alt="ELK"></p>
+<h2 id="拓展其他的日志"><a href="#拓展其他的日志" class="headerlink" title="拓展其他的日志"></a>拓展其他的日志</h2><h3 id="配置Java工程"><a href="#配置Java工程" class="headerlink" title="配置Java工程"></a>配置Java工程</h3><ol>
+<li>添加依赖<code>compile(&#39;net.logstash.logback:logstash-logback-encoder:4.11&#39;)</code></li>
+<li>修改<code>logback-spring.xml</code>配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- 日志路径 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"logDir"</span> <span class="attr">value</span>=<span class="string">"./logs"</span>/&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- 输出器:只打印WARN等级及以上的日志到文件 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"JSON_ERROR_LOG"</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.RollingFileAppender"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">File</span>&gt;</span>$&#123;logDir&#125;/json_error.log<span class="tag">&lt;/<span class="name">File</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">rollingPolicy</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.TimeBasedRollingPolicy"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">FileNamePattern</span>&gt;</span>$&#123;logDir&#125;/json_error-%d&#123;yyyy-MM-dd&#125;-%i.log.gz<span class="tag">&lt;/<span class="name">FileNamePattern</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">MaxHistory</span>&gt;</span>2<span class="tag">&lt;/<span class="name">MaxHistory</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">TimeBasedFileNamingAndTriggeringPolicy</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP"</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">MaxFileSize</span>&gt;</span>100MB<span class="tag">&lt;/<span class="name">MaxFileSize</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">TimeBasedFileNamingAndTriggeringPolicy</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">rollingPolicy</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">encoder</span> <span class="attr">class</span>=<span class="string">"net.logstash.logback.encoder.LogstashEncoder"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">filter</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.classic.filter.ThresholdFilter"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">level</span>&gt;</span>WARN<span class="tag">&lt;/<span class="name">level</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">appender</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">root</span> <span class="attr">level</span>=<span class="string">"INFO"</span>&gt;</span></div><div class="line">     <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"JSON_ERROR_LOG"</span>/&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">root</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="根据条件输出到不同的index"><a href="#根据条件输出到不同的index" class="headerlink" title="根据条件输出到不同的index"></a>根据条件输出到不同的index</h3><p><code>/etc/filebeat/filebeat.yml</code> </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line">filebeat.prospectors:</div><div class="line"></div><div class="line">- type: log</div><div class="line">  paths:</div><div class="line">      - /my_app/server/logs/json_error.log</div><div class="line">  json.keys_under_root: true</div><div class="line">  json.add_error_key: true</div><div class="line">  fields.log_type: "server-error"</div><div class="line"></div><div class="line">- type: log</div><div class="line">  paths:</div><div class="line">      - /my_app/shangyuer/server/logs/json.log</div><div class="line">  json.keys_under_root: true</div><div class="line">  json.add_error_key: true</div><div class="line">  fields.log_type: "server-log"</div><div class="line"></div><div class="line">filebeat.config.modules:</div><div class="line">  path: $&#123;path.config&#125;/modules.d/*.yml</div><div class="line">  reload.enabled: false</div><div class="line"></div><div class="line">setup.template.settings:</div><div class="line">  index.number_of_shards: 3</div><div class="line"></div><div class="line">output.elasticsearch:</div><div class="line">  hosts: ["xxx.xxx.xxx.xxx:9200"]</div><div class="line">  indices:</div><div class="line">    - index: "nginx-access-%&#123;+yyyy.MM.dd&#125;"</div><div class="line">      when.equals:</div><div class="line">        fileset.module: "nginx"</div><div class="line">        fileset.name: "access"</div><div class="line">    - index: "nginx-error-%&#123;+yyyy.MM.dd&#125;"</div><div class="line">      when.equals:</div><div class="line">        fileset.module: "nginx"</div><div class="line">        fileset.name: "error"</div><div class="line">    - index: "server-error-%&#123;+yyyy.MM.dd&#125;"</div><div class="line">      when.equals:</div><div class="line">        fields.log_type: "server-error"</div><div class="line">    - index: "server-log-%&#123;+yyyy.MM.dd&#125;"</div><div class="line">      when.equals:</div><div class="line">        fields.log_type: "server-log"</div><div class="line"></div><div class="line">setup.kibana:</div><div class="line">  host: "xxx.xxx.xxx.xxx:5601"</div><div class="line"></div><div class="line"><span class="meta">#</span>setup.template.name: "nginx-access"</div><div class="line"><span class="meta">#</span>setup.template.pattern: "nginx-access-*"</div><div class="line"><span class="meta">#</span>setup.dashboards.index: "nginx-access-*"</div><div class="line"><span class="meta">#</span>setup.template.overwrite: true</div><div class="line">setup.dashboards.enabled: false</div><div class="line">setup.template.enabled: false</div></pre></td></tr></table></figure>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ELK</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ElasticSearch</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Kibana</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Logstash</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Filebeat</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Common/" class="article-tag-list-link color2">Common</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/04/24/Common/elk/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-MySQL/mysql_index" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -231,11 +368,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Common</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Common</a>
         		</li>
       		
 		</ul>
@@ -369,10 +506,6 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Common</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Network</a>
         		</li>
       		
@@ -385,7 +518,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Network/" class="article-tag-list-link color3">Network</a>
+        			<a href="/categories/Common/" class="article-tag-list-link color2">Common</a>
         		</li>
       		
 		</ul>
@@ -424,287 +557,9 @@
 
 
   
-    <article id="post-Common/mac_pinyin_input_method" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/24/Common/mac_pinyin_input_method/">MacOS系统自带简体拼音输入法Tips</a>
-    </h1>
-  
-
-        
-        <a href="/2017/08/24/Common/mac_pinyin_input_method/" class="archive-article-date">
-  	<time datetime="2017-08-24T06:20:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>Mac上的简体中文拼音输入法主要有<a href="https://pinyin.sogou.com/mac/" target="_blank" rel="external">搜狗</a>、<a href="http://rime.im/" target="_blank" rel="external">鼠须管</a>、系统自带输入法这几种。本文将介绍MacOS系统自带的简体拼音输入法的一些使用技巧。</p>
-</blockquote>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
-<li><a href="http://www.pc6.com/edu/81700.html" target="_blank" rel="external">Mac OS X 自带拼音输入法小技巧</a></li>
-<li><a href="http://www.ifanr.com/app/800591" target="_blank" rel="external">Mac 自带输入法这么好用，不看不知道 | 有用功</a></li>
-<li><a href="http://www.jianshu.com/p/c258940a62cb" target="_blank" rel="external">Mac 里的文字输入效率</a></li>
-</ul>
-<h2 id="候选词切换"><a href="#候选词切换" class="headerlink" title="候选词切换"></a>候选词切换</h2><ol>
-<li><code>－+</code>或者<code>←→</code>，在单页候选词中切换，一个个切换</li>
-<li><code>［ ］</code>或者<code>↑↓</code>，在多页候选词中切换，一页页切换</li>
-</ol>
-<h2 id="中英文数字混合输入"><a href="#中英文数字混合输入" class="headerlink" title="中英文数字混合输入"></a>中英文数字混合输入</h2><ol>
-<li>短按<code>Caps lock</code>切换中／英文输入法</li>
-<li>长按<code>Caps lock</code>锁定／解锁大小写输入状态</li>
-<li><code>Shift</code>键用来输入大写</li>
-<li>拼音输入法状态下，<code>Return</code>直接输入字母，空格则输入当前高亮的候选词</li>
-<li>输入文字时，按住<code>Shift</code>就能输入大写字母，按住<code>Option</code>能输入数字</li>
-</ol>
-<h2 id="简体中文输入"><a href="#简体中文输入" class="headerlink" title="简体中文输入"></a>简体中文输入</h2><ol>
-<li><code>&#39;</code> 符号作为拼音之间的分隔符，例如：<code>bei&#39;jing</code> 北京</li>
-<li><code>u</code> 可以打开笔画输入框</li>
-<li><code>Tab</code> 可以在 1234 声调中切换选择</li>
-<li><code>Shift+空格键</code>就能输入可组合的汉字，如 jiji后按组合键即可输入喆</li>
-<li><code>Option+Shift+L</code>即可打开输入码搜索框</li>
-<li><code>Control+Shift+空格键</code>即可打开手写输入窗口（前提是有选择手写输入法） </li>
-<li><code>Command+Control+空格键</code>，即可看到表情符号窗口</li>
-<li><code>Option+Shift+B」或者「Shift+6</code>，即可看到颜文字窗口</li>
-<li><code>Control+Command+Shift+C</code>转为繁体</li>
-<li><code>Control+Option+Command+Shift+C</code>转为简体</li>
-<li><code>Delete</code> 删除光标前内容</li>
-<li><code>Fn+Delete</code> 删除光标后内容</li>
-<li><code>Shift+Delete</code> 删除错误的个人候选词</li>
-</ol>
-<h2 id="输入特殊字符"><a href="#输入特殊字符" class="headerlink" title="输入特殊字符"></a>输入特殊字符</h2><p>按住「Option」 +其他按键输入特殊字符</p>
-<p><img src="/img/mac/input_method_option.png" alt="input_method_option"></p>
-<p>按住「Option」+ 「Shift」+ 其他按键输入特殊字符</p>
-<p><img src="/img/mac/input_method_option_shift.png" alt="input_method_option_shift"></p>
-<h2 id="快捷键总结"><a href="#快捷键总结" class="headerlink" title="快捷键总结"></a>快捷键总结</h2><h3 id="按键标志符"><a href="#按键标志符" class="headerlink" title="按键标志符"></a>按键标志符</h3><table>
-<thead>
-<tr>
-<th>标志符</th>
-<th>对应按键</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>⌃</td>
-<td>Control</td>
-</tr>
-<tr>
-<td>⌥</td>
-<td>Option</td>
-</tr>
-<tr>
-<td>⌘</td>
-<td>Command</td>
-</tr>
-<tr>
-<td>⇧</td>
-<td>Shift</td>
-</tr>
-<tr>
-<td>␣</td>
-<td>空格</td>
-</tr>
-<tr>
-<td>⇪</td>
-<td>Caps Lock</td>
-</tr>
-<tr>
-<td>⌫</td>
-<td>Delete</td>
-</tr>
-</tbody>
-</table>
-<h3 id="快捷键"><a href="#快捷键" class="headerlink" title="快捷键"></a>快捷键</h3><table>
-<thead>
-<tr>
-<th>功能</th>
-<th>标志符</th>
-<th>快捷键</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>切换输入法</td>
-<td>⌃ ␣</td>
-<td>Control+空格</td>
-</tr>
-<tr>
-<td>手写输入法</td>
-<td>⌃⇧ ␣</td>
-<td>Control+⇧+空格</td>
-</tr>
-<tr>
-<td>切换中／英文输入法</td>
-<td>⇪</td>
-<td>Caps Lock</td>
-</tr>
-<tr>
-<td>候选词切换</td>
-<td>+-←→</td>
-<td><code>－+</code>或者<code>←→</code></td>
-</tr>
-<tr>
-<td>候选词页切换</td>
-<td>[]↑↓</td>
-<td><code>［ ］</code>或者<code>↑↓</code></td>
-</tr>
-<tr>
-<td>表情与符号</td>
-<td>⌃ ⌘ ␣</td>
-<td>Control+Command+空格</td>
-</tr>
-<tr>
-<td>颜文字与符号</td>
-<td>⌥ ⇧ B</td>
-<td>Option+Shift+B</td>
-</tr>
-<tr>
-<td>颜文字与符号</td>
-<td>⇧ 6</td>
-<td>Shift+6</td>
-</tr>
-<tr>
-<td>听写</td>
-<td>Fn Fn</td>
-<td>Fn+Fn</td>
-</tr>
-<tr>
-<td>查找输入码</td>
-<td>⌥ ⇧ L</td>
-<td>Option+Shift+L</td>
-</tr>
-<tr>
-<td>拆字输入</td>
-<td>⇧ ␣</td>
-<td>Shift+空格</td>
-</tr>
-<tr>
-<td>中文输入过程中输入大写字母</td>
-<td>⇧</td>
-<td>Shift</td>
-</tr>
-<tr>
-<td>中文输入过程中输入数字</td>
-<td>⌥</td>
-<td>Option</td>
-</tr>
-<tr>
-<td>转为繁体</td>
-<td>⌃ ⌘⇧ C</td>
-<td>Control+Command+Shift+C</td>
-</tr>
-<tr>
-<td>转为简体</td>
-<td>⌃ ⌥ ⌘ ⇧ C</td>
-<td>Control+Option+Command+Shift+C</td>
-</tr>
-<tr>
-<td>音调切换</td>
-<td>Tab</td>
-<td>Tab</td>
-</tr>
-<tr>
-<td>笔画输入</td>
-<td>u</td>
-<td>u</td>
-</tr>
-<tr>
-<td>拼音之间的分隔符</td>
-<td>‘</td>
-<td>‘</td>
-</tr>
-<tr>
-<td>删除光标前内容</td>
-<td>⌫</td>
-<td>Delete</td>
-</tr>
-<tr>
-<td>删除光标后内容</td>
-<td>Fn ⌫</td>
-<td>Fn+Delete</td>
-</tr>
-<tr>
-<td>删除错误的个人候选词</td>
-<td>⇧ ⌫</td>
-<td>Shift+Delete</td>
-</tr>
-</tbody>
-</table>
-<h2 id="Alfred中设置输入法"><a href="#Alfred中设置输入法" class="headerlink" title="Alfred中设置输入法"></a>Alfred中设置输入法</h2><p>在<code>Alfred</code>的<code>Preferences</code>中的<code>Advanced</code>页中设置<code>Force Keyboard</code>为英文</p>
-<p><img src="/img/mac/alfred_preferences_advanced.png" alt="alfred_preferences_advanced"></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Mac</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Mac/" class="article-tag-list-link color4">Mac</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/08/24/Common/mac_pinyin_input_method/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 
@@ -791,11 +646,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">HTTPS</a>
+                <a href="javascript:void(0)" class="js-tag color4">ELK</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Common</a>
+                <a href="javascript:void(0)" class="js-tag color4">ElasticSearch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Kibana</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Logstash</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Filebeat</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">HTTPS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -819,23 +690,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Docker</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">DataBase</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Transaction</a>
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -848,6 +707,42 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">book</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Config</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Common</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Basic</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">DataBase</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Transaction</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -867,27 +762,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Basic</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Tomcat</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Config</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
               </li>
             
             <div class="clearfix"></div>

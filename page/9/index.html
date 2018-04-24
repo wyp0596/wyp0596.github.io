@@ -141,6 +141,137 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Java/hash_map" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/23/Java/hash_map/">HashMap的实现原理</a>
+    </h1>
+  
+
+        
+        <a href="/2017/03/23/Java/hash_map/" class="archive-article-date">
+  	<time datetime="2017-03-23T06:48:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-23</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote>
+<p>HashMap 是基于哈希表的 Map 接口的<strong>非同步</strong>实现，允许null作为键或值，不保证顺序恒久不变，是无序的。</p>
+</blockquote>
+<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><p>Java中最基本的结构是数组和引用，HashMap就是通过这两个数据结构进行实现。实际上是一个“链表散列”的数据结构，是数组和链表的结合体（1.8后还加入了红黑树）</p>
+<p><img src="/img/java/hash_map.jpg" alt="hash_map"></p>
+<p>HashMap 中存储数据的是一个<code>Node&lt;K,V&gt;[] table</code>数组，其中的内容可以是：</p>
+<ol>
+<li><code>null</code>代表没有数据</li>
+<li><code>Node&lt;K,V&gt;</code>代表一个键值对（只有一个节点）</li>
+<li><code>Node&lt;K,V&gt;</code>代表一个链表（有多个节点，2~8，当长度大于8转换成红黑树树）</li>
+<li><code>TreeNode&lt;K,V&gt;</code>代表一个红黑树（有多个节点，8~）</li>
+</ol>
+<h2 id="put方法"><a href="#put方法" class="headerlink" title="put方法"></a>put方法</h2><h2 id="get方法"><a href="#get方法" class="headerlink" title="get方法"></a>get方法</h2><h2 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h2><ol>
+<li>HashMap() 构造一个初始容量16，负载因子为0.75的HashMap</li>
+<li>HashMap(int initialCapacity) 指定初始容量，负载因子为0.75</li>
+<li>HashMap(int initialCapacity, float loadFactor) 指定初始容量和负载因子</li>
+</ol>
+<ul>
+<li>初始容量 <code>initialCapacity</code> 和负载因子 <code>loadFactor</code> 两个参数共同决定了HashMap的最大容量：<code>threshold = (int)(capacity * loadFactor);</code></li>
+<li>当HashMap的元素数目超过<code>threshold</code>就需要进行<code>resize()</code>，把容量变为原来的<strong>两倍</strong>，元素的位置也会进行重新分配</li>
+<li><code>loadFactor</code> 表示散列表空间使用程度，越大空间利用率越高，但是查询效率越低</li>
+</ul>
+<h2 id="Fail-Fast-机制"><a href="#Fail-Fast-机制" class="headerlink" title="Fail-Fast 机制"></a>Fail-Fast 机制</h2><blockquote>
+<p>HashMap 不是线程安全的，利用了<code>modCount</code>参数来记录每次修改，所以在用<code>Iterator</code>遍历过程中若发生并发修改会抛出<code>ConcurrentModificationException</code>异常</p>
+</blockquote>
+<h2 id="遍历方式"><a href="#遍历方式" class="headerlink" title="遍历方式"></a>遍历方式</h2><ol>
+<li><code>map.entrySet()</code> 遍历entrySet，同时遍历key和value</li>
+<li><code>map.keySet()</code> 效率低，遍历key，需要get才能获取value</li>
+<li><code>map.forEach((k,v)-&gt; System.out.println(k+&quot; : &quot;+v));</code> 效率高，需要JDK1.8以上</li>
+</ol>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="http://wiki.jikexueyuan.com/project/java-collection/hashmap.html" target="_blank" rel="external">HashMap的实现原理</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Collection</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">HashMap</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Map</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Hash</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java/" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/03/23/Java/hash_map/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-EffectiveJava/chapter2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -420,131 +551,9 @@
 
 
   
-    <article id="post-MySQL/transaction" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/22/MySQL/transaction/">spring 事务传播特性和隔离级别</a>
-    </h1>
-  
-
-        
-        <a href="/2017/03/22/MySQL/transaction/" class="archive-article-date">
-  	<time datetime="2017-03-22T10:35:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="spring-事务传播特性和隔离级别"><a href="#spring-事务传播特性和隔离级别" class="headerlink" title="spring 事务传播特性和隔离级别"></a>spring 事务传播特性和隔离级别</h1><h2 id="事务四大特性"><a href="#事务四大特性" class="headerlink" title="事务四大特性:"></a>事务四大特性:</h2><ol>
-<li>原子性(Atomicity)  :强调的事务的不可分割.</li>
-<li>一致性(Consistency)    :强调的事务的执行前后,数据库的的完整性保持一致.</li>
-<li>隔离性(Isolation)  :强调的事务的并发的访问,一个事务的执行,不应该受到另一个事务的打扰.</li>
-<li>持久性(Durability) :强调的事务结束之后,数据就永久的保存的数据库中.</li>
-</ol>
-<h1 id="安全性问题"><a href="#安全性问题" class="headerlink" title="安全性问题"></a>安全性问题</h1><ol>
-<li>脏读:一个事务,读到了另一个事务未提交数据.</li>
-<li>不可重复读 :一个事务,读到了另一个事务的提交数据（update）.导致查询结果不一致.</li>
-<li>虚读(幻读) :一个事务,读到了另一个事务的提交数据(insert).导致查询结果不一致</li>
-<li>丢失更新:一个事务更新了数据,另一个事务也更新数据,后面的事务覆盖了前一个事务的更新</li>
-</ol>
-<h2 id="事务的几种传播特性"><a href="#事务的几种传播特性" class="headerlink" title="事务的几种传播特性"></a>事务的几种传播特性</h2><ol>
-<li><strong>PROPAGATION_REQUIRED</strong>: 如果存在一个事务，则支持当前事务。如果没有事务则开启,默认</li>
-<li><strong>PROPAGATION_SUPPORTS</strong>: 如果存在一个事务，则支持当前事务。如果没有事务，则非事务的执行</li>
-<li><strong>PROPAGATION_MANDATORY</strong>: 如果存在一个事务，则支持当前事务。如果没有一个活动的事务，则抛出异常。</li>
-<li><strong>PROPAGATION_REQUIRES_NEW</strong>: 总是开启一个新的事务。如果一个事务已经存在，则将这个存在的事务挂起。</li>
-<li><strong>PROPAGATION_NOT_SUPPORTED</strong>: 总是非事务地执行，并挂起任何存在的事务。</li>
-<li><strong>PROPAGATION_NEVER</strong>: 总是非事务地执行，如果存在一个活动事务，则抛出异常</li>
-<li><strong>PROPAGATION_NESTED</strong>：如果一个活动的事务存在，则运行在一个嵌套的事务中. 如果没有活动事务, 则按TransactionDefinition.PROPAGATION_REQUIRED 属性执行</li>
-</ol>
-<h2 id="Spring事务的隔离级别"><a href="#Spring事务的隔离级别" class="headerlink" title="Spring事务的隔离级别"></a>Spring事务的隔离级别</h2><ol>
-<li>ISOLATION_DEFAULT： 这是一个PlatfromTransactionManager默认的隔离级别，使用数据库默认的事务隔离级别.MySQL默认<strong>repeatable read</strong>,Oracle默认<strong>read committed</strong></li>
-<li>另外四个与JDBC的隔离级别相对应</li>
-<li>ISOLATION_READ_UNCOMMITTED： 这是事务最低的隔离级别，它充许令外一个事务可以看到这个事务未提交的数据。 这种隔离级别会产生脏读，不可重复读和幻像读。</li>
-<li>ISOLATION_READ_COMMITTED： 保证一个事务修改的数据提交后才能被另外一个事务读取。另外一个事务不能读取该事务未提交的数据</li>
-<li>ISOLATION_REPEATABLE_READ： 这种事务隔离级别可以防止脏读，不可重复读。但是可能出现幻像读。 它除了保证一个事务不能读取另一个事务未提交的数据外，还保证了避免下面的情况产生(不可重复读)。</li>
-<li>ISOLATION_SERIALIZABLE 这是花费最高代价但是最可靠的事务隔离级别。事务被处理为顺序执行。 除了防止脏读，不可重复读外，还避免了幻像读。</li>
-</ol>
-<p>悲观锁\乐观锁解决丢失更新</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">DataBase</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Transaction</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/MySQL/" class="article-tag-list-link color1">MySQL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/03/22/MySQL/transaction/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
     </nav>
   
 
@@ -631,11 +640,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">HTTPS</a>
+                <a href="javascript:void(0)" class="js-tag color4">ELK</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Common</a>
+                <a href="javascript:void(0)" class="js-tag color4">ElasticSearch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Kibana</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Logstash</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Filebeat</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">HTTPS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -659,23 +684,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Docker</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">DataBase</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Transaction</a>
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -688,6 +701,42 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">book</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Config</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Common</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Basic</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">DataBase</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Transaction</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -707,27 +756,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Basic</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Tomcat</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Config</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
               </li>
             
             <div class="clearfix"></div>

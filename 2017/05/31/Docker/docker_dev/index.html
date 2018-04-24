@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="细雨流年">
 <meta property="og:description" content="安装DockerDocker官网 MySQL 官方Repository  运行docker run --name some-mysql -p 3306:3306 -v ~/my_data/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=admin -d mysql --character-set-server=utf8mb4 --collation-serv">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-02-06T10:39:51.228Z">
+<meta property="og:updated_time" content="2018-03-20T03:08:25.316Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="利用Docker搭建开发环境">
 <meta name="twitter:description" content="安装DockerDocker官网 MySQL 官方Repository  运行docker run --name some-mysql -p 3306:3306 -v ~/my_data/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=admin -d mysql --character-set-server=utf8mb4 --collation-serv">
@@ -205,6 +205,13 @@
 <li><code>-p 8080:80</code> 是端口映射配置</li>
 <li><code>~/my_data/nginx</code> 代表存储nginx静态文件的目录</li>
 </ol>
+<h3 id="通用配置"><a href="#通用配置" class="headerlink" title="通用配置"></a>通用配置</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">mkdir nginx &amp;&amp; cd nginx</div><div class="line">mkdir conf.d</div><div class="line">mkdir html</div><div class="line">vim nginx.conf</div><div class="line">vim conf.d/server.conf</div><div class="line">vim reload.sh</div><div class="line"><span class="meta">#</span> 运行</div><div class="line">docker run -d --name nginx -p 80:80 -v `pwd`/html:/usr/share/nginx/html:ro -v `pwd`/nginx.conf:/etc/nginx/nginx.conf:ro -v `pwd`/conf.d:/etc/nginx/conf.d:ro -v /var/log/nginx:/var/log/nginx nginx:alpine</div></pre></td></tr></table></figure>
+<p><code>vim nginx.conf</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">user  nginx;</div><div class="line">worker_processes  1;</div><div class="line"></div><div class="line">error_log  /var/log/nginx/error.log warn;</div><div class="line">pid        /var/run/nginx.pid;</div><div class="line"></div><div class="line">events &#123;</div><div class="line">    worker_connections  1024;</div><div class="line">&#125;</div><div class="line"></div><div class="line">http &#123;</div><div class="line">    include       /etc/nginx/mime.types;</div><div class="line">    default_type  application/octet-stream;</div><div class="line"></div><div class="line">    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '</div><div class="line">                      '$status $body_bytes_sent "$http_referer" '</div><div class="line">                      '"$http_user_agent" "$http_x_forwarded_for"';</div><div class="line"></div><div class="line">    access_log  /var/log/nginx/access.log  main;</div><div class="line"></div><div class="line">    sendfile        on;</div><div class="line">    #tcp_nopush     on;</div><div class="line"></div><div class="line">    keepalive_timeout  65;</div><div class="line">    #gzip  on;</div><div class="line"></div><div class="line">    include /etc/nginx/conf.d/*.conf;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>vim conf.d/server.conf</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">server &#123;</div><div class="line">        listen       80;</div><div class="line">        server_name localhost;</div><div class="line">        proxy_set_header        X-Real-IP       $remote_addr;</div><div class="line">        proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;</div><div class="line">        location / &#123;</div><div class="line">            proxy_pass http://172.16.202.12:9900;</div><div class="line">        &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>vim reload.sh</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker exec nginx sh -c "nginx -t &amp;&amp; nginx -s reload &amp;&amp; echo 'reload OK'"</div></pre></td></tr></table></figure>
 <h2 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h2><blockquote>
 <p><a href="https://hub.docker.com/_/java/" target="_blank" rel="external">官方Repository</a></p>
 </blockquote>
@@ -374,7 +381,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#安装Docker"><span class="toc-number">1.</span> <span class="toc-text">安装Docker</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MySQL"><span class="toc-number">1.1.</span> <span class="toc-text">MySQL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#运行"><span class="toc-number">1.2.</span> <span class="toc-text">运行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#连接测试"><span class="toc-number">1.3.</span> <span class="toc-text">连接测试</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis"><span class="toc-number">2.</span> <span class="toc-text">Redis</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#运行-1"><span class="toc-number">2.1.</span> <span class="toc-text">运行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#连接测试-1"><span class="toc-number">2.2.</span> <span class="toc-text">连接测试</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Mongo"><span class="toc-number">3.</span> <span class="toc-text">Mongo</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#运行-2"><span class="toc-number">3.1.</span> <span class="toc-text">运行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#连接测试-2"><span class="toc-number">3.2.</span> <span class="toc-text">连接测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用户操作"><span class="toc-number">3.3.</span> <span class="toc-text">用户操作</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Nginx"><span class="toc-number">4.</span> <span class="toc-text">Nginx</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#运行-3"><span class="toc-number">4.1.</span> <span class="toc-text">运行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java"><span class="toc-number">5.</span> <span class="toc-text">Java</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Node"><span class="toc-number">6.</span> <span class="toc-text">Node</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#安装Docker"><span class="toc-number">1.</span> <span class="toc-text">安装Docker</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MySQL"><span class="toc-number">1.1.</span> <span class="toc-text">MySQL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#运行"><span class="toc-number">1.2.</span> <span class="toc-text">运行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#连接测试"><span class="toc-number">1.3.</span> <span class="toc-text">连接测试</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis"><span class="toc-number">2.</span> <span class="toc-text">Redis</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#运行-1"><span class="toc-number">2.1.</span> <span class="toc-text">运行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#连接测试-1"><span class="toc-number">2.2.</span> <span class="toc-text">连接测试</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Mongo"><span class="toc-number">3.</span> <span class="toc-text">Mongo</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#运行-2"><span class="toc-number">3.1.</span> <span class="toc-text">运行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#连接测试-2"><span class="toc-number">3.2.</span> <span class="toc-text">连接测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用户操作"><span class="toc-number">3.3.</span> <span class="toc-text">用户操作</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Nginx"><span class="toc-number">4.</span> <span class="toc-text">Nginx</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#运行-3"><span class="toc-number">4.1.</span> <span class="toc-text">运行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#通用配置"><span class="toc-number">4.2.</span> <span class="toc-text">通用配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java"><span class="toc-number">5.</span> <span class="toc-text">Java</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Node"><span class="toc-number">6.</span> <span class="toc-text">Node</span></a></li></ol>
                     </div>
                 </span>
             </div>
@@ -487,11 +494,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">HTTPS</a>
+                <a href="javascript:void(0)" class="js-tag color4">ELK</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Common</a>
+                <a href="javascript:void(0)" class="js-tag color4">ElasticSearch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Kibana</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Logstash</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Filebeat</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">HTTPS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -515,23 +538,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Docker</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">DataBase</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Transaction</a>
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -544,6 +555,42 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">book</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Config</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Common</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Basic</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">DataBase</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Transaction</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -563,27 +610,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Basic</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Tomcat</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Config</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
               </li>
             
             <div class="clearfix"></div>

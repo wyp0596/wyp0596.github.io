@@ -141,6 +141,93 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Docker/docker_cleanup" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/31/Docker/docker_cleanup/">Docker之清理</a>
+    </h1>
+  
+
+        
+        <a href="/2017/05/31/Docker/docker_cleanup/" class="archive-article-date">
+  	<time datetime="2017-05-31T08:45:53.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-05-31</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="容器"><a href="#容器" class="headerlink" title="容器"></a>容器</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> 清理退出的容器</div><div class="line">docker rm $(docker ps -q -f status=exited)</div><div class="line"></div><div class="line"><span class="meta">#</span> 杀死所有正在运行的容器</div><div class="line">docker kill $(docker ps -a -q)</div><div class="line"></div><div class="line"><span class="meta">#</span> 删除所有已经停止的容器</div><div class="line">docker rm $(docker ps -a -q)</div></pre></td></tr></table></figure>
+<h2 id="镜像"><a href="#镜像" class="headerlink" title="镜像"></a>镜像</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> 清理虚悬镜像</div><div class="line">docker rmi $(docker images -q -f "dangling=true")</div><div class="line"></div><div class="line"><span class="meta">#</span> 删除所有虚悬镜像</div><div class="line">docker rmi $(docker images -q -f dangling=true)</div><div class="line"></div><div class="line"><span class="meta">#</span> 删除所有镜像</div><div class="line">docker rmi $(docker images -q)</div></pre></td></tr></table></figure>
+<h2 id="数据卷"><a href="#数据卷" class="headerlink" title="数据卷"></a>数据卷</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> 列出虚悬数据卷</div><div class="line">docker volume ls -qf dangling=true</div><div class="line"><span class="meta">#</span> 删除虚悬数据卷</div><div class="line">docker volume rm $(docker volume ls -qf dangling=true)</div></pre></td></tr></table></figure>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Docker</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Docker/" class="article-tag-list-link color2">Docker</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/05/31/Docker/docker_cleanup/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Docker/docker_dev" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -205,6 +292,13 @@
 <li><code>-p 8080:80</code> 是端口映射配置</li>
 <li><code>~/my_data/nginx</code> 代表存储nginx静态文件的目录</li>
 </ol>
+<h3 id="通用配置"><a href="#通用配置" class="headerlink" title="通用配置"></a>通用配置</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">mkdir nginx &amp;&amp; cd nginx</div><div class="line">mkdir conf.d</div><div class="line">mkdir html</div><div class="line">vim nginx.conf</div><div class="line">vim conf.d/server.conf</div><div class="line">vim reload.sh</div><div class="line"><span class="meta">#</span> 运行</div><div class="line">docker run -d --name nginx -p 80:80 -v `pwd`/html:/usr/share/nginx/html:ro -v `pwd`/nginx.conf:/etc/nginx/nginx.conf:ro -v `pwd`/conf.d:/etc/nginx/conf.d:ro -v /var/log/nginx:/var/log/nginx nginx:alpine</div></pre></td></tr></table></figure>
+<p><code>vim nginx.conf</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">user  nginx;</div><div class="line">worker_processes  1;</div><div class="line"></div><div class="line">error_log  /var/log/nginx/error.log warn;</div><div class="line">pid        /var/run/nginx.pid;</div><div class="line"></div><div class="line">events &#123;</div><div class="line">    worker_connections  1024;</div><div class="line">&#125;</div><div class="line"></div><div class="line">http &#123;</div><div class="line">    include       /etc/nginx/mime.types;</div><div class="line">    default_type  application/octet-stream;</div><div class="line"></div><div class="line">    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '</div><div class="line">                      '$status $body_bytes_sent "$http_referer" '</div><div class="line">                      '"$http_user_agent" "$http_x_forwarded_for"';</div><div class="line"></div><div class="line">    access_log  /var/log/nginx/access.log  main;</div><div class="line"></div><div class="line">    sendfile        on;</div><div class="line">    #tcp_nopush     on;</div><div class="line"></div><div class="line">    keepalive_timeout  65;</div><div class="line">    #gzip  on;</div><div class="line"></div><div class="line">    include /etc/nginx/conf.d/*.conf;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>vim conf.d/server.conf</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">server &#123;</div><div class="line">        listen       80;</div><div class="line">        server_name localhost;</div><div class="line">        proxy_set_header        X-Real-IP       $remote_addr;</div><div class="line">        proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;</div><div class="line">        location / &#123;</div><div class="line">            proxy_pass http://172.16.202.12:9900;</div><div class="line">        &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>vim reload.sh</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker exec nginx sh -c "nginx -t &amp;&amp; nginx -s reload &amp;&amp; echo 'reload OK'"</div></pre></td></tr></table></figure>
 <h2 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h2><blockquote>
 <p><a href="https://hub.docker.com/_/java/" target="_blank" rel="external">官方Repository</a></p>
 </blockquote>
@@ -396,190 +490,9 @@
 
 
   
-    <article id="post-Docker/docker_image" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/31/Docker/docker_image/">Docker之镜像</a>
-    </h1>
-  
-
-        
-        <a href="/2017/05/31/Docker/docker_image/" class="archive-article-date">
-  	<time datetime="2017-05-31T08:30:53.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-05-31</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="获取镜像"><a href="#获取镜像" class="headerlink" title="获取镜像"></a>获取镜像</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>从官方Docker Hub获取ubuntu:14.04</div><div class="line">docker pull ubuntu:14.04</div><div class="line"><span class="meta">#</span>运行</div><div class="line">docker run -it --rm ubuntu:14.04 bash</div><div class="line">cat /etc/os-release</div><div class="line">exit</div></pre></td></tr></table></figure>
-<p><code>docker run</code>: 就是运行容器的命令</p>
-<p><code>-it</code>：这是两个参数， <code>-i</code>交互式操作， <code>-t</code> 终端</p>
-<p><code>—rm</code>：这个参数是说容器退出后随之将其删除</p>
-<p><code>ubuntu:14.04</code>：这是指用 ubuntu:14.04 镜像为基础来启动容器</p>
-<p><code>bash</code>：放在镜像名后的是命令</p>
-<p><code>cat /etc/os-release</code>:这是 Linux 常用的查看当前系统版本的命令</p>
-<p><code>exit</code> :退出了这个容器</p>
-<h2 id="列出镜像"><a href="#列出镜像" class="headerlink" title="列出镜像"></a>列出镜像</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>列出当前镜像</div><div class="line">docker images</div><div class="line"><span class="meta">#</span>仓库名和标签都为&lt;none&gt;的是虚悬镜像,列出虚悬镜像</div><div class="line">docker images -f dangling=true</div><div class="line"><span class="meta">#</span>删除虚悬镜像</div><div class="line">docker rmi $(docker images -q -f dangling=true)</div><div class="line"><span class="meta">#</span>列出所有镜像,可能包括库名和标签都为&lt;none&gt;的中间层镜像</div><div class="line">docker images -a</div><div class="line"><span class="meta">#</span>列出部分镜像,比如ubuntu</div><div class="line">docker images ubuntu</div><div class="line"><span class="meta">#</span>过滤镜像</div><div class="line">docker images -f since=mongo:3.2</div><div class="line">docker images -f before=mongo:3.2</div><div class="line">docker images -f label=com.example.version=0.1</div><div class="line"><span class="meta">#</span>以特定格式列出镜像</div><div class="line">docker images -q</div><div class="line">docker images --format "&#123;&#123;.ID&#125;&#125;: &#123;&#123;.Repository&#125;&#125;"</div><div class="line">docker images --format "table &#123;&#123;.ID&#125;&#125;\t&#123;&#123;.Repository&#125;&#125;\t&#123;&#123;.Tag&#125;&#125;"</div></pre></td></tr></table></figure>
-<h2 id="commit"><a href="#commit" class="headerlink" title="commit"></a>commit</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>运行一个镜像</div><div class="line">docker run --name webserver -d -p 80:80 nginx</div><div class="line"><span class="meta">#</span>进入容器命令行交互界面,并做修改</div><div class="line">docker exec -it webserver bash</div><div class="line">echo '&lt;h1&gt;Hello, Docker!&lt;/h1&gt;' &gt; /usr/share/nginx/html/index.html</div><div class="line">exit</div><div class="line"><span class="meta">#</span>查看修改</div><div class="line">docker diff webserver</div><div class="line"><span class="meta">#</span>将容器保存为镜像</div><div class="line">docker commit \</div><div class="line">    --author "test &lt;test@gmail.com&gt;" \</div><div class="line">    --message "修改了默认网页" \</div><div class="line">    webserver \</div><div class="line">    nginx:v2</div><div class="line"><span class="meta">#</span>查看镜像</div><div class="line">docker images nginx</div><div class="line"><span class="meta">#</span>查看镜像内的历史记录</div><div class="line">docker history nginx:v2</div><div class="line"><span class="meta">#</span>运行新的镜像</div><div class="line">docker run --name web2 -d -p 81:80 nginx:v2</div></pre></td></tr></table></figure>
-<h3 id="慎用-docker-commit"><a href="#慎用-docker-commit" class="headerlink" title="慎用 docker commit"></a>慎用 docker commit</h3><ol>
-<li>若清理不当会导致镜像臃肿</li>
-<li>操作为黑箱操作，生成的是黑箱镜像</li>
-<li>每次commit都在当前层操作，可能导致镜像臃肿</li>
-<li>一般在学习和被入侵后保存现场时用</li>
-<li>定制镜像用Dockerfile</li>
-</ol>
-<h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><blockquote>
-<p>Dockerfile 是一个文本文件，其内包含了一条条的<strong>指令(Instruction)</strong>，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建。</p>
-</blockquote>
-<h3 id="基本指令"><a href="#基本指令" class="headerlink" title="基本指令"></a>基本指令</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># FROM 指定基础镜像必须放在第一个,其中scratch为是一个空镜像</span></div><div class="line"><span class="keyword">FROM</span> nginx</div><div class="line"><span class="comment"># RUN 就像直接在命令行中输入的命令一样  </span></div><div class="line"><span class="comment"># shell 格式：RUN &lt;命令&gt;</span></div><div class="line"><span class="comment"># exec 格式：RUN ["可执行文件", "参数1", "参数2"]</span></div><div class="line"><span class="keyword">RUN</span> echo '&lt;h1&gt;Hello, Docker!&lt;/h1&gt;' &gt; /usr/share/nginx/html/index.html</div><div class="line"># 使用 &amp;&amp; 将各个所需命令串联起来。简化为 1 层,并进行了清理操作</div><div class="line">RUN buildDeps='gcc libc6-dev make' \</div><div class="line">    &amp;&amp; apt-get update \</div><div class="line">    &amp;&amp; apt-get install -y $buildDeps \</div><div class="line">    &amp;&amp; wget -O redis.tar.gz "http://download.redis.io/releases/redis-3.2.5.tar.gz" \</div><div class="line">    &amp;&amp; mkdir -p /usr/src/redis \</div><div class="line">    &amp;&amp; tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1 \</div><div class="line">    &amp;&amp; make -C /usr/src/redis \</div><div class="line">    &amp;&amp; make -C /usr/src/redis install \</div><div class="line">    &amp;&amp; rm -rf /var/lib/apt/lists/* \</div><div class="line">    &amp;&amp; rm redis.tar.gz \</div><div class="line">    &amp;&amp; rm -r /usr/src/redis \</div><div class="line">    &amp;&amp; apt-get purge -y --auto-remove $buildDeps</div></pre></td></tr></table></figure>
-<h3 id="构建镜像"><a href="#构建镜像" class="headerlink" title="构建镜像"></a>构建镜像</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> 方式1.在Dockerfile文件所在目录执行命令 格式如:docker build [选项] &lt;上下文路径/URL/-&gt; </div><div class="line"><span class="meta">#</span> 涉及了上下文的概念以及Docker的C/S设计</div><div class="line">docker build -t nginx:v3 .</div><div class="line"><span class="meta">#</span> 方式2.直接用 Git repo 进行构建</div><div class="line">docker build https://github.com/twang2218/gitlab-ce-zh.git#:8.14</div><div class="line"><span class="meta">#</span> 方式3.用给定的 tar 压缩包构建</div><div class="line">docker build http://server/context.tar.gz</div><div class="line"><span class="meta">#</span> 方式4.从标准输入中读取 Dockerfile 进行构建,它没有上下文,所以不能copy本地文件</div><div class="line">docker build - &lt; Dockerfile # 或者cat Dockerfile | docker build -</div><div class="line"><span class="meta">#</span>方式5.从标准输入中读取上下文压缩包进行构建,并将压缩包内容作为上下文</div><div class="line">docker build - &lt; context.tar.gz</div></pre></td></tr></table></figure>
-<h2 id="Dockerfile指令"><a href="#Dockerfile指令" class="headerlink" title="Dockerfile指令"></a>Dockerfile指令</h2><h3 id="COPY-复制文件"><a href="#COPY-复制文件" class="headerlink" title="COPY 复制文件"></a>COPY 复制文件</h3><ol>
-<li><code>COPY package.json /usr/src/app/</code></li>
-<li>从上下文目录中复制,可以是通配符</li>
-<li><code>目标路径</code>可以是容器内的绝对路径，也可以是相对于工作目录的相对路径，不存在会自动生成</li>
-<li>源文件的各种元数据都会保留。比如读、写、执行权限、文件变更时间等。</li>
-</ol>
-<h3 id="ADD-更高级的复制文件"><a href="#ADD-更高级的复制文件" class="headerlink" title="ADD 更高级的复制文件"></a>ADD 更高级的复制文件</h3><ol>
-<li><code>ADD ubuntu-xenial-core-cloudimg-amd64-root.tar.gz /</code></li>
-<li>若源文件为压缩文件，将会自动解压缩这个压缩文件到<code>目标路径</code>去</li>
-<li>所有的文件复制均使用 <code>COPY</code> 指令，仅在需要自动解压缩的场合使用 <code>ADD</code></li>
-</ol>
-<h3 id="CMD-容器启动命令"><a href="#CMD-容器启动命令" class="headerlink" title="CMD 容器启动命令"></a>CMD 容器启动命令</h3><ol>
-<li><code>CMD echo $HOME</code> 相当于 <code>CMD [ &quot;sh&quot;, &quot;-c&quot;, &quot;echo $HOME&quot; ]</code></li>
-<li>容器中的应用都应该以前台执行，容器内没有后台服务的概念</li>
-<li><code>CMD [&quot;nginx&quot;, &quot;-g&quot;, &quot;daemon off;&quot;]</code> 以前台形式运行nginx</li>
-</ol>
-<h3 id="ENTRYPOINT-入口点"><a href="#ENTRYPOINT-入口点" class="headerlink" title="ENTRYPOINT 入口点"></a>ENTRYPOINT 入口点</h3><ol>
-<li><code>ENTRYPOINT</code> 的目的和 <code>CMD</code> 一样，都是在指定容器<strong>启动程序</strong>及参数</li>
-<li>当指定了 <code>ENTRYPOINT</code> 后，<code>CMD</code>不再是直接的运行其命令，而是将 <code>CMD</code> 的内容作为参数传给 <code>ENTRYPOINT</code> 指令，实际执行时<code>&lt;ENTRYPOINT&gt; &quot;&lt;CMD&gt;&quot;</code></li>
-<li>通过 <code>docker run</code> 的参数 <code>—entrypoint</code> 可以指定别的入口点</li>
-<li>可以让镜像变成像命令一样使用，<code>docker run</code>可以直接加上参数运行</li>
-<li>应用运行前的准备工作，启动容器就是启动主进程，但有些时候，启动主进程前，需要一些准备工作</li>
-</ol>
-<h3 id="ENV-设置环境变量"><a href="#ENV-设置环境变量" class="headerlink" title="ENV 设置环境变量"></a>ENV 设置环境变量</h3><blockquote>
-<p>通过环境变量，我们可以让一份 Dockerfile 制作更多的镜像，只需使用不同的环境变量即可。</p>
-</blockquote>
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 方式1</span></div><div class="line"><span class="keyword">ENV</span> VERSION <span class="number">1.0</span></div><div class="line"><span class="comment"># 方式2</span></div><div class="line"><span class="keyword">ENV</span> VERSION=<span class="number">1.0</span> DEBUG=on \</div><div class="line">    NAME=<span class="string">"Happy Feet"</span></div></pre></td></tr></table></figure>
-<p>可以使用<code>$VERSION</code>这种形式来获取环境变量值</p>
-<h3 id="ARG-构建参数"><a href="#ARG-构建参数" class="headerlink" title="ARG 构建参数"></a>ARG 构建参数</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 方式1</span></div><div class="line"><span class="keyword">ARG</span> VERSION <span class="number">1.0</span></div><div class="line"><span class="comment"># 方式2</span></div><div class="line"><span class="keyword">ARG</span> VERSION=<span class="number">1.0</span> DEBUG=on \</div><div class="line">    NAME=<span class="string">"Happy Feet"</span></div></pre></td></tr></table></figure>
-<ol>
-<li>效果同<code>ENV</code> 但是只在构建时有效</li>
-<li><code>docker history</code> 可以看到所有值</li>
-<li><code>docker build</code> 中可以用 <code>--build-arg &lt;参数名&gt;=&lt;值&gt;</code> 来覆盖</li>
-</ol>
-<h3 id="VOLUME-定义匿名卷"><a href="#VOLUME-定义匿名卷" class="headerlink" title="VOLUME 定义匿名卷"></a>VOLUME 定义匿名卷</h3><ol>
-<li><code>VOLUME /data</code> 或者 <code>VOLUME [&quot;/data&quot;,&quot;/test&quot;]</code></li>
-<li>挂在卷用以保存动态数据</li>
-<li>运行时可以覆盖这个挂载设置<code>docker run -d -v mydata:/data xxxx</code></li>
-</ol>
-<h3 id="EXPOSE-声明端口"><a href="#EXPOSE-声明端口" class="headerlink" title="EXPOSE 声明端口"></a>EXPOSE 声明端口</h3><ol>
-<li><code>EXPOSE 8080</code>或者<code>EXPOSE [&quot;80&quot;,&quot;8080&quot;]</code></li>
-<li>仅仅是声明运行时容器提供服务端口，并不会自动在宿主进行端口映射</li>
-<li><code>docker run -P</code> 时，会自动随机映射 <code>EXPOSE</code> 的端口</li>
-</ol>
-<h3 id="WORKDIR-指定工作目录"><a href="#WORKDIR-指定工作目录" class="headerlink" title="WORKDIR 指定工作目录"></a>WORKDIR 指定工作目录</h3><ol>
-<li><code>WORKDIR /app</code></li>
-<li>指定工作目录（或者称为当前目录），改变环境状态并影响以后的层</li>
-<li>该目录需要已经存在，<code>WORKDIR</code> 并不会建立目录</li>
-<li>如果需要改变以后各层的工作目录的位置，那么应该使用 <code>WORKDIR</code> 指令</li>
-</ol>
-<h3 id="USER-指定当前用户"><a href="#USER-指定当前用户" class="headerlink" title="USER 指定当前用户"></a>USER 指定当前用户</h3><ol>
-<li><code>USER redis</code></li>
-<li>指定当前用户，改变环境状态并影响以后的层</li>
-<li>用户必须是事先建立好的，否则无法切换</li>
-</ol>
-<h3 id="HEALTHCHECK-健康检查"><a href="#HEALTHCHECK-健康检查" class="headerlink" title="HEALTHCHECK 健康检查"></a>HEALTHCHECK 健康检查</h3><blockquote>
-<p>Docker 1.12 后引入</p>
-</blockquote>
-<p>HEALTHCHECK 支持下列选项：</p>
-<ul>
-<li><code>--interval=&lt;间隔&gt;</code>：两次健康检查的间隔，默认为 30 秒；</li>
-<li><code>--timeout=&lt;时长&gt;</code>：健康检查命令运行超时时间，如果超过这个时间，本次健康检查就被视为失败，默认 30 秒；</li>
-<li><code>--retries=&lt;次数&gt;</code>：当连续失败指定次数后，则将容器状态视为 unhealthy，默认 3 次。</li>
-</ul>
-<p>命令的返回值决定了该次健康检查的成功与否：0：成功；1：失败；</p>
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 如果基础镜像有健康检查指令，使用这行可以屏蔽掉其健康检查指令</span></div><div class="line"><span class="keyword">HEALTHCHECK</span> NONE</div><div class="line">#每 5 秒检查一次，如果健康检查命令超过 3 秒没响应就视为失败，并且使用 curl -fs http://localhost/ || exit 1 作为健康检查命令。</div><div class="line">HEALTHCHECK --interval=5s --timeout=3s \</div><div class="line">  CMD curl -fs http://localhost/ || exit 1</div></pre></td></tr></table></figure>
-<h3 id="ONBUILD-为他人做嫁衣裳"><a href="#ONBUILD-为他人做嫁衣裳" class="headerlink" title="ONBUILD 为他人做嫁衣裳"></a>ONBUILD 为他人做嫁衣裳</h3><ol>
-<li><code>ONBUILD &lt;其它指令&gt;</code></li>
-<li>只有当以当前镜像为基础镜像，去构建下一级镜像的时候才会被执行</li>
-</ol>
-<h2 id="其他方式"><a href="#其他方式" class="headerlink" title="其他方式"></a>其他方式</h2><h3 id="从rootfs压缩包导入"><a href="#从rootfs压缩包导入" class="headerlink" title="从rootfs压缩包导入"></a>从rootfs压缩包导入</h3><p>格式:<code>docker import [选项] &lt;文件&gt;|&lt;URL&gt;|- [&lt;仓库名&gt;[:&lt;标签&gt;]]</code></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>创建一个OpenVZ的ubuntu14.04的镜像</div><div class="line">docker import \</div><div class="line">    http://download.openvz.org/template/precreated/ubuntu-14.04-x86_64-minimal.tar.gz \</div><div class="line">    openvz/ubuntu:14.04</div></pre></td></tr></table></figure>
-<h3 id="docker-save和docker-load"><a href="#docker-save和docker-load" class="headerlink" title="docker save和docker load"></a><code>docker save</code>和<code>docker load</code></h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> 保存镜像</div><div class="line">docker save alpine | gzip &gt; alpine-latest.tar.gz</div><div class="line"></div><div class="line"><span class="meta">#</span> 导入镜像</div><div class="line">docker load -i alpine-latest.tar.gz</div><div class="line"></div><div class="line"><span class="meta">#</span> 从一个机器将镜像迁移到另一个机器，并且带进度条的功能</div><div class="line">docker save &lt;镜像名&gt; | bzip2 | pv | ssh &lt;用户名&gt;@&lt;主机名&gt; 'cat | docker load'</div></pre></td></tr></table></figure>
-<h2 id="删除本地镜像"><a href="#删除本地镜像" class="headerlink" title="删除本地镜像"></a>删除本地镜像</h2><p>格式:<code>docker rmi [选项] &lt;镜像1&gt; [&lt;镜像2&gt; ...]</code></p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://yeasy.gitbooks.io/docker_practice/content/" target="_blank" rel="external">Docker — 从入门到实践</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Docker</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Docker/" class="article-tag-list-link color2">Docker</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/05/31/Docker/docker_image/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
     </nav>
   
 
@@ -666,11 +579,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">HTTPS</a>
+                <a href="javascript:void(0)" class="js-tag color4">ELK</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Common</a>
+                <a href="javascript:void(0)" class="js-tag color4">ElasticSearch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Kibana</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Logstash</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Filebeat</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">HTTPS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -694,23 +623,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Docker</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">DataBase</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Transaction</a>
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -723,6 +640,42 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">book</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Config</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Common</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Basic</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">DataBase</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Transaction</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -742,27 +695,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Basic</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Tomcat</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Terminal</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Config</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
               </li>
             
             <div class="clearfix"></div>

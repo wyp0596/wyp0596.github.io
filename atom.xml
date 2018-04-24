@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://blog.ajavac.com/"/>
-  <updated>2018-02-06T09:40:06.725Z</updated>
+  <updated>2018-04-24T09:52:55.854Z</updated>
   <id>https://blog.ajavac.com/</id>
   
   <author>
@@ -14,6 +14,75 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>ELK简易Nginx日志系统搭建:ElasticSearch+Kibana+Filebeat</title>
+    <link href="https://blog.ajavac.com/2018/04/24/Common/elk/"/>
+    <id>https://blog.ajavac.com/2018/04/24/Common/elk/</id>
+    <published>2018-04-24T07:42:26.000Z</published>
+    <updated>2018-04-24T09:52:55.854Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>该教程以 ubuntu 16.04 为例, 其他系统类似</p>
+<p>官网: <a href="https://www.elastic.co" target="_blank" rel="external">https://www.elastic.co</a></p>
+<p>使用ElasticSearch 和 Kibana, 日志输入采用Filebeat, 没有使用Logstash</p>
+<p>参考: <a href="https://github.com/shildondu/elkstack_filebeat" target="_blank" rel="external">https://github.com/shildondu/elkstack_filebeat</a></p>
+</blockquote>
+<h2 id="准备阶段"><a href="#准备阶段" class="headerlink" title="准备阶段"></a>准备阶段</h2><ol>
+<li>一台比较干净的可联外网的  ubuntu 16.04 系统的服务器, 并具备root权限</li>
+<li>安装 <code>JDK 1.8</code> 和 <code>supervisor</code>和<code>nginx</code></li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> 安装JDK和supervisor和nginx</div><div class="line">sudo apt-get update &amp;&amp; sudo apt-get install openjdk-8-jdk supervisor nginx</div><div class="line"><span class="meta">#</span> 启动nginx</div><div class="line">nginx -t &amp;&amp; nginx</div><div class="line"><span class="meta">#</span> 测试nginx</div><div class="line">curl localhost</div></pre></td></tr></table></figure>
+<h2 id="创建用户与下载安装包"><a href="#创建用户与下载安装包" class="headerlink" title="创建用户与下载安装包"></a>创建用户与下载安装包</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> 创建用户elk</div><div class="line">sudo useradd -d /home/elk/ -m elk</div><div class="line">su elk</div><div class="line">cd /home/elk/</div><div class="line"><span class="meta">#</span> 下载安装包</div><div class="line">wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.3.tar.gz</div><div class="line">wget https://artifacts.elastic.co/downloads/kibana/kibana-6.2.3-linux-x86_64.tar.gz</div><div class="line">wget https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.3-amd64.deb</div><div class="line"><span class="meta">#</span> 解压安装包</div><div class="line">tar -xzvf elasticsearch-6.2.3.tar.gz</div><div class="line">tar -xzvf kibana-6.2.3-linux-x86_64.tar.gz</div><div class="line"><span class="meta">#</span> 安装filebeat</div><div class="line">dpkg -i filebeat-6.2.3-amd64.deb</div></pre></td></tr></table></figure>
+<h2 id="安装-elasticsearch"><a href="#安装-elasticsearch" class="headerlink" title="安装 elasticsearch"></a>安装 elasticsearch</h2><blockquote>
+<p>搜索引擎</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">su elk</div><div class="line">cd /home/elk/elasticsearch-6.2.3/</div><div class="line">bin/elasticsearch-plugin install ingest-geoip</div><div class="line">bin/elasticsearch-plugin install ingest-user-agent</div><div class="line"></div><div class="line"><span class="meta">#</span> 配置全局访问, 不限制访问者ip</div><div class="line">echo "network.host: 0.0.0.0" &gt;&gt; config/elasticsearch.yml</div><div class="line"><span class="meta">#</span> 启动elasticsearch</div><div class="line">bin/elasticsearch -d -p pid.txt</div><div class="line"><span class="meta">#</span> 测试elasticsearch启动</div><div class="line">curl localhost:9200</div></pre></td></tr></table></figure>
+<h2 id="kibana"><a href="#kibana" class="headerlink" title="kibana"></a>kibana</h2><blockquote>
+<p>用于搜索以及展示数据</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">su elk</div><div class="line">cd /home/elk/kibana-6.2.3-linux-x86_64/</div><div class="line"></div><div class="line"><span class="meta">#</span> 修改配置文件,让kibana支持外网访问</div><div class="line">echo "server.host: 0.0.0.0" &gt;&gt; config/kibana.yml</div><div class="line"></div><div class="line">bin/kibana</div></pre></td></tr></table></figure>
+<h2 id="filebeat"><a href="#filebeat" class="headerlink" title="filebeat"></a>filebeat</h2><blockquote>
+<p>监控日志文件, 并输出的ElasticSearch</p>
+<p>详见 <a href="https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-module-nginx.html" target="_blank" rel="external">https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-module-nginx.html</a></p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> 启用filebeat的nginx模块(提前安装好nginx)</div><div class="line">filebeat modules enable nginx</div><div class="line"></div><div class="line"><span class="meta">#</span> nginx的模块配置</div><div class="line"><span class="meta">#</span> vim /etc/filebeat/modules.d/nginx.yml</div><div class="line"></div><div class="line"><span class="meta">#</span> filebeat基本配置, 配置ElasticSearch和Kibana</div><div class="line"><span class="meta">#</span> vim /etc/filebeat/filebeat.yml</div><div class="line">output.elasticsearch:</div><div class="line">   hosts: ["xxx.xxx.xxx.xxx:9200"]</div><div class="line"></div><div class="line"><span class="meta">#</span> 设置filebeat</div><div class="line">filebeat setup -e</div><div class="line"><span class="meta">#</span> 启动filebeat</div><div class="line">service filebeat start</div></pre></td></tr></table></figure>
+<h2 id="配置-supervisor"><a href="#配置-supervisor" class="headerlink" title="配置 supervisor"></a>配置 supervisor</h2><blockquote>
+<p>让服务可以后台运行</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[program:elasticsearch]</div><div class="line">directory=/home/elk/elasticsearch-6.2.3/</div><div class="line">command=/home/elk/elasticsearch-6.2.3/bin/elasticsearch</div><div class="line">autorestart=true</div><div class="line">user=elk</div><div class="line">stdout_logfile=NONE</div><div class="line"></div><div class="line"></div><div class="line">[program:kibana]</div><div class="line">directory=/home/elk/kibana-6.2.3-linux-x86_64/</div><div class="line">command=/home/elk/kibana-6.2.3-linux-x86_64/bin/kibana</div><div class="line">autorestart=true</div><div class="line">user=elk</div><div class="line">stdout_logfile=NONE</div></pre></td></tr></table></figure>
+<h2 id="结果展示"><a href="#结果展示" class="headerlink" title="结果展示"></a>结果展示</h2><p><img src="/img/elk/elk.png" alt="ELK"></p>
+<h2 id="拓展其他的日志"><a href="#拓展其他的日志" class="headerlink" title="拓展其他的日志"></a>拓展其他的日志</h2><h3 id="配置Java工程"><a href="#配置Java工程" class="headerlink" title="配置Java工程"></a>配置Java工程</h3><ol>
+<li>添加依赖<code>compile(&#39;net.logstash.logback:logstash-logback-encoder:4.11&#39;)</code></li>
+<li>修改<code>logback-spring.xml</code>配置</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- 日志路径 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"logDir"</span> <span class="attr">value</span>=<span class="string">"./logs"</span>/&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- 输出器:只打印WARN等级及以上的日志到文件 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"JSON_ERROR_LOG"</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.RollingFileAppender"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">File</span>&gt;</span>$&#123;logDir&#125;/json_error.log<span class="tag">&lt;/<span class="name">File</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">rollingPolicy</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.TimeBasedRollingPolicy"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">FileNamePattern</span>&gt;</span>$&#123;logDir&#125;/json_error-%d&#123;yyyy-MM-dd&#125;-%i.log.gz<span class="tag">&lt;/<span class="name">FileNamePattern</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">MaxHistory</span>&gt;</span>2<span class="tag">&lt;/<span class="name">MaxHistory</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">TimeBasedFileNamingAndTriggeringPolicy</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP"</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">MaxFileSize</span>&gt;</span>100MB<span class="tag">&lt;/<span class="name">MaxFileSize</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">TimeBasedFileNamingAndTriggeringPolicy</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">rollingPolicy</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">encoder</span> <span class="attr">class</span>=<span class="string">"net.logstash.logback.encoder.LogstashEncoder"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">filter</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.classic.filter.ThresholdFilter"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">level</span>&gt;</span>WARN<span class="tag">&lt;/<span class="name">level</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">appender</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">root</span> <span class="attr">level</span>=<span class="string">"INFO"</span>&gt;</span></div><div class="line">     <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"JSON_ERROR_LOG"</span>/&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">root</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="根据条件输出到不同的index"><a href="#根据条件输出到不同的index" class="headerlink" title="根据条件输出到不同的index"></a>根据条件输出到不同的index</h3><p><code>/etc/filebeat/filebeat.yml</code> </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line">filebeat.prospectors:</div><div class="line"></div><div class="line">- type: log</div><div class="line">  paths:</div><div class="line">      - /my_app/server/logs/json_error.log</div><div class="line">  json.keys_under_root: true</div><div class="line">  json.add_error_key: true</div><div class="line">  fields.log_type: "server-error"</div><div class="line"></div><div class="line">- type: log</div><div class="line">  paths:</div><div class="line">      - /my_app/shangyuer/server/logs/json.log</div><div class="line">  json.keys_under_root: true</div><div class="line">  json.add_error_key: true</div><div class="line">  fields.log_type: "server-log"</div><div class="line"></div><div class="line">filebeat.config.modules:</div><div class="line">  path: $&#123;path.config&#125;/modules.d/*.yml</div><div class="line">  reload.enabled: false</div><div class="line"></div><div class="line">setup.template.settings:</div><div class="line">  index.number_of_shards: 3</div><div class="line"></div><div class="line">output.elasticsearch:</div><div class="line">  hosts: ["xxx.xxx.xxx.xxx:9200"]</div><div class="line">  indices:</div><div class="line">    - index: "nginx-access-%&#123;+yyyy.MM.dd&#125;"</div><div class="line">      when.equals:</div><div class="line">        fileset.module: "nginx"</div><div class="line">        fileset.name: "access"</div><div class="line">    - index: "nginx-error-%&#123;+yyyy.MM.dd&#125;"</div><div class="line">      when.equals:</div><div class="line">        fileset.module: "nginx"</div><div class="line">        fileset.name: "error"</div><div class="line">    - index: "server-error-%&#123;+yyyy.MM.dd&#125;"</div><div class="line">      when.equals:</div><div class="line">        fields.log_type: "server-error"</div><div class="line">    - index: "server-log-%&#123;+yyyy.MM.dd&#125;"</div><div class="line">      when.equals:</div><div class="line">        fields.log_type: "server-log"</div><div class="line"></div><div class="line">setup.kibana:</div><div class="line">  host: "xxx.xxx.xxx.xxx:5601"</div><div class="line"></div><div class="line"><span class="meta">#</span>setup.template.name: "nginx-access"</div><div class="line"><span class="meta">#</span>setup.template.pattern: "nginx-access-*"</div><div class="line"><span class="meta">#</span>setup.dashboards.index: "nginx-access-*"</div><div class="line"><span class="meta">#</span>setup.template.overwrite: true</div><div class="line">setup.dashboards.enabled: false</div><div class="line">setup.template.enabled: false</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;该教程以 ubuntu 16.04 为例, 其他系统类似&lt;/p&gt;
+&lt;p&gt;官网: &lt;a href=&quot;https://www.elastic.co&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://www.elastic.
+    
+    </summary>
+    
+      <category term="Common" scheme="https://blog.ajavac.com/categories/Common/"/>
+    
+    
+      <category term="ELK" scheme="https://blog.ajavac.com/tags/ELK/"/>
+    
+      <category term="ElasticSearch" scheme="https://blog.ajavac.com/tags/ElasticSearch/"/>
+    
+      <category term="Kibana" scheme="https://blog.ajavac.com/tags/Kibana/"/>
+    
+      <category term="Logstash" scheme="https://blog.ajavac.com/tags/Logstash/"/>
+    
+      <category term="Filebeat" scheme="https://blog.ajavac.com/tags/Filebeat/"/>
+    
+  </entry>
   
   <entry>
     <title>MySQL索引</title>
@@ -90,9 +159,9 @@
       <category term="MySQL" scheme="https://blog.ajavac.com/categories/MySQL/"/>
     
     
-      <category term="Common" scheme="https://blog.ajavac.com/tags/Common/"/>
-    
       <category term="MySQL" scheme="https://blog.ajavac.com/tags/MySQL/"/>
+    
+      <category term="Common" scheme="https://blog.ajavac.com/tags/Common/"/>
     
   </entry>
   
@@ -101,7 +170,7 @@
     <link href="https://blog.ajavac.com/2017/09/03/Common/tcp_handshake/"/>
     <id>https://blog.ajavac.com/2017/09/03/Common/tcp_handshake/</id>
     <published>2017-09-03T06:56:36.000Z</published>
-    <updated>2017-09-03T07:09:16.000Z</updated>
+    <updated>2018-04-24T07:43:38.215Z</updated>
     
     <content type="html"><![CDATA[<h2 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h2><ol>
 <li>第一次／第二次握手：为了保证服务端能收到客户的端的信息并能做出正确的应答</li>
@@ -163,10 +232,8 @@
     
     </summary>
     
-      <category term="Network" scheme="https://blog.ajavac.com/categories/Network/"/>
+      <category term="Common" scheme="https://blog.ajavac.com/categories/Common/"/>
     
-    
-      <category term="Common" scheme="https://blog.ajavac.com/tags/Common/"/>
     
       <category term="Network" scheme="https://blog.ajavac.com/tags/Network/"/>
     
@@ -177,7 +244,7 @@
     <link href="https://blog.ajavac.com/2017/08/24/Common/mac_pinyin_input_method/"/>
     <id>https://blog.ajavac.com/2017/08/24/Common/mac_pinyin_input_method/</id>
     <published>2017-08-24T06:20:31.000Z</published>
-    <updated>2017-08-24T06:21:09.000Z</updated>
+    <updated>2018-04-24T07:43:15.512Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>Mac上的简体中文拼音输入法主要有<a href="https://pinyin.sogou.com/mac/" target="_blank" rel="external">搜狗</a>、<a href="http://rime.im/" target="_blank" rel="external">鼠须管</a>、系统自带输入法这几种。本文将介绍MacOS系统自带的简体拼音输入法的一些使用技巧。</p>
@@ -382,7 +449,7 @@
     
     </summary>
     
-      <category term="Mac" scheme="https://blog.ajavac.com/categories/Mac/"/>
+      <category term="Common" scheme="https://blog.ajavac.com/categories/Common/"/>
     
     
       <category term="Mac" scheme="https://blog.ajavac.com/tags/Mac/"/>
@@ -869,9 +936,9 @@
     
       <category term="Java" scheme="https://blog.ajavac.com/tags/Java/"/>
     
-      <category term="Collection" scheme="https://blog.ajavac.com/tags/Collection/"/>
-    
       <category term="Basic" scheme="https://blog.ajavac.com/tags/Basic/"/>
+    
+      <category term="Collection" scheme="https://blog.ajavac.com/tags/Collection/"/>
     
   </entry>
   
@@ -1705,7 +1772,7 @@
     <link href="https://blog.ajavac.com/2017/05/31/Docker/docker_dev/"/>
     <id>https://blog.ajavac.com/2017/05/31/Docker/docker_dev/</id>
     <published>2017-05-31T08:40:53.000Z</published>
-    <updated>2018-02-06T10:39:51.228Z</updated>
+    <updated>2018-03-20T03:08:25.316Z</updated>
     
     <content type="html"><![CDATA[<h2 id="安装Docker"><a href="#安装Docker" class="headerlink" title="安装Docker"></a>安装Docker</h2><p><a href="https://www.docker.com/community-edition#/download" target="_blank" rel="external">Docker官网</a></p>
 <h3 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h3><blockquote>
@@ -1751,6 +1818,13 @@
 <li><code>-p 8080:80</code> 是端口映射配置</li>
 <li><code>~/my_data/nginx</code> 代表存储nginx静态文件的目录</li>
 </ol>
+<h3 id="通用配置"><a href="#通用配置" class="headerlink" title="通用配置"></a>通用配置</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">mkdir nginx &amp;&amp; cd nginx</div><div class="line">mkdir conf.d</div><div class="line">mkdir html</div><div class="line">vim nginx.conf</div><div class="line">vim conf.d/server.conf</div><div class="line">vim reload.sh</div><div class="line"><span class="meta">#</span> 运行</div><div class="line">docker run -d --name nginx -p 80:80 -v `pwd`/html:/usr/share/nginx/html:ro -v `pwd`/nginx.conf:/etc/nginx/nginx.conf:ro -v `pwd`/conf.d:/etc/nginx/conf.d:ro -v /var/log/nginx:/var/log/nginx nginx:alpine</div></pre></td></tr></table></figure>
+<p><code>vim nginx.conf</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">user  nginx;</div><div class="line">worker_processes  1;</div><div class="line"></div><div class="line">error_log  /var/log/nginx/error.log warn;</div><div class="line">pid        /var/run/nginx.pid;</div><div class="line"></div><div class="line">events &#123;</div><div class="line">    worker_connections  1024;</div><div class="line">&#125;</div><div class="line"></div><div class="line">http &#123;</div><div class="line">    include       /etc/nginx/mime.types;</div><div class="line">    default_type  application/octet-stream;</div><div class="line"></div><div class="line">    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '</div><div class="line">                      '$status $body_bytes_sent "$http_referer" '</div><div class="line">                      '"$http_user_agent" "$http_x_forwarded_for"';</div><div class="line"></div><div class="line">    access_log  /var/log/nginx/access.log  main;</div><div class="line"></div><div class="line">    sendfile        on;</div><div class="line">    #tcp_nopush     on;</div><div class="line"></div><div class="line">    keepalive_timeout  65;</div><div class="line">    #gzip  on;</div><div class="line"></div><div class="line">    include /etc/nginx/conf.d/*.conf;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>vim conf.d/server.conf</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">server &#123;</div><div class="line">        listen       80;</div><div class="line">        server_name localhost;</div><div class="line">        proxy_set_header        X-Real-IP       $remote_addr;</div><div class="line">        proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;</div><div class="line">        location / &#123;</div><div class="line">            proxy_pass http://172.16.202.12:9900;</div><div class="line">        &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>vim reload.sh</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker exec nginx sh -c "nginx -t &amp;&amp; nginx -s reload &amp;&amp; echo 'reload OK'"</div></pre></td></tr></table></figure>
 <h2 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h2><blockquote>
 <p><a href="https://hub.docker.com/_/java/" target="_blank" rel="external">官方Repository</a></p>
 </blockquote>
@@ -2097,9 +2171,9 @@
       <category term="Linux" scheme="https://blog.ajavac.com/categories/Linux/"/>
     
     
-      <category term="Basic" scheme="https://blog.ajavac.com/tags/Basic/"/>
-    
       <category term="Linux" scheme="https://blog.ajavac.com/tags/Linux/"/>
+    
+      <category term="Basic" scheme="https://blog.ajavac.com/tags/Basic/"/>
     
   </entry>
   
@@ -2108,7 +2182,7 @@
     <link href="https://blog.ajavac.com/2017/04/08/Common/mac/"/>
     <id>https://blog.ajavac.com/2017/04/08/Common/mac/</id>
     <published>2017-04-08T10:34:45.000Z</published>
-    <updated>2017-06-25T13:13:07.000Z</updated>
+    <updated>2018-04-24T07:43:03.670Z</updated>
     
     <content type="html"><![CDATA[<h2 id="科学上网"><a href="#科学上网" class="headerlink" title="科学上网"></a>科学上网</h2><h3 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h3><p>ShadowsocksX-NG</p>
 <h3 id="单独设置git的代理"><a href="#单独设置git的代理" class="headerlink" title="单独设置git的代理"></a>单独设置git的代理</h3><h4 id="设置代理"><a href="#设置代理" class="headerlink" title="设置代理"></a>设置代理</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">git config --global https.proxy http://127.0.0.1:1080</div><div class="line"></div><div class="line">git config --global https.proxy https://127.0.0.1:1080</div><div class="line"></div><div class="line"><span class="meta">#</span> socks5</div><div class="line">git config --global http.proxy 'socks5://127.0.0.1:1080'</div><div class="line">git config --global https.proxy 'socks5://127.0.0.1:1080'</div></pre></td></tr></table></figure>
@@ -2136,7 +2210,7 @@
     
     </summary>
     
-      <category term="Mac" scheme="https://blog.ajavac.com/categories/Mac/"/>
+      <category term="Common" scheme="https://blog.ajavac.com/categories/Common/"/>
     
     
       <category term="Mac" scheme="https://blog.ajavac.com/tags/Mac/"/>
@@ -2880,7 +2954,7 @@
     <link href="https://blog.ajavac.com/2017/03/23/Common/web_seckill/"/>
     <id>https://blog.ajavac.com/2017/03/23/Common/web_seckill/</id>
     <published>2017-03-23T09:20:35.000Z</published>
-    <updated>2017-03-23T09:20:37.000Z</updated>
+    <updated>2018-04-24T07:43:31.892Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>特点：短时间内海量的请求，比如1秒5w请求（5wQPS）</p>
@@ -2913,10 +2987,8 @@
     
     </summary>
     
-      <category term="Web" scheme="https://blog.ajavac.com/categories/Web/"/>
+      <category term="Common" scheme="https://blog.ajavac.com/categories/Common/"/>
     
-    
-      <category term="Common" scheme="https://blog.ajavac.com/tags/Common/"/>
     
       <category term="Web" scheme="https://blog.ajavac.com/tags/Web/"/>
     
@@ -3239,7 +3311,7 @@
     <link href="https://blog.ajavac.com/2017/01/13/Common/character/"/>
     <id>https://blog.ajavac.com/2017/01/13/Common/character/</id>
     <published>2017-01-13T08:27:31.000Z</published>
-    <updated>2017-05-15T01:43:50.000Z</updated>
+    <updated>2018-04-24T07:43:10.609Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>编程过程中偶尔会遇到乱码问题,对字符编码进行一定的理解可以加快解决问题的速度.</p>
@@ -3349,10 +3421,8 @@
     
     </summary>
     
-      <category term="Charset" scheme="https://blog.ajavac.com/categories/Charset/"/>
+      <category term="Common" scheme="https://blog.ajavac.com/categories/Common/"/>
     
-    
-      <category term="Common" scheme="https://blog.ajavac.com/tags/Common/"/>
     
       <category term="Charset" scheme="https://blog.ajavac.com/tags/Charset/"/>
     
@@ -3409,9 +3479,9 @@
       <category term="MySQL" scheme="https://blog.ajavac.com/categories/MySQL/"/>
     
     
-      <category term="Common" scheme="https://blog.ajavac.com/tags/Common/"/>
-    
       <category term="MySQL" scheme="https://blog.ajavac.com/tags/MySQL/"/>
+    
+      <category term="Common" scheme="https://blog.ajavac.com/tags/Common/"/>
     
   </entry>
   
@@ -3525,7 +3595,7 @@
     <link href="https://blog.ajavac.com/2016/11/24/Common/certificate/"/>
     <id>https://blog.ajavac.com/2016/11/24/Common/certificate/</id>
     <published>2016-11-24T07:32:53.000Z</published>
-    <updated>2016-12-28T15:15:50.000Z</updated>
+    <updated>2018-04-24T07:43:22.365Z</updated>
     
     <content type="html"><![CDATA[<h1 id="证书相关知识"><a href="#证书相关知识" class="headerlink" title="证书相关知识"></a>证书相关知识</h1><h2 id="加密算法"><a href="#加密算法" class="headerlink" title="加密算法"></a>加密算法</h2><h3 id="对称密钥加密"><a href="#对称密钥加密" class="headerlink" title="对称密钥加密"></a>对称密钥加密</h3><blockquote>
 <p>加/解密一般使用<strong>同一个密钥</strong>或者可互相推算的密钥,通常称之为”Session Key”,计算速度较快.</p>
@@ -3644,12 +3714,10 @@
     
     </summary>
     
-      <category term="HTTPS" scheme="https://blog.ajavac.com/categories/HTTPS/"/>
+      <category term="Common" scheme="https://blog.ajavac.com/categories/Common/"/>
     
     
       <category term="HTTPS" scheme="https://blog.ajavac.com/tags/HTTPS/"/>
-    
-      <category term="Common" scheme="https://blog.ajavac.com/tags/Common/"/>
     
   </entry>
   
@@ -3658,7 +3726,7 @@
     <link href="https://blog.ajavac.com/2016/07/22/Common/git_primer/"/>
     <id>https://blog.ajavac.com/2016/07/22/Common/git_primer/</id>
     <published>2016-07-22T01:48:22.000Z</published>
-    <updated>2016-12-28T15:10:37.000Z</updated>
+    <updated>2018-04-24T07:42:58.219Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>参考链接:<a href="http://www.liaoxuefeng.com/" target="_blank" rel="external">廖雪峰的官方网站</a></p>
@@ -3752,10 +3820,8 @@
     
     </summary>
     
-      <category term="Git" scheme="https://blog.ajavac.com/categories/Git/"/>
+      <category term="Common" scheme="https://blog.ajavac.com/categories/Common/"/>
     
-    
-      <category term="Common" scheme="https://blog.ajavac.com/tags/Common/"/>
     
       <category term="Git" scheme="https://blog.ajavac.com/tags/Git/"/>
     
@@ -3847,9 +3913,9 @@
       <category term="MySQL" scheme="https://blog.ajavac.com/categories/MySQL/"/>
     
     
-      <category term="Common" scheme="https://blog.ajavac.com/tags/Common/"/>
-    
       <category term="MySQL" scheme="https://blog.ajavac.com/tags/MySQL/"/>
+    
+      <category term="Common" scheme="https://blog.ajavac.com/tags/Common/"/>
     
   </entry>
   
@@ -3922,9 +3988,9 @@
       <category term="MySQL" scheme="https://blog.ajavac.com/categories/MySQL/"/>
     
     
-      <category term="Common" scheme="https://blog.ajavac.com/tags/Common/"/>
-    
       <category term="MySQL" scheme="https://blog.ajavac.com/tags/MySQL/"/>
+    
+      <category term="Common" scheme="https://blog.ajavac.com/tags/Common/"/>
     
   </entry>
   
