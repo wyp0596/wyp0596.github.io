@@ -141,6 +141,187 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Common/character" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/13/Common/character/">字符编码</a>
+    </h1>
+  
+
+        
+        <a href="/2017/01/13/Common/character/" class="archive-article-date">
+  	<time datetime="2017-01-13T08:27:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>编程过程中偶尔会遇到乱码问题,对字符编码进行一定的理解可以加快解决问题的速度.</p>
+</blockquote>
+<h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><ol>
+<li><code>字符集</code>:系统支持的所有抽象字符的集合。</li>
+<li><code>常见字符集</code>：ASCII、ISO-8859-1、GB2312、GBK、GB18030、BIG5、Unicode等。</li>
+<li><code>编码</code>(encoding): 编码是信息从一种形式或格式<code>转换</code>为另一种形式的过程。解码，是编码的<code>逆过程</code>。</li>
+<li><code>字符编码</code>(character encoding): 把字符集中的字符编码为指定集合中某一对象（例如：比特模式、自然数序列、8位元组或者电脉冲），以便文本在计算机中存储和通过通信网络的传递。一般一种字符集对应一种字符编码方式，其中Unicode字符集有多种编码方式，比如UTF-8、UTF-16、UTF-32。不同字符集间转换一般使用Unicode字符集作为中介，先转换为Unicode字符，然后再查码表进行转换。</li>
+</ol>
+<h1 id="Unicode"><a href="#Unicode" class="headerlink" title="Unicode"></a>Unicode</h1><blockquote>
+<p>Unicode (万国码,国际码,统一码,单一码)是计算机领域的一项业界标准,对世界上大部分文字系统进行整理和编码,使电脑可以用更为简单的方式类呈现和处理文字.</p>
+</blockquote>
+<ol>
+<li>Java程序在运行时，内存中的字符使用Unicode字符集，使用UTF-16的编码方式（一般为2个字节，辅助平面字符需要4个字节）</li>
+<li>Unicode使用16位的编码空间，每个字符占用2个字节(附加字符需要4个字节)</li>
+<li>一个字符的Unicode编码是确定的</li>
+<li>Unicode的实现方式称为Unicode转换格式（Unicode Transformation Format，简称为UTF）.</li>
+</ol>
+<h1 id="UTF-8"><a href="#UTF-8" class="headerlink" title="UTF-8"></a>UTF-8</h1><blockquote>
+<p>UTF-8（8-bit Unicode Transformation Format）是一种针对Unicode的可变长度字元编码，也是一种前缀码。它可以用来表示Unicode标准中的任何字元，且其编码中的第一个位元组仍与ASCII相容，这使得原来处理ASCII字元的软体无须或只须做少部份修改，即可继续使用。因此，它逐渐成为电子邮件、网页及其他储存或传送文字的应用中，<code>优先采用</code>的编码。</p>
+</blockquote>
+<ol>
+<li>只包含7位ASCII字符的文件在ASCII和UTF-8两种编码方式下是一樣的</li>
+<li>UTF-8是一种变长编码方式(1-4个字节),兼容ASCII</li>
+<li>其中英文字符占用1个字节,中文字符占用3个字节,所以相对来说,占用存储空间较少</li>
+</ol>
+<h1 id="UTF-16"><a href="#UTF-16" class="headerlink" title="UTF-16"></a>UTF-16</h1><ol>
+<li>采用2个字节或者4个字节(辅助平面字符)的编码方式,是Java中字符的编码方式</li>
+<li>英文也占用2个字节,所以比较浪费空间</li>
+<li>优点是编解码方便,效率高,字符定位容易</li>
+<li>缺点是占用空间大,采用顺序编码,若字符损坏无法进行校验</li>
+</ol>
+<h1 id="UTF-32"><a href="#UTF-32" class="headerlink" title="UTF-32"></a>UTF-32</h1><ol>
+<li>采用4个字节的定长编码方式</li>
+<li>英文也占用4个字节</li>
+<li>占用空间大</li>
+<li>有大小端的区别</li>
+</ol>
+<h1 id="Java中的编码"><a href="#Java中的编码" class="headerlink" title="Java中的编码"></a>Java中的编码</h1><ol>
+<li>Java程序默认使用UTF-16编码(字符串<code>String</code>的编码)</li>
+<li>JVM编码:Uninx默认使用UTF-8,Windows默认使用GBK(文件系统编码方式),所以最好指定编码方式,加入JVM参数<code>-Dfile.encoding=utf8</code></li>
+<li>String的getBytes()方法默认使用的是JVM默认的编码方式来编码(不同操作系统可能会不一样,所以最好指定编码方式)</li>
+<li>String的getBytes(Charset)方法指定编码方式来编码字符串</li>
+<li>new String(byte[])方法默认使用的是JVM默认的编码方式来解码(不同操作系统可能会不一样,所以最好指定编码方式)</li>
+<li>new String(byte[],Charset)方法可以对byte[]进行指定编码方式解码</li>
+<li>乱码需要使用当时编码时候用的<code>错误解码方式</code>进行编码后再重新解码</li>
+<li>很多框架使用<code>ISO-8859-1</code>编码,存在黑洞问题,容易造成中文丢失,<code>new String(str.getBytes(&quot;utf-8&quot;),&quot;iso-8859-1&quot;);</code>有可能能解决问题</li>
+</ol>
+<h1 id="不同编码方式占用字节-byte"><a href="#不同编码方式占用字节-byte" class="headerlink" title="不同编码方式占用字节(byte)"></a>不同编码方式占用字节(byte)</h1><blockquote>
+<p> 非特殊字符情况下</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>编码方式</th>
+<th>1个英文字符(ASCII)</th>
+<th>1个中文字符</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GB2312</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>GBK</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>UTF-8</td>
+<td>1</td>
+<td>3</td>
+</tr>
+<tr>
+<td>UTF-16</td>
+<td>2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>UTF-32</td>
+<td>4</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Unicode</td>
+<td>2</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p>其中GBK兼容GB2312,可以说GBK是GB2312的超集</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接:"></a>参考链接:</h1><p><a href="https://zh.wikipedia.org/wiki/编码" target="_blank" rel="external">WIKI_编码</a></p>
+<p><a href="https://zh.wikipedia.org/wiki/字符编码" target="_blank" rel="external">WIKI_字符编码</a></p>
+<p><a href="https://zh.wikipedia.org/wiki/Unicode" target="_blank" rel="external">WIKI_Unicode</a></p>
+<p><a href="http://www.cnblogs.com/skynet/archive/2011/05/03/2035105.html" target="_blank" rel="external">字符集和字符编码（Charset &amp; Encoding）</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Charset</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Common/" class="article-tag-list-link color2">Common</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/01/13/Common/character/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-MySQL/mysql_data_type" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -366,135 +547,6 @@
 
 
   
-    <article id="post-Nginx/nginx_guide" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/24/Nginx/nginx_guide/">Nginx入门</a>
-    </h1>
-  
-
-        
-        <a href="/2016/11/24/Nginx/nginx_guide/" class="archive-article-date">
-  	<time datetime="2016-11-24T07:34:53.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-11-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Nginx入门"><a href="#Nginx入门" class="headerlink" title="Nginx入门"></a>Nginx入门</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Nginx是一个WebServer,它能够反向代理HTTP,HTTPS,SMTP,POP3,IMAP等的协议链接,可以实现负载均衡和HTTP缓存,功能十分强大.Nginx采用异步非阻塞的设计,性能强大,支持高并发,而且占用资源极低.</p>
-<h2 id="安装与使用"><a href="#安装与使用" class="headerlink" title="安装与使用"></a>安装与使用</h2><h3 id="windows"><a href="#windows" class="headerlink" title="windows"></a>windows</h3><p>cmd切换到nginx目录下</p>
-<p>启动:<code>start ngix</code></p>
-<p>停止:<code>nginx -s stop</code></p>
-<p>重新加载:<code>nginx -s  reload</code></p>
-<h3 id="linux"><a href="#linux" class="headerlink" title="linux"></a>linux</h3><p><code>service nginx (start|stop|restart)</code></p>
-<h2 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h2><p>反向代理（Reverse Proxy）方式是指以代理服务器来接受internet上的连接请求，然后将请求转发给内部网络上的服务器，并将从服务器上得到的结果返回给internet上请求连接的客户端，此时代理服务器对外就表现为一个服务器。</p>
-<p>作用:</p>
-<ol>
-<li>保护网站安全:所有连接都经过该服务器</li>
-<li>通过配置缓存功能加速Web请求</li>
-<li>实现负载均衡</li>
-<li>高可用/热更新/防盗链等等</li>
-</ol>
-<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>修改conf/nginx.conf</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">worker_processes  2;#worker进程数,一般配置为cpu核数</div><div class="line"></div><div class="line">events &#123;</div><div class="line">    worker_connections  1024;#每个worker处理的连接数</div><div class="line">&#125;</div><div class="line"></div><div class="line">http &#123;</div><div class="line"></div><div class="line"><span class="meta">	#</span>服务器集群,命名为tomcats</div><div class="line">	upstream tomcats &#123;</div><div class="line">        server 192.168.68.121:8080;#服务器1,此处可用域名,不带端口则默认80端口</div><div class="line">        server 192.168.68.121:8081;#服务器2</div><div class="line">        server 192.168.12.121:8081;#服务器3</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    server &#123;</div><div class="line">        listen       80;#nginx监听的端口号</div><div class="line">        server_name  localhost;#服务器域名</div><div class="line"></div><div class="line"><span class="meta">		#</span>所有的请求转向自定义的tomcats负载均衡服务器列表</div><div class="line">        location / &#123;</div><div class="line">			proxy_pass http://tomcats;#代理的服务器集群</div><div class="line"><span class="meta">			#</span>proxy_redirect  off;</div><div class="line"><span class="meta">			#</span>设置请求头</div><div class="line">			proxy_set_header Host $host:$server_port;</div><div class="line">			proxy_set_header X-Real-IP $remote_addr;</div><div class="line">			proxy_set_header REMOTE-HOST $remote_addr;</div><div class="line">			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>负载均衡规则有:</p>
-<ol>
-<li>round-robin:循环,默认规则,请求会循环指向服务列表的各个服务器</li>
-<li>least-connected :最少连接,请求会指向当前连接数最少的服务器</li>
-<li>ip-hash:哈希,会根据请求的客户端ip的哈希值指向服务器列表中的某一个服务器,这样采用session的服务器才能更好地发挥作用,但是并不是很好的实现负载均衡功能</li>
-<li>weight:按照权重来指向各个服务器</li>
-</ol>
-<p>配置:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> least-connected配置方法</div><div class="line">upstream myapp1 &#123;</div><div class="line">        least_conn;</div><div class="line">        server srv1.example.com;</div><div class="line">        server srv2.example.com;</div><div class="line">        server srv3.example.com;</div><div class="line">&#125;</div><div class="line"><span class="meta">#</span> ip-hash配置方法</div><div class="line">upstream myapp1 &#123;</div><div class="line">    ip_hash;</div><div class="line">    server srv1.example.com;</div><div class="line">    server srv2.example.com;</div><div class="line">    server srv3.example.com;</div><div class="line">&#125;</div><div class="line"><span class="meta">#</span> 权重配置</div><div class="line">upstream myapp1 &#123;</div><div class="line"><span class="meta">		#</span> 每5个连接会有3个到srv1,1个到srv2,1个到srv3</div><div class="line">        server srv1.example.com weight=3;</div><div class="line">        server srv2.example.com;</div><div class="line">        server srv3.example.com;</div><div class="line">&#125;</div><div class="line"><span class="meta">#</span> 健康检查</div><div class="line">upstream myapp1 &#123;</div><div class="line">    server srv1.example.com;#默认情况下max_fails=1 服务器一次访问失败就会被标记为宕机,不可用,默认10秒访问超时</div><div class="line">    server srv2.example.com max_fails=3 fail_timeout=20;#3次失败,20秒访问超时</div><div class="line">    server srv3.example.com max_fails=0;#不论几次失败都可用</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="location规则"><a href="#location规则" class="headerlink" title="location规则"></a>location规则</h3><p>语法规则： <code>location [=|~|~*|^~] /uri/ { … }</code></p>
-<ol>
-<li><p><code>=</code> 开头 表示精确匹配</p>
-</li>
-<li><p><code>^~</code> 开头 表示uri以某个常规字符串开头(支持正则)。nginx不对url做编码</p>
-</li>
-<li><p><code>~</code> 开头 表示<strong>区分</strong>大小写的正则匹配</p>
-</li>
-<li><p><code>~*</code> 开头 表示<strong>不区分</strong>大小写的正则匹配</p>
-</li>
-<li><p><code>!~</code>和<code>!~*</code>分别为区分大小写不匹配及不区分大小写<strong>不匹配</strong> 的正则</p>
-</li>
-<li><p><code>/</code> 通用匹配，任何请求都会匹配到</p>
-</li>
-</ol>
-<p>匹配顺序:首先匹配 =，其次匹配^~, 其次是按文件中顺序的正则匹配，最后是交给 / 通用匹配。当有匹配成功时候，停止匹配，按当前匹配规则处理请求。同等级匹配多个则选择较长的匹配</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Common</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Nginx</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Nginx/" class="article-tag-list-link color1">Nginx</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/11/24/Nginx/nginx_guide/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/10/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/12/">Next &raquo;</a>
@@ -584,6 +636,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ELK</a>
               </li>
              
@@ -608,15 +664,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
+                <a href="javascript:void(0)" class="js-tag color4">Mac</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Mac</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -628,11 +680,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -680,10 +732,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Collection</a>
               </li>
              
@@ -701,6 +749,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Tomcat</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
               </li>
             
             <div class="clearfix"></div>

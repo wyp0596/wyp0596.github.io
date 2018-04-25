@@ -141,6 +141,114 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Common/web_seckill" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/23/Common/web_seckill/">Web大规模并发的解决思路</a>
+    </h1>
+  
+
+        
+        <a href="/2017/03/23/Common/web_seckill/" class="archive-article-date">
+  	<time datetime="2017-03-23T09:20:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-23</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>特点：短时间内海量的请求，比如1秒5w请求（5wQPS）</p>
+</blockquote>
+<h2 id="大规模并发带来的挑战"><a href="#大规模并发带来的挑战" class="headerlink" title="大规模并发带来的挑战"></a>大规模并发带来的挑战</h2><ol>
+<li>请求接口的合理设计，动静态资源分离（CDN），负载均衡，分布式，使用内存数据库</li>
+<li>快速反馈，合理设计，防止雪崩</li>
+<li>重启和过载保护，拒绝超载的请求</li>
+</ol>
+<h2 id="防止作弊手段"><a href="#防止作弊手段" class="headerlink" title="防止作弊手段"></a>防止作弊手段</h2><ol>
+<li>一个账号多个请求，参与记录判断（只接受一个请求），使用Redis的watch乐观锁，或者使用队列实现</li>
+<li>多个账号同个IP多个请求，使用验证码，禁止IP（容易误伤）</li>
+<li>多个账号不同IP多个请求，数据挖掘清理僵尸号（有一些特点），提高活动门槛</li>
+<li>火车票抢购，没有很好的解决方案，数据挖掘清理僵尸号</li>
+</ol>
+<h2 id="高并发下的数据安全——超发"><a href="#高并发下的数据安全——超发" class="headerlink" title="高并发下的数据安全——超发"></a>高并发下的数据安全——超发</h2><ol>
+<li>使用悲观锁，但是性能低下</li>
+<li>使用队列，容易爆队列</li>
+<li>使用乐观锁，会增大CPU计算开销，但是是比较好的解决方案</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.csdn.net/article/2014-11-28/2822858" target="_blank" rel="external">【问底】徐汉彬：Web系统大规模并发——电商秒杀与抢购</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Web</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Seckill</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Common/" class="article-tag-list-link color2">Common</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/03/23/Common/web_seckill/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Java/hash_map" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -446,111 +554,6 @@
 
 
   
-    <article id="post-MySQL/mysql_innod_mvcc" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/22/MySQL/mysql_innod_mvcc/">关于MySQL中InnoDB的MVCC</a>
-    </h1>
-  
-
-        
-        <a href="/2017/03/22/MySQL/mysql_innod_mvcc/" class="archive-article-date">
-  	<time datetime="2017-03-22T10:35:40.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="关于MySQL中InnoDB的MVCC"><a href="#关于MySQL中InnoDB的MVCC" class="headerlink" title="关于MySQL中InnoDB的MVCC"></a>关于MySQL中InnoDB的MVCC</h1><h2 id="MySQL中的实现"><a href="#MySQL中的实现" class="headerlink" title="MySQL中的实现"></a>MySQL中的实现</h2><blockquote>
-<p>在InnoDB中的每行数据后都有额外的<strong>两个隐藏值</strong>来记录数据何时被<strong>创建</strong>(修改)和<strong>过期</strong>(删除)，这里的时间不是我们日常中的时间，而是事务的版本号，每开启一个新事务，版本号会递增。</p>
-</blockquote>
-<p>在MySQL默认隔离级别<code>Repeatable Read</code>下：</p>
-<p>设数据行创建版本号为<code>create</code>，删除版本号为<code>delete</code>，当前事务版本号为<code>now</code></p>
-<ul>
-<li><code>SELECT</code>，读取的数据行满足创建版本号&lt;=当前事务版本号，删除版本号为空或&gt;当前事务版本号，即 <code>(create &lt;= now &amp;&amp; (delete == null || delete &gt; now))</code></li>
-<li><code>INSERT</code>，保存当前事务版本号为行的创建版本号（<code>commit</code>时生效），即<code>create=now</code></li>
-<li><code>DELETE</code>，保存当前事务版本号为行的删除版本号（<code>commit</code>时生效），即<code>delete=now</code></li>
-<li><code>UPDATE</code>，插入一条新纪录，保存当前事务版本号为行创建版本号，同时保存当前事务版本号到原来删除的行（<code>commit</code>时生效），即新行<code>create=now</code>旧行<code>delte=now</code></li>
-</ul>
-<p>通过MVVC，虽然每行记录需要额外的存储空间，但是减少了锁的使用，使读数据性能很好。在MySQL的RR级别中，解决了幻读的读问题（快照读）。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://tech.meituan.com/innodb-lock.html" target="_blank" rel="external">Innodb中的事务隔离级别和锁的关系</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">DataBase</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Transaction</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/MySQL/" class="article-tag-list-link color1">MySQL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/03/22/MySQL/mysql_innod_mvcc/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
@@ -640,6 +643,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ELK</a>
               </li>
              
@@ -664,15 +671,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
+                <a href="javascript:void(0)" class="js-tag color4">Mac</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Mac</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -684,11 +687,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -736,10 +739,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Collection</a>
               </li>
              
@@ -757,6 +756,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Tomcat</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
               </li>
             
             <div class="clearfix"></div>

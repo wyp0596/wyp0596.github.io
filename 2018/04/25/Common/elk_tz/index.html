@@ -6,20 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://blog.ajavac.com">
-  <title>Linux常用命令 | 细雨流年</title>
+  <title>解决 Filebeat + Nginx 的 error_log 时区问题 | 细雨流年</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="开发过程中可能用到的一些命令  netstat 查看网络信息  netstat -an | grep 80808080替换成需要查看的端口号 lsof 查看网络信息  lsof -i:80-i参数表示网络链接，:80指明端口号，该命令会同时列出PID，方便kill lscpu 查看cpu信息  类似效果  cat /proc/cpuinfo  free 查看内存信息  free -m free">
-<meta name="keywords" content="Terminal,Linux">
+  <meta name="description" content="搭建ELK日志系统过程中发现了一个时区(Kibana上查看日志时间差8小时)问题，搜索折腾后找到解决方案 参考: https://github.com/elastic/beats/issues/3898  将/usr/share/filebeat/module/nginx/error/ingest/pipeline.json 里面的 12345&quot;date&quot;: &amp;#123;       &quot;fiel">
+<meta name="keywords" content="ELK,ElasticSearch,Kibana,Logstash,Filebeat">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux常用命令">
-<meta property="og:url" content="https://blog.ajavac.com/2017/06/25/Linux/linux_command/index.html">
+<meta property="og:title" content="解决 Filebeat + Nginx 的 error_log 时区问题">
+<meta property="og:url" content="https://blog.ajavac.com/2018/04/25/Common/elk_tz/index.html">
 <meta property="og:site_name" content="细雨流年">
-<meta property="og:description" content="开发过程中可能用到的一些命令  netstat 查看网络信息  netstat -an | grep 80808080替换成需要查看的端口号 lsof 查看网络信息  lsof -i:80-i参数表示网络链接，:80指明端口号，该命令会同时列出PID，方便kill lscpu 查看cpu信息  类似效果  cat /proc/cpuinfo  free 查看内存信息  free -m free">
+<meta property="og:description" content="搭建ELK日志系统过程中发现了一个时区(Kibana上查看日志时间差8小时)问题，搜索折腾后找到解决方案 参考: https://github.com/elastic/beats/issues/3898  将/usr/share/filebeat/module/nginx/error/ingest/pipeline.json 里面的 12345&quot;date&quot;: &amp;#123;       &quot;fiel">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2017-06-25T13:14:02.000Z">
+<meta property="og:updated_time" content="2018-04-25T09:04:15.003Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Linux常用命令">
-<meta name="twitter:description" content="开发过程中可能用到的一些命令  netstat 查看网络信息  netstat -an | grep 80808080替换成需要查看的端口号 lsof 查看网络信息  lsof -i:80-i参数表示网络链接，:80指明端口号，该命令会同时列出PID，方便kill lscpu 查看cpu信息  类似效果  cat /proc/cpuinfo  free 查看内存信息  free -m free">
+<meta name="twitter:title" content="解决 Filebeat + Nginx 的 error_log 时区问题">
+<meta name="twitter:description" content="搭建ELK日志系统过程中发现了一个时区(Kibana上查看日志时间差8小时)问题，搜索折腾后找到解决方案 参考: https://github.com/elastic/beats/issues/3898  将/usr/share/filebeat/module/nginx/error/ingest/pipeline.json 里面的 12345&quot;date&quot;: &amp;#123;       &quot;fiel">
   
     <link rel="alternative" href="/atom.xml" title="细雨流年" type="application/atom+xml">
   
@@ -141,20 +141,20 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-Linux/linux_command" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-Common/elk_tz" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      Linux常用命令
+      解决 Filebeat + Nginx 的 error_log 时区问题
     </h1>
   
 
         
-        <a href="/2017/06/25/Linux/linux_command/" class="archive-article-date">
-  	<time datetime="2017-06-25T13:11:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-25</time>
+        <a href="/2018/04/25/Common/elk_tz/" class="archive-article-date">
+  	<time datetime="2018-04-25T09:03:36.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-25</time>
 </a>
         
       </header>
@@ -162,59 +162,25 @@
     <div class="article-entry" itemprop="articleBody">
       
         <blockquote>
-<p>开发过程中可能用到的一些命令</p>
+<p>搭建ELK日志系统过程中发现了一个时区(Kibana上查看日志时间差8小时)问题，搜索折腾后找到解决方案</p>
+<p>参考: <a href="https://github.com/elastic/beats/issues/3898" target="_blank" rel="external">https://github.com/elastic/beats/issues/3898</a></p>
 </blockquote>
-<h2 id="netstat"><a href="#netstat" class="headerlink" title="netstat"></a>netstat</h2><blockquote>
-<p>查看网络信息</p>
-</blockquote>
-<p><code>netstat -an | grep 8080</code><br><code>8080</code>替换成需要查看的端口号</p>
-<h2 id="lsof"><a href="#lsof" class="headerlink" title="lsof"></a>lsof</h2><blockquote>
-<p>查看网络信息</p>
-</blockquote>
-<p><code>lsof -i:80</code><br>-i参数表示网络链接，:80指明端口号，该命令会同时列出PID，方便kill</p>
-<h2 id="lscpu"><a href="#lscpu" class="headerlink" title="lscpu"></a>lscpu</h2><blockquote>
-<p>查看cpu信息</p>
-</blockquote>
-<p>类似效果</p>
+<p>将<code>/usr/share/filebeat/module/nginx/error/ingest/pipeline.json</code> 里面的</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">"date": &#123;</div><div class="line">       "field": "nginx.error.time",</div><div class="line">       "target_field": "@timestamp",</div><div class="line">       "formats": ["YYYY/MM/dd H:m:s"]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>改成</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">"date": &#123;</div><div class="line">       "field": "nginx.error.time",</div><div class="line">       "target_field": "@timestamp",</div><div class="line">       "formats": ["YYYY/MM/dd H:m:s"],</div><div class="line">       "timezone" : "Asia/Shanghai"</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>然后</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> 删除旧的pipeline</div><div class="line">curl -XDELETE "http://116.62.32.163:9200/_ingest/pipeline/filebeat-6.2.3-nginx-error-pipeline"</div><div class="line"><span class="meta">#</span> 重新设置</div><div class="line">filebeat setup -e</div><div class="line"><span class="meta">#</span> 查看是否生效</div><div class="line">curl -XGET "http://116.62.32.163:9200/_ingest/pipeline/filebeat-6.2.3-nginx-error-pipeline"</div></pre></td></tr></table></figure>
+<p>问题起因</p>
 <ol>
-<li><code>cat /proc/cpuinfo</code></li>
+<li>nginx 的 error_log 里面的时间是根据服务器时区来写入的, 而且格式是<code>YYYY/MM/dd H:m:s</code> 不包含时区信息</li>
+<li>filebeat的nginx模块定义的<code>pipeline.json</code>处理error_log时候是当成UTC时区来处理的</li>
+<li>所以存进ES的时间是快了8小时的(中国)</li>
 </ol>
-<h2 id="free"><a href="#free" class="headerlink" title="free"></a>free</h2><blockquote>
-<p>查看内存信息</p>
-</blockquote>
-<p><code>free -m</code></p>
-<p><code>free -h</code></p>
-<p>类似效果</p>
+<p>解决方案</p>
 <ol>
-<li><code>cat /proc/meminfo</code></li>
-<li><code>dmidecode -t memory</code></li>
-</ol>
-<h2 id="lsblk"><a href="#lsblk" class="headerlink" title="lsblk"></a>lsblk</h2><blockquote>
-<p>查看磁盘信息</p>
-</blockquote>
-<p>类似效果</p>
-<ol>
-<li><code>fdisk -l</code></li>
-</ol>
-<h2 id="ifconfig"><a href="#ifconfig" class="headerlink" title="ifconfig"></a>ifconfig</h2><blockquote>
-<p>查看网卡信息</p>
-</blockquote>
-<p><code>ifconfig -a</code></p>
-<p>类似效果</p>
-<ol>
-<li><code>lspci | grep -i &#39;eth&#39;</code></li>
-<li><code>ip add</code></li>
-<li><code>ip link show</code></li>
-<li><code>ethtool eth0</code></li>
-</ol>
-<h2 id="lspci"><a href="#lspci" class="headerlink" title="lspci"></a>lspci</h2><blockquote>
-<p>查看硬件信息</p>
-</blockquote>
-<p><code>lscpi -t</code></p>
-<p><code>lspci -v</code> 或者 <code>lspci -vv</code></p>
-<p>类似效果</p>
-<ol>
-<li><code>dmidecode -q</code></li>
+<li>修改相关的<code>pipeline.json</code>定义, 让ES用目标时区处理时间</li>
+<li>其实服务器时区可以都设置为UTC, 这在跨时区服务器上会比较好处理问题</li>
 </ol>
 
       
@@ -260,11 +226,23 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Terminal</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ELK</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ElasticSearch</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Kibana</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Logstash</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Filebeat</a>
         		</li>
       		
 		</ul>
@@ -276,7 +254,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Linux/" class="article-tag-list-link color1">Linux</a>
+        			<a href="/categories/Common/" class="article-tag-list-link color2">Common</a>
         		</li>
       		
 		</ul>
@@ -331,7 +309,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=https://blog.ajavac.com/2017/06/25/Linux/linux_command/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=https://blog.ajavac.com/2018/04/25/Common/elk_tz/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -345,18 +323,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2017/06/25/Linux/linux_network/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          Linux 网卡配置
-        
-      </div>
-    </a>
   
-  
-    <a href="/2017/06/20/Java/java_io/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Java IO</div>
+    <a href="/2018/04/24/Common/elk/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">ELK简易Nginx日志系统搭建:ElasticSearch+Kibana+Filebeat</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -383,7 +352,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#netstat"><span class="toc-number">1.</span> <span class="toc-text">netstat</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#lsof"><span class="toc-number">2.</span> <span class="toc-text">lsof</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#lscpu"><span class="toc-number">3.</span> <span class="toc-text">lscpu</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#free"><span class="toc-number">4.</span> <span class="toc-text">free</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#lsblk"><span class="toc-number">5.</span> <span class="toc-text">lsblk</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ifconfig"><span class="toc-number">6.</span> <span class="toc-text">ifconfig</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#lspci"><span class="toc-number">7.</span> <span class="toc-text">lspci</span></a></li></ol>
+                    目录，不存在的…
                     </div>
                 </span>
             </div>
@@ -400,8 +369,8 @@
   <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
 <script>
   var cloudTieConfig = {
-    url: "https://blog.ajavac.com/2017/06/25/Linux/linux_command/", 
-    sourceId: "Linux/linux_command",
+    url: "https://blog.ajavac.com/2018/04/25/Common/elk_tz/", 
+    sourceId: "Common/elk_tz",
     productKey: "81c8a0e5031b4cdd9d5f55c1944adf11",
     target: "cloud-tie-wrapper"
   };

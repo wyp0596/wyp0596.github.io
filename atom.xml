@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://blog.ajavac.com/"/>
-  <updated>2018-04-24T09:52:55.854Z</updated>
+  <updated>2018-04-25T09:04:15.003Z</updated>
   <id>https://blog.ajavac.com/</id>
   
   <author>
@@ -14,6 +14,59 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>解决 Filebeat + Nginx 的 error_log 时区问题</title>
+    <link href="https://blog.ajavac.com/2018/04/25/Common/elk_tz/"/>
+    <id>https://blog.ajavac.com/2018/04/25/Common/elk_tz/</id>
+    <published>2018-04-25T09:03:36.000Z</published>
+    <updated>2018-04-25T09:04:15.003Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>搭建ELK日志系统过程中发现了一个时区(Kibana上查看日志时间差8小时)问题，搜索折腾后找到解决方案</p>
+<p>参考: <a href="https://github.com/elastic/beats/issues/3898" target="_blank" rel="external">https://github.com/elastic/beats/issues/3898</a></p>
+</blockquote>
+<p>将<code>/usr/share/filebeat/module/nginx/error/ingest/pipeline.json</code> 里面的</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">"date": &#123;</div><div class="line">       "field": "nginx.error.time",</div><div class="line">       "target_field": "@timestamp",</div><div class="line">       "formats": ["YYYY/MM/dd H:m:s"]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>改成</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">"date": &#123;</div><div class="line">       "field": "nginx.error.time",</div><div class="line">       "target_field": "@timestamp",</div><div class="line">       "formats": ["YYYY/MM/dd H:m:s"],</div><div class="line">       "timezone" : "Asia/Shanghai"</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>然后</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> 删除旧的pipeline</div><div class="line">curl -XDELETE "http://116.62.32.163:9200/_ingest/pipeline/filebeat-6.2.3-nginx-error-pipeline"</div><div class="line"><span class="meta">#</span> 重新设置</div><div class="line">filebeat setup -e</div><div class="line"><span class="meta">#</span> 查看是否生效</div><div class="line">curl -XGET "http://116.62.32.163:9200/_ingest/pipeline/filebeat-6.2.3-nginx-error-pipeline"</div></pre></td></tr></table></figure>
+<p>问题起因</p>
+<ol>
+<li>nginx 的 error_log 里面的时间是根据服务器时区来写入的, 而且格式是<code>YYYY/MM/dd H:m:s</code> 不包含时区信息</li>
+<li>filebeat的nginx模块定义的<code>pipeline.json</code>处理error_log时候是当成UTC时区来处理的</li>
+<li>所以存进ES的时间是快了8小时的(中国)</li>
+</ol>
+<p>解决方案</p>
+<ol>
+<li>修改相关的<code>pipeline.json</code>定义, 让ES用目标时区处理时间</li>
+<li>其实服务器时区可以都设置为UTC, 这在跨时区服务器上会比较好处理问题</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;搭建ELK日志系统过程中发现了一个时区(Kibana上查看日志时间差8小时)问题，搜索折腾后找到解决方案&lt;/p&gt;
+&lt;p&gt;参考: &lt;a href=&quot;https://github.com/elastic/beats/issues/3898&quot; targe
+    
+    </summary>
+    
+      <category term="Common" scheme="https://blog.ajavac.com/categories/Common/"/>
+    
+    
+      <category term="ELK" scheme="https://blog.ajavac.com/tags/ELK/"/>
+    
+      <category term="ElasticSearch" scheme="https://blog.ajavac.com/tags/ElasticSearch/"/>
+    
+      <category term="Kibana" scheme="https://blog.ajavac.com/tags/Kibana/"/>
+    
+      <category term="Logstash" scheme="https://blog.ajavac.com/tags/Logstash/"/>
+    
+      <category term="Filebeat" scheme="https://blog.ajavac.com/tags/Filebeat/"/>
+    
+  </entry>
   
   <entry>
     <title>ELK简易Nginx日志系统搭建:ElasticSearch+Kibana+Filebeat</title>
@@ -2316,51 +2369,6 @@
   </entry>
   
   <entry>
-    <title>JDK之String</title>
-    <link href="https://blog.ajavac.com/2017/03/26/Java/jdk_string/"/>
-    <id>https://blog.ajavac.com/2017/03/26/Java/jdk_string/</id>
-    <published>2017-03-26T10:35:55.000Z</published>
-    <updated>2017-05-15T06:07:49.000Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p><code>java.lang.String</code>是Java编程中最常见的类之一</p>
-<p>Java中使用Unicode字符集，使用UTF-16的编码实现方式，一个基本多语言平面（Basic Multilingual Plane，简称BMP）字符占用一个char（16bit），一个辅助平面（Supplementary Plane）字符占用两个char（16bit * 2）。</p>
-<p>比如说emoji表情就占用了两个char</p>
-</blockquote>
-<h2 id="String的特点"><a href="#String的特点" class="headerlink" title="String的特点"></a>String的特点</h2><ol>
-<li>是一个不可变类，一旦创建便不可改变</li>
-<li>类定义为<code>public final class String</code>，是一个终类，不可被继承</li>
-<li>实现了<code>java.io.Serializable</code>接口，可序列化和反序列化</li>
-<li>实现了<code>java.lang.Comparable&lt;String&gt;</code>接口，可以进行比较和排序</li>
-<li>实现了<code>java.lang.CharSequence</code>接口，是一个可读的字符序列</li>
-<li>String最多可存储<code>2^31-1</code>个char(每个char占用16bit)</li>
-<li>String最多可存储<code>(2^30-1)~(2^31-1)</code>个Unicode字符，原因在于Java中的Unicode编码方式（UTF-16），一个Unicode字符最多可能占用2个char</li>
-</ol>
-<p>​</p>
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ol>
-<li><code>length()</code>方法获取的是String字符串中char的长度</li>
-<li>String不宜直接存储密码等敏感数据，有dump风险，可用<code>char[]</code>存储（用完后清除），或者对敏感数据进行加盐hash</li>
-</ol>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;&lt;code&gt;java.lang.String&lt;/code&gt;是Java编程中最常见的类之一&lt;/p&gt;
-&lt;p&gt;Java中使用Unicode字符集，使用UTF-16的编码实现方式，一个基本多语言平面（Basic Multilingual Plane，简称B
-    
-    </summary>
-    
-      <category term="Java" scheme="https://blog.ajavac.com/categories/Java/"/>
-    
-    
-      <category term="Java" scheme="https://blog.ajavac.com/tags/Java/"/>
-    
-      <category term="Basic" scheme="https://blog.ajavac.com/tags/Basic/"/>
-    
-  </entry>
-  
-  <entry>
     <title>Java 8 新特性</title>
     <link href="https://blog.ajavac.com/2017/03/26/Java/java8/"/>
     <id>https://blog.ajavac.com/2017/03/26/Java/java8/</id>
@@ -2511,6 +2519,51 @@
 &lt;th&gt;特性&lt;/th&gt;
 &lt;th&gt;说明&lt;/th&gt;
 &lt;/t
+    
+    </summary>
+    
+      <category term="Java" scheme="https://blog.ajavac.com/categories/Java/"/>
+    
+    
+      <category term="Java" scheme="https://blog.ajavac.com/tags/Java/"/>
+    
+      <category term="Basic" scheme="https://blog.ajavac.com/tags/Basic/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>JDK之String</title>
+    <link href="https://blog.ajavac.com/2017/03/26/Java/jdk_string/"/>
+    <id>https://blog.ajavac.com/2017/03/26/Java/jdk_string/</id>
+    <published>2017-03-26T10:35:55.000Z</published>
+    <updated>2017-05-15T06:07:49.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p><code>java.lang.String</code>是Java编程中最常见的类之一</p>
+<p>Java中使用Unicode字符集，使用UTF-16的编码实现方式，一个基本多语言平面（Basic Multilingual Plane，简称BMP）字符占用一个char（16bit），一个辅助平面（Supplementary Plane）字符占用两个char（16bit * 2）。</p>
+<p>比如说emoji表情就占用了两个char</p>
+</blockquote>
+<h2 id="String的特点"><a href="#String的特点" class="headerlink" title="String的特点"></a>String的特点</h2><ol>
+<li>是一个不可变类，一旦创建便不可改变</li>
+<li>类定义为<code>public final class String</code>，是一个终类，不可被继承</li>
+<li>实现了<code>java.io.Serializable</code>接口，可序列化和反序列化</li>
+<li>实现了<code>java.lang.Comparable&lt;String&gt;</code>接口，可以进行比较和排序</li>
+<li>实现了<code>java.lang.CharSequence</code>接口，是一个可读的字符序列</li>
+<li>String最多可存储<code>2^31-1</code>个char(每个char占用16bit)</li>
+<li>String最多可存储<code>(2^30-1)~(2^31-1)</code>个Unicode字符，原因在于Java中的Unicode编码方式（UTF-16），一个Unicode字符最多可能占用2个char</li>
+</ol>
+<p>​</p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ol>
+<li><code>length()</code>方法获取的是String字符串中char的长度</li>
+<li>String不宜直接存储密码等敏感数据，有dump风险，可用<code>char[]</code>存储（用完后清除），或者对敏感数据进行加盐hash</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;java.lang.String&lt;/code&gt;是Java编程中最常见的类之一&lt;/p&gt;
+&lt;p&gt;Java中使用Unicode字符集，使用UTF-16的编码实现方式，一个基本多语言平面（Basic Multilingual Plane，简称B
     
     </summary>
     

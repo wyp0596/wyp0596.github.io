@@ -141,6 +141,148 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Docker/docker_registry" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/07/Docker/docker_registry/">Docker Registry （Docker仓库）</a>
+    </h1>
+  
+
+        
+        <a href="/2017/08/07/Docker/docker_registry/" class="archive-article-date">
+  	<time datetime="2017-08-07T07:00:06.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-07</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><blockquote>
+<p>registry 是存放和分发Docker镜像的一个服务</p>
+</blockquote>
+<ol>
+<li>Docker hub 可以类比为 Github，是一个公共的镜像服务中心</li>
+<li>搭建 Registry 可以类比为搭建 GitLab 服务器，是一个私有的镜像服务中心</li>
+<li>自建 Registry 可以让镜像私有化，也可以提高镜像拉取速度</li>
+</ol>
+<h3 id="运行Registry"><a href="#运行Registry" class="headerlink" title="运行Registry"></a>运行Registry</h3><p><a href="https://hub.docker.com/_/registry/" target="_blank" rel="external">Officical</a></p>
+<p><code>docker run -d -p 5000:5000 --restart always --name registry registry</code></p>
+<h4 id="使用Registry"><a href="#使用Registry" class="headerlink" title="使用Registry"></a>使用Registry</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> 本地运行registry</div><div class="line">docker run -d -p 5000:5000 --restart always --name registry registry</div><div class="line"><span class="meta">#</span> 从官方拉取镜像</div><div class="line">docker pull nginx:alpine</div><div class="line"><span class="meta">#</span> 给镜像加标签</div><div class="line">docker tag nginx:alpine localhost:5000/nginx:alpine</div><div class="line"><span class="meta">#</span> 推送镜像到本地registry</div><div class="line">docker push localhost:5000/nginx:alpine</div><div class="line"><span class="meta">#</span> 删除本地镜像</div><div class="line">docker rmi nginx:alpine localhost:5000/nginx:alpine</div><div class="line"><span class="meta">#</span> 从本地registry 拉取镜像</div><div class="line">docker pull localhost:5000/nginx:alpine</div></pre></td></tr></table></figure>
+<h3 id="Registry-API"><a href="#Registry-API" class="headerlink" title="Registry API"></a>Registry API</h3><blockquote>
+<p>Registry 有一些API可以方便的看到Registry上都有哪些镜像</p>
+</blockquote>
+<p><a href="https://docs.docker.com/registry/spec/api/#scope" target="_blank" rel="external">官方文档</a></p>
+<table>
+<thead>
+<tr>
+<th>API</th>
+<th>示例</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/v2/</code></td>
+<td><code>curl http://localhost:5000/v2/</code></td>
+<td>版本检查</td>
+</tr>
+<tr>
+<td><code>/v2/_catalog</code></td>
+<td><code>curl http://localhost:5000/v2/_catalog</code></td>
+<td>列出资源</td>
+</tr>
+<tr>
+<td><code>/v2/&lt;name&gt;/tags/list</code></td>
+<td><code>curl http://localhost:5000/v2/mysql/tags/list</code></td>
+<td>列出镜像标签</td>
+</tr>
+</tbody>
+</table>
+<h3 id="关于HTTPS问题"><a href="#关于HTTPS问题" class="headerlink" title="关于HTTPS问题"></a>关于HTTPS问题</h3><blockquote>
+<p>使用registry时，如果没有配置https会导致其他机器无法拉取镜像</p>
+</blockquote>
+<p><strong>错误提示：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Error response from daemon: Get https://xx.xx.xx.xx:5000/v1/_ping: http: server gave HTTP response to HTTPS client</div></pre></td></tr></table></figure>
+<p><strong>解决方法：</strong></p>
+<ol>
+<li>方法1: 配置HTTPS，参考<a href="https://docs.docker.com/registry/deploying/#run-an-externally-accessible-registry" target="_blank" rel="external">官方文档</a></li>
+<li>方法2: 在客户机配置该registry为非安全源</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> 编辑或者创建 daemon.json 配置文件</div><div class="line">vi /etc/docker/daemon.json</div><div class="line"><span class="meta">#</span> 添加或者输入如下内容</div><div class="line">&#123; "insecure-registries":["10.30.20.214:5000"] &#125;</div><div class="line"><span class="meta">#</span> 重启 docker</div><div class="line">sudo service docker restart</div><div class="line"><span class="meta">#</span> 至此便可以正常拉取镜像了</div></pre></td></tr></table></figure>
+<h3 id="定制可迁移的registry"><a href="#定制可迁移的registry" class="headerlink" title="定制可迁移的registry"></a>定制可迁移的registry</h3><blockquote>
+<p>若需要在一个内网环境部署docker，那么定制一个可迁移的registry会变使部署变得方便</p>
+</blockquote>
+<h4 id="1-准备好一个registry容器"><a href="#1-准备好一个registry容器" class="headerlink" title="1. 准备好一个registry容器"></a>1. 准备好一个registry容器</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> 1. 运行registry容器</div><div class="line">docker run --name some_registry -d -p 5000:5000 --restart always  registry</div><div class="line"><span class="meta">#</span> 2. 从docker hub拉取镜像,如nginx:alpine</div><div class="line">docker pull nginx:alpine</div><div class="line"><span class="meta">#</span> 3. 标记该镜像</div><div class="line">docker tag nginx:alpine localhost:5000/nginx:alpine</div><div class="line"><span class="meta">#</span> 4. 推送该镜像到本地registry</div><div class="line">docker push localhost:5000/nginx:alpine</div><div class="line"><span class="meta">#</span> 重复3和4的步骤，将需要的镜像都推送到本地registry</div></pre></td></tr></table></figure>
+<h4 id="2-导出旧registry的数据"><a href="#2-导出旧registry的数据" class="headerlink" title="2. 导出旧registry的数据"></a>2. 导出旧registry的数据</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> some_registry为旧registry容器名</div><div class="line">docker run --rm --volumes-from some_registry -v $(pwd):/backup registry sh -c "cd /var/lib/ &amp;&amp; tar cvf /backup/backup.tar registry"</div></pre></td></tr></table></figure>
+<h4 id="3-运行新registry容器"><a href="#3-运行新registry容器" class="headerlink" title="3. 运行新registry容器"></a>3. 运行新registry容器</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> 在目标机器运行新registry容器（注意端口占用）</div><div class="line">docker run --name new_registry -d -v /var/lib/registry  -p 5000:5000 --restart always registry</div></pre></td></tr></table></figure>
+<h4 id="4-导入数据"><a href="#4-导入数据" class="headerlink" title="4. 导入数据"></a>4. 导入数据</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> 导入数据（注意backup.tar要在当前路径下）</div><div class="line">docker run --rm --volumes-from new_registry -v $(pwd):/backup registry sh -c "cd /var/lib/ &amp;&amp; tar xvf /backup/backup.tar"</div><div class="line"><span class="meta">#</span> 查看registry目录，检查是否导入数据成功</div><div class="line">curl localhost:5000/v2/_catalog</div></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Docker</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Docker/" class="article-tag-list-link color2">Docker</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/08/07/Docker/docker_registry/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Nginx/nginx_cors" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -570,105 +712,6 @@
 
 
   
-    <article id="post-Linux/linux_network" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/25/Linux/linux_network/">Linux 网卡配置</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/25/Linux/linux_network/" class="archive-article-date">
-  	<time datetime="2017-06-25T13:15:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="一般情况"><a href="#一般情况" class="headerlink" title="一般情况"></a>一般情况</h1><h2 id="查看网卡信息"><a href="#查看网卡信息" class="headerlink" title="查看网卡信息"></a>查看网卡信息</h2><p><code>ip add</code> 或者 <code>ifconfig</code></p>
-<h2 id="重启网络"><a href="#重启网络" class="headerlink" title="重启网络"></a>重启网络</h2><p><code>sudo service network restart</code></p>
-<h1 id="ubuntu"><a href="#ubuntu" class="headerlink" title="ubuntu"></a>ubuntu</h1><h2 id="修改配置"><a href="#修改配置" class="headerlink" title="修改配置"></a>修改配置</h2><p><code>sudo vi /etc/network/interfaces</code></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">auto  enp0s3</div><div class="line">iface enp0s3 inet static</div><div class="line">address  192.168.56.5</div><div class="line">network  192.168.56.0</div><div class="line">netmask  255.255.255.0</div><div class="line">gateway  192.168.56.1</div><div class="line">dns-nameservers  8.8.8.8  192.168.56.1</div></pre></td></tr></table></figure>
-<h3 id="重启网络配置"><a href="#重启网络配置" class="headerlink" title="重启网络配置"></a>重启网络配置</h3><p><code>sudo service networking restart</code></p>
-<h3 id="查看网卡信息-1"><a href="#查看网卡信息-1" class="headerlink" title="查看网卡信息"></a>查看网卡信息</h3><p><code>ip add</code> 或者 <code>ifconfig</code></p>
-<h3 id="安装ssh"><a href="#安装ssh" class="headerlink" title="安装ssh"></a>安装ssh</h3><p><code>sudo apt-get install openssh-server</code></p>
-<h3 id="检查是否启动"><a href="#检查是否启动" class="headerlink" title="检查是否启动"></a>检查是否启动</h3><p><code>ps -e|grep ssh</code></p>
-<h1 id="centos"><a href="#centos" class="headerlink" title="centos"></a>centos</h1><h2 id="修改配置-1"><a href="#修改配置-1" class="headerlink" title="修改配置"></a>修改配置</h2><p><code>sudo vi /etc/sysconfig/network-scripts/ifcfg-enp0s3</code></p>
-<p>创建或修改配置文件信息如下（根据你实际的环境进行修改）：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">BOOTPROTO=static</div><div class="line">ONBOOT=yes</div><div class="line">IPADDR=192.168.56.10</div><div class="line">NETMASK=255.255.255.0</div><div class="line">GATEWAY=192.168.56.1 #双网卡下删除此项,避免覆盖</div></pre></td></tr></table></figure>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Config</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Linux/" class="article-tag-list-link color1">Linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/25/Linux/linux_network/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
@@ -758,6 +801,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ELK</a>
               </li>
              
@@ -782,15 +829,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Charset</a>
+                <a href="javascript:void(0)" class="js-tag color4">Mac</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Mac</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -802,11 +845,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+                <a href="javascript:void(0)" class="js-tag color2">Docker</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -854,10 +897,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Collection</a>
               </li>
              
@@ -875,6 +914,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Tomcat</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
               </li>
             
             <div class="clearfix"></div>

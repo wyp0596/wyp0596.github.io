@@ -4,6 +4,34 @@
 
     
   <url>
+    <loc>https://blog.ajavac.com/2018/04/25/Common/elk_tz/</loc>
+    <lastmod>2018-04-25T09:04:15.003Z</lastmod>
+    <data>
+        <display>
+        <title>解决 Filebeat + Nginx 的 error_log 时区问题</title>
+        <pubTime>2018-04-25T09:03:36.000Z</pubTime>
+        
+        <tag>ELK</tag>
+         
+        <tag>ElasticSearch</tag>
+         
+        <tag>Kibana</tag>
+         
+        <tag>Logstash</tag>
+         
+        <tag>Filebeat</tag>
+         
+         
+           
+             
+              <breadCrumb title="Common" url="https://blog.ajavac.com/categories/Common/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://blog.ajavac.com/2018/04/24/Common/elk/</loc>
     <lastmod>2018-04-24T09:52:55.854Z</lastmod>
     <data>
