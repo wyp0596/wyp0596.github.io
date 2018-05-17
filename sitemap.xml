@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://blog.ajavac.com/2017/07/17/Nginx/nginx_cors/</loc>
+    
+    <lastmod>2018-05-17T10:56:20.340Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://blog.ajavac.com/2018/04/25/Common/elk_tz/</loc>
     
     <lastmod>2018-04-25T09:04:15.003Z</lastmod>
@@ -103,13 +110,6 @@
     <loc>https://blog.ajavac.com/2017/06/28/Java/java_collection/</loc>
     
     <lastmod>2017-07-23T12:59:49.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://blog.ajavac.com/2017/07/17/Nginx/nginx_cors/</loc>
-    
-    <lastmod>2017-07-17T06:13:52.000Z</lastmod>
     
   </url>
   

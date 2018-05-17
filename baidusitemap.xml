@@ -4,6 +4,28 @@
 
     
   <url>
+    <loc>https://blog.ajavac.com/2017/07/17/Nginx/nginx_cors/</loc>
+    <lastmod>2018-05-17T10:56:20.340Z</lastmod>
+    <data>
+        <display>
+        <title>通用的Nginx跨域解决方案</title>
+        <pubTime>2017-07-17T03:31:22.000Z</pubTime>
+        
+        <tag>Common</tag>
+         
+        <tag>Nginx</tag>
+         
+         
+           
+             
+              <breadCrumb title="Nginx" url="https://blog.ajavac.com/categories/Nginx/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://blog.ajavac.com/2018/04/25/Common/elk_tz/</loc>
     <lastmod>2018-04-25T09:04:15.003Z</lastmod>
     <data>
@@ -293,9 +315,9 @@
         <title>Linux 基础</title>
         <pubTime>2017-04-10T01:19:17.000Z</pubTime>
         
-        <tag>Linux</tag>
-         
         <tag>Basic</tag>
+         
+        <tag>Linux</tag>
          
          
            
@@ -317,36 +339,14 @@
         
         <tag>Java</tag>
          
-        <tag>Basic</tag>
-         
         <tag>Collection</tag>
+         
+        <tag>Basic</tag>
          
          
            
              
               <breadCrumb title="Java" url="https://blog.ajavac.com/categories/Java/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://blog.ajavac.com/2017/07/17/Nginx/nginx_cors/</loc>
-    <lastmod>2017-07-17T06:13:52.000Z</lastmod>
-    <data>
-        <display>
-        <title>Nginx跨域</title>
-        <pubTime>2017-07-17T03:31:22.000Z</pubTime>
-        
-        <tag>Common</tag>
-         
-        <tag>Nginx</tag>
-         
-         
-           
-             
-              <breadCrumb title="Nginx" url="https://blog.ajavac.com/categories/Nginx/"/>
           
         </display>
     </data>
