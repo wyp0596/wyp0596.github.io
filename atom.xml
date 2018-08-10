@@ -698,7 +698,7 @@
     <link href="https://blog.ajavac.com/2017/07/17/Nginx/nginx_cors/"/>
     <id>https://blog.ajavac.com/2017/07/17/Nginx/nginx_cors/</id>
     <published>2017-07-17T03:31:22.000Z</published>
-    <updated>2018-05-17T10:56:20.340Z</updated>
+    <updated>2018-05-17T11:00:35.624Z</updated>
     
     <content type="html"><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><ol>
 <li>跨域(CORS)全称是 (Cross-origin resource sharing),</li>
@@ -728,7 +728,7 @@
 <h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>Nginx可以通过简单的配置实现简单请求的跨域</p>
 <p>在<code>http</code>或者<code>server</code>或者<code>location</code>里面添加<code>add_header &#39;Access-Control-Allow-Origin&#39; &#39;*&#39;;</code>这行命令, 即允许任意<code>Origin</code>地址进行跨域请求</p>
 <p>比如在http里面添加:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">http &#123;</div><div class="line">	add_header Access-Control-Allow-Origin &quot;$http_origin&quot;;</div><div class="line">    add_header Access-Control-Allow-Credentials true;</div><div class="line">	</div><div class="line">	# 以下省略</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">http &#123;</div><div class="line">	add_header Access-Control-Allow-Origin &quot;$http_origin&quot;;</div><div class="line">	add_header Access-Control-Allow-Credentials true;</div><div class="line">	</div><div class="line">	# 以下省略</div></pre></td></tr></table></figure>
 <h2 id="非简单请求"><a href="#非简单请求" class="headerlink" title="非简单请求"></a>非简单请求</h2><h3 id="简介-2"><a href="#简介-2" class="headerlink" title="简介"></a>简介</h3><p>不满足简单请求的皆为非简单请求:</p>
 <ol>
 <li>比如请求方法是PUT或者DELETE</li>
@@ -1117,7 +1117,7 @@
     <link href="https://blog.ajavac.com/2017/06/20/Java/java_io/"/>
     <id>https://blog.ajavac.com/2017/06/20/Java/java_io/</id>
     <published>2017-06-20T01:15:39.000Z</published>
-    <updated>2017-06-25T13:02:35.000Z</updated>
+    <updated>2018-08-10T09:38:17.971Z</updated>
     
     <content type="html"><![CDATA[<h1 id="BIO"><a href="#BIO" class="headerlink" title="BIO"></a>BIO</h1><blockquote>
 <p>面向流, 阻塞IO</p>
@@ -1199,19 +1199,12 @@
 </blockquote>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">	<span class="keyword">try</span>(InputStream input = <span class="keyword">new</span> FileInputStream(<span class="string">"file.txt"</span>)) &#123;</div><div class="line">      <span class="keyword">int</span> data = input.read();</div><div class="line">      <span class="keyword">while</span>(data != -<span class="number">1</span>)&#123;</div><div class="line">        System.out.println((<span class="keyword">char</span>) data);</div><div class="line">        data = input.read();</div><div class="line">      &#125;</div><div class="line">	&#125; <span class="keyword">catch</span>(IOException e) &#123;</div><div class="line">      <span class="keyword">throw</span> UncheckedIOException(e);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <ol>
-<li><p>在try块结束后, 自动完成流的关闭操作, 大大简化的流操作的编程</p>
-</li>
-<li><p>不用进行<code>finally</code>块的流关闭操作以及关闭操作的异常处理, 直接在catch块对异常进行统一处理)</p>
-</li>
-<li><p>可以使用多个资源, 关闭时按顺序进行关闭</p>
-</li>
-<li><p>可以自定义类, 只要实现了 <code>AutoClosable</code> 即可</p>
-</li>
-<li><p>当关闭流异常时, 直接由catch块捕捉</p>
-</li>
-<li><p>当try块和关闭流都抛出异常时, 抛出try块的异常, 关闭流的异常被抑制, 情况正好与<code>finally</code>方式相反</p>
-<p>​</p>
-</li>
+<li>在try块结束后, 自动完成流的关闭操作, 大大简化的流操作的编程</li>
+<li>不用进行<code>finally</code>块的流关闭操作以及关闭操作的异常处理, 直接在catch块对异常进行统一处理)</li>
+<li>可以使用多个资源, 关闭时按顺序进行关闭</li>
+<li>可以自定义类, 只要实现了 <code>AutoClosable</code> 即可</li>
+<li>当关闭流异常时, 直接由catch块捕捉</li>
+<li>当try块和关闭流都抛出异常时, 抛出try块的异常, 关闭流的异常被抑制, 情况正好与<code>finally</code>方式相反</li>
 </ol>
 <h1 id="NIO"><a href="#NIO" class="headerlink" title="NIO"></a>NIO</h1><blockquote>
 <p>面向缓冲, 非阻塞IO, 三大组件</p>
@@ -2369,51 +2362,6 @@
   </entry>
   
   <entry>
-    <title>JDK之String</title>
-    <link href="https://blog.ajavac.com/2017/03/26/Java/jdk_string/"/>
-    <id>https://blog.ajavac.com/2017/03/26/Java/jdk_string/</id>
-    <published>2017-03-26T10:35:55.000Z</published>
-    <updated>2017-05-15T06:07:49.000Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p><code>java.lang.String</code>是Java编程中最常见的类之一</p>
-<p>Java中使用Unicode字符集，使用UTF-16的编码实现方式，一个基本多语言平面（Basic Multilingual Plane，简称BMP）字符占用一个char（16bit），一个辅助平面（Supplementary Plane）字符占用两个char（16bit * 2）。</p>
-<p>比如说emoji表情就占用了两个char</p>
-</blockquote>
-<h2 id="String的特点"><a href="#String的特点" class="headerlink" title="String的特点"></a>String的特点</h2><ol>
-<li>是一个不可变类，一旦创建便不可改变</li>
-<li>类定义为<code>public final class String</code>，是一个终类，不可被继承</li>
-<li>实现了<code>java.io.Serializable</code>接口，可序列化和反序列化</li>
-<li>实现了<code>java.lang.Comparable&lt;String&gt;</code>接口，可以进行比较和排序</li>
-<li>实现了<code>java.lang.CharSequence</code>接口，是一个可读的字符序列</li>
-<li>String最多可存储<code>2^31-1</code>个char(每个char占用16bit)</li>
-<li>String最多可存储<code>(2^30-1)~(2^31-1)</code>个Unicode字符，原因在于Java中的Unicode编码方式（UTF-16），一个Unicode字符最多可能占用2个char</li>
-</ol>
-<p>​</p>
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ol>
-<li><code>length()</code>方法获取的是String字符串中char的长度</li>
-<li>String不宜直接存储密码等敏感数据，有dump风险，可用<code>char[]</code>存储（用完后清除），或者对敏感数据进行加盐hash</li>
-</ol>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;&lt;code&gt;java.lang.String&lt;/code&gt;是Java编程中最常见的类之一&lt;/p&gt;
-&lt;p&gt;Java中使用Unicode字符集，使用UTF-16的编码实现方式，一个基本多语言平面（Basic Multilingual Plane，简称B
-    
-    </summary>
-    
-      <category term="Java" scheme="https://blog.ajavac.com/categories/Java/"/>
-    
-    
-      <category term="Java" scheme="https://blog.ajavac.com/tags/Java/"/>
-    
-      <category term="Basic" scheme="https://blog.ajavac.com/tags/Basic/"/>
-    
-  </entry>
-  
-  <entry>
     <title>Java 8 新特性</title>
     <link href="https://blog.ajavac.com/2017/03/26/Java/java8/"/>
     <id>https://blog.ajavac.com/2017/03/26/Java/java8/</id>
@@ -2564,6 +2512,51 @@
 &lt;th&gt;特性&lt;/th&gt;
 &lt;th&gt;说明&lt;/th&gt;
 &lt;/t
+    
+    </summary>
+    
+      <category term="Java" scheme="https://blog.ajavac.com/categories/Java/"/>
+    
+    
+      <category term="Java" scheme="https://blog.ajavac.com/tags/Java/"/>
+    
+      <category term="Basic" scheme="https://blog.ajavac.com/tags/Basic/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>JDK之String</title>
+    <link href="https://blog.ajavac.com/2017/03/26/Java/jdk_string/"/>
+    <id>https://blog.ajavac.com/2017/03/26/Java/jdk_string/</id>
+    <published>2017-03-26T10:35:55.000Z</published>
+    <updated>2017-05-15T06:07:49.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p><code>java.lang.String</code>是Java编程中最常见的类之一</p>
+<p>Java中使用Unicode字符集，使用UTF-16的编码实现方式，一个基本多语言平面（Basic Multilingual Plane，简称BMP）字符占用一个char（16bit），一个辅助平面（Supplementary Plane）字符占用两个char（16bit * 2）。</p>
+<p>比如说emoji表情就占用了两个char</p>
+</blockquote>
+<h2 id="String的特点"><a href="#String的特点" class="headerlink" title="String的特点"></a>String的特点</h2><ol>
+<li>是一个不可变类，一旦创建便不可改变</li>
+<li>类定义为<code>public final class String</code>，是一个终类，不可被继承</li>
+<li>实现了<code>java.io.Serializable</code>接口，可序列化和反序列化</li>
+<li>实现了<code>java.lang.Comparable&lt;String&gt;</code>接口，可以进行比较和排序</li>
+<li>实现了<code>java.lang.CharSequence</code>接口，是一个可读的字符序列</li>
+<li>String最多可存储<code>2^31-1</code>个char(每个char占用16bit)</li>
+<li>String最多可存储<code>(2^30-1)~(2^31-1)</code>个Unicode字符，原因在于Java中的Unicode编码方式（UTF-16），一个Unicode字符最多可能占用2个char</li>
+</ol>
+<p>​</p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ol>
+<li><code>length()</code>方法获取的是String字符串中char的长度</li>
+<li>String不宜直接存储密码等敏感数据，有dump风险，可用<code>char[]</code>存储（用完后清除），或者对敏感数据进行加盐hash</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;java.lang.String&lt;/code&gt;是Java编程中最常见的类之一&lt;/p&gt;
+&lt;p&gt;Java中使用Unicode字符集，使用UTF-16的编码实现方式，一个基本多语言平面（Basic Multilingual Plane，简称B
     
     </summary>
     

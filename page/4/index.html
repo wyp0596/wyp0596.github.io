@@ -483,19 +483,12 @@
 </blockquote>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">	<span class="keyword">try</span>(InputStream input = <span class="keyword">new</span> FileInputStream(<span class="string">"file.txt"</span>)) &#123;</div><div class="line">      <span class="keyword">int</span> data = input.read();</div><div class="line">      <span class="keyword">while</span>(data != -<span class="number">1</span>)&#123;</div><div class="line">        System.out.println((<span class="keyword">char</span>) data);</div><div class="line">        data = input.read();</div><div class="line">      &#125;</div><div class="line">	&#125; <span class="keyword">catch</span>(IOException e) &#123;</div><div class="line">      <span class="keyword">throw</span> UncheckedIOException(e);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <ol>
-<li><p>在try块结束后, 自动完成流的关闭操作, 大大简化的流操作的编程</p>
-</li>
-<li><p>不用进行<code>finally</code>块的流关闭操作以及关闭操作的异常处理, 直接在catch块对异常进行统一处理)</p>
-</li>
-<li><p>可以使用多个资源, 关闭时按顺序进行关闭</p>
-</li>
-<li><p>可以自定义类, 只要实现了 <code>AutoClosable</code> 即可</p>
-</li>
-<li><p>当关闭流异常时, 直接由catch块捕捉</p>
-</li>
-<li><p>当try块和关闭流都抛出异常时, 抛出try块的异常, 关闭流的异常被抑制, 情况正好与<code>finally</code>方式相反</p>
-<p>​</p>
-</li>
+<li>在try块结束后, 自动完成流的关闭操作, 大大简化的流操作的编程</li>
+<li>不用进行<code>finally</code>块的流关闭操作以及关闭操作的异常处理, 直接在catch块对异常进行统一处理)</li>
+<li>可以使用多个资源, 关闭时按顺序进行关闭</li>
+<li>可以自定义类, 只要实现了 <code>AutoClosable</code> 即可</li>
+<li>当关闭流异常时, 直接由catch块捕捉</li>
+<li>当try块和关闭流都抛出异常时, 抛出try块的异常, 关闭流的异常被抑制, 情况正好与<code>finally</code>方式相反</li>
 </ol>
 <h1 id="NIO"><a href="#NIO" class="headerlink" title="NIO"></a>NIO</h1><blockquote>
 <p>面向缓冲, 非阻塞IO, 三大组件</p>
@@ -772,15 +765,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Mac</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+                <a href="javascript:void(0)" class="js-tag color4">Mac</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -793,6 +782,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">

@@ -17,7 +17,7 @@
 <meta property="og:description" content="简介 跨域(CORS)全称是 (Cross-origin resource sharing), 由于浏览器的安全限制, 所以才会存在跨域问题 当一个网站的去请求另一个网站的资源时会发生 新版浏览器都支持该功能 (不低于IE10)   简单请求简介必须同时满足以下条件:  请求方法是以下三种方法之一: HEAD GET POST   头信息不超过以下字段: Accept Accept-Languag">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://blog.ajavac.com/img/nginx/cors.jpg">
-<meta property="og:updated_time" content="2018-05-17T10:56:20.340Z">
+<meta property="og:updated_time" content="2018-05-17T11:00:35.624Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="通用的Nginx跨域解决方案">
 <meta name="twitter:description" content="简介 跨域(CORS)全称是 (Cross-origin resource sharing), 由于浏览器的安全限制, 所以才会存在跨域问题 当一个网站的去请求另一个网站的资源时会发生 新版浏览器都支持该功能 (不低于IE10)   简单请求简介必须同时满足以下条件:  请求方法是以下三种方法之一: HEAD GET POST   头信息不超过以下字段: Accept Accept-Languag">
@@ -191,7 +191,7 @@
 <h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>Nginx可以通过简单的配置实现简单请求的跨域</p>
 <p>在<code>http</code>或者<code>server</code>或者<code>location</code>里面添加<code>add_header &#39;Access-Control-Allow-Origin&#39; &#39;*&#39;;</code>这行命令, 即允许任意<code>Origin</code>地址进行跨域请求</p>
 <p>比如在http里面添加:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">http &#123;</div><div class="line">	add_header Access-Control-Allow-Origin &quot;$http_origin&quot;;</div><div class="line">    add_header Access-Control-Allow-Credentials true;</div><div class="line">	</div><div class="line">	# 以下省略</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">http &#123;</div><div class="line">	add_header Access-Control-Allow-Origin &quot;$http_origin&quot;;</div><div class="line">	add_header Access-Control-Allow-Credentials true;</div><div class="line">	</div><div class="line">	# 以下省略</div></pre></td></tr></table></figure>
 <h2 id="非简单请求"><a href="#非简单请求" class="headerlink" title="非简单请求"></a>非简单请求</h2><h3 id="简介-2"><a href="#简介-2" class="headerlink" title="简介"></a>简介</h3><p>不满足简单请求的皆为非简单请求:</p>
 <ol>
 <li>比如请求方法是PUT或者DELETE</li>
@@ -510,15 +510,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Mac</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+                <a href="javascript:void(0)" class="js-tag color4">Mac</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -531,6 +527,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
